@@ -13,10 +13,10 @@ class LoginController extends BaseController
         $request->input('username');
         $request->input('password');
         $mod = new Login();
-//        $data = $mod->getLogin()
-//            ->where('username', $request->input('username'))
-//            ->where('password', $request->input('password'))
-//            ->all();
+        $data = $mod->getLogin()
+            ->where('username', $request->input('username'))
+            ->where('password', $request->input('password'))
+            ->all();
 //        if( count($data) == 1 ){
 //            $jwt = getJWT($data[0]->username,$data[0]->password);
 //            $array = array('auth'=>true,'token'=>$jwt, 'role'=>$data[0]->role, 'id_pelaksana'=>$data[0]->id_pelaksana);
