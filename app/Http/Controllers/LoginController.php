@@ -25,4 +25,8 @@ class LoginController extends BaseController
         }
         return $array;
     }
+
+    public function aa(){
+        return '';
+    }
 }
