@@ -10,9 +10,9 @@ class LoginController extends BaseController
 {
     public function dologin(Request $request)
     {
-//        $request->input('username');
-//        $request->input('password');
-//        $mod = new Login();
+        $request->input('username');
+        $request->input('password');
+        $mod = new Login();
 //        $data = $mod->getLogin()
 //            ->where('username', $request->input('username'))
 //            ->where('password', $request->input('password'))
