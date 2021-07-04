@@ -98,7 +98,7 @@ $router->get('master_dokter', 'DokterController@getAllDokter');
 $router->get('master_lab', 'LabController@getAllMaster');
 $router->get('master_lab_cito', 'LabController@getAllMasterCito');
 $router->get('master_rad', 'RadiologiController@getAllMaster');
-$router->post('login', 'LoginController@doLogin');
+$router->post('do_login', 'LoginController@doLogin');
 $router->post('aa', 'LoginController@aa');
 $router->get('icd9', 'IcdController@Icd9');
 
