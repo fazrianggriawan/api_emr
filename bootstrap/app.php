@@ -80,9 +80,13 @@ $app->singleton(
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Intervention\Image\ImageServiceProvider::class);
+$app->register(Barryvdh\DomPDF\ServiceProvider::class);
+
 
 $app->configure('cors');
 $app->configure('config');
+$app->configure('dompdf');
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
