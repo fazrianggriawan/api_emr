@@ -78,6 +78,7 @@ $router->post('aa', 'LoginController@aa');
 $router->get('icd9', 'IcdController@Icd9');
 $router->post('upload', 'UploadController@doUpload');
 $router->post('save_sig_template', 'FarmasiController@saveSigTemplate');
+$router->get('sig_template', 'FarmasiController@getSigTemplate');
 $router->get('print_farmasi', 'PrintController@farmasi');
 $router->get('print_lab', 'PrintController@laboratorium');
 $router->get('print_rad', 'PrintController@radiologi');

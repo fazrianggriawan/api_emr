@@ -31,25 +31,15 @@ class FarmasiController extends BaseController
     public function saveSigTemplate(Request $request)
     {
         $mod = new SigTemplate();
-
         $mod->value = $request->sigText;
         $mod->save();
+    }
 
-//        $endpoint = setEndpoint('/api/master/farmasi/stok/gudang');
-//        $data = array(
-//            "fornas" => "1",
-//            "nama_obat" => "",
-//        );
-//
-//        $req = $client->request('POST', $endpoint, ['headers'=>getHeaderEndPoint(), 'body'=>json_encode($data)]);
-//        $json = json_decode($req->getBody()->getContents());
-//
-//
-//        if( $json->metadata->status == 200 ){
-//            return json_encode($json->response->data);
-//        }else{
-//            return '';
-//        }
+    public function getSigTemplate(Request $request)
+    {
+        $mod = new SigTemplate();
+        $data = $mod->getAllData();
+        return json_encode($data);
     }
 
 }
