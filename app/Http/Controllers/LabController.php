@@ -11,6 +11,7 @@ class LabController extends BaseController
     function getAllMaster(){
         $lab = new Laboratorium();
         $data = $lab->getAllData();
+        return $data;
         $collection = collect($data);
         $grouped = $collection->groupBy(array('group_name','cat_name'))->toArray();
         return $grouped;
@@ -19,7 +20,7 @@ class LabController extends BaseController
     function getAllMasterCito(){
         $lab = new Laboratorium();
         $data = $lab->getAllDataCito()->get();
-         $collection = collect($data);
+        $collection = collect($data);
         $grouped = $collection->groupBy(array('group_name','cat_name'))->toArray();
         $array = array();
         foreach ($grouped as $key=>$item) {

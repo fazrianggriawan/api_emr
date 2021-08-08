@@ -81,6 +81,8 @@ $app->singleton(
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Intervention\Image\ImageServiceProvider::class);
 $app->register(Barryvdh\DomPDF\ServiceProvider::class);
+$app->register(Elibyy\TCPDF\ServiceProvider::class);
+class_alias(Elibyy\TCPDF\Facades\TCPDF::class, 'PDF');
 
 
 $app->configure('cors');

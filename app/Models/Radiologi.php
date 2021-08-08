@@ -13,4 +13,8 @@ class Radiologi extends Model
     public function getAllData(){
         return DB::table($this->table)->get();
     }
+
+    public function getAllDataDetail($id_head){
+        return DB::table('mst_radiologi_detail')->where('id_mst_radiologi', $id_head)->get();
+    }
 }

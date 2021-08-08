@@ -11,6 +11,6 @@ class Icd10 extends Model
     protected $primaryKey = 'icd10code';
 
     public function getIcd10(){
-        return DB::table($this->table)->select('icd10code as id',DB::raw('CONCAT(icd10code,\' - \',deskripsi) as name'))->get();
+        return DB::table($this->table)->select('icd10code as id','deskripsi as name')->get();
     }
 }

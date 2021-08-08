@@ -12,7 +12,7 @@ class Icd9 extends Model
 
     public function getAllData(){
         return DB::table($this->table)
-            ->select('icd9code as id',DB::raw('CONCAT(icd9code,\' - \',deskripsi) as name'))
+            ->select('icd9code as id','deskripsi as name')
             ->where('stsaktif', 'A')
             ->get();
     }

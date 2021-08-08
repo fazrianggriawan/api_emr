@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pelaksana;
 use GuzzleHttp\Client;
+use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class DokterController extends BaseController
@@ -20,5 +22,13 @@ class DokterController extends BaseController
         }else{
             return '';
         }
+    }
+
+    function getAllDokterByPoli(Request $request)
+    {
+        $mPelaksana = new Pelaksana();
+        $mPelaksana->id_poli = $request->id_poli;
+        $data = $mPelaksana->getDokterByPoli();
+        return $data;
     }
 }
