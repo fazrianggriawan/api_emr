@@ -66,8 +66,6 @@ $router->get('icd10', function(){
 //    return json_encode($dokter->getAll());
 //});
 
-$router->post('registrasi', 'RegistrasiController@getDataRegistrasi');
-$router->post('cppt', 'CpptController@save');
 $router->get('master_obat', 'FarmasiController@getMasterObat');
 $router->get('master_dokter', 'DokterController@getAllDokter');
 $router->get('master_dokter_by_poli', 'DokterController@getAllDokterByPoli');
@@ -77,18 +75,24 @@ $router->get('master_rad', 'RadiologiController@getAllMaster');
 $router->get('master_rad_detail', 'RadiologiController@getAllMasterDetail');
 $router->get('master_pat_anatomi', 'PatAnatomiController@getAllMaster');
 $router->get('master_poli', 'MasterController@poliklinik');
+$router->get('icd9', 'IcdController@Icd9');
+$router->get('sig_template', 'FarmasiController@getSigTemplate');
+$router->get('print_farmasi', 'PrintController@farmasi');
+$router->get('print_lab', 'PrintController@laboratorium');
+$router->get('print_rad', 'PrintController@radiologi');
+$router->get('print_tcpdf', 'PrintController@tcpdf');
+$router->get('get_test_order', 'TestOrderController@getData');
+$router->get('get_objective', 'ObjectiveController@getData');
+$router->get('get_assessment_umum', 'AssessmentUmumController@getData');
+
+$router->post('registrasi', 'RegistrasiController@getDataRegistrasi');
+$router->post('cppt', 'CpptController@save');
 $router->post('do_login', 'LoginController@doLogin');
 $router->post('aa', 'LoginController@aa');
-$router->get('icd9', 'IcdController@Icd9');
 $router->post('upload', 'UploadController@doUpload');
 $router->post('save_sig_template', 'FarmasiController@saveSigTemplate');
 $router->post('save_diagnosa', 'DiagnosaController@save');
 $router->post('save_tindakan', 'TindakanController@save');
 $router->post('save_test_order', 'TestOrderController@save');
 $router->post('save_assessment_umum', 'AssessmentUmumController@save');
-$router->get('sig_template', 'FarmasiController@getSigTemplate');
-$router->get('print_farmasi', 'PrintController@farmasi');
-$router->get('print_lab', 'PrintController@laboratorium');
-$router->get('print_rad', 'PrintController@radiologi');
-$router->get('print_tcpdf', 'PrintController@tcpdf');
-
+$router->post('save_objective', 'ObjectiveController@save');

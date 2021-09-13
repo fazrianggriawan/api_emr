@@ -11,7 +11,7 @@
  Target Server Version : 100138
  File Encoding         : 65001
 
- Date: 09/08/2021 06:38:56
+ Date: 14/09/2021 05:23:26
 */
 
 SET NAMES utf8mb4;
@@ -232,9 +232,9 @@ DROP TABLE IF EXISTS `emr_assessment_umum`;
 CREATE TABLE `emr_assessment_umum`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `noreg` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
-  `keluhan_utama_id` varchar(5) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `keluhan_utama_id` int NULL DEFAULT NULL,
   `keluhan_utama_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
-  `keluhan_tambahan_id` varchar(5) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `keluhan_tambahan_id` int NULL DEFAULT NULL,
   `keluhan_tambahan_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
   `keluhan_utama_sejak` date NULL DEFAULT NULL,
   `keluhan_tambahan_sejak` date NULL DEFAULT NULL,
@@ -244,14 +244,28 @@ CREATE TABLE `emr_assessment_umum`  (
   `nadi` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
   `p` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
   `suhu` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `riwayat_penyakit_skrg` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `riwayat_penyakit_dulu` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `alergi_obat` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `alergi_makanan` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `anamnesa_perawat` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `diagnosa_rujukan` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
   `created_at` datetime NULL DEFAULT NULL,
   `updated_at` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of emr_assessment_umum
 -- ----------------------------
+INSERT INTO `emr_assessment_umum` VALUES (1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-09-13 13:04:07', '2021-09-13 13:04:07');
+INSERT INTO `emr_assessment_umum` VALUES (2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-09-13 13:23:41', '2021-09-13 13:23:41');
+INSERT INTO `emr_assessment_umum` VALUES (3, NULL, 1, 'Gangguan Miksi - Aliran', 2, 'Gangguan Miksi - Nyeri', NULL, NULL, 'bb', 'tb', 'td', 'nadi', 'p', 'suhu', NULL, NULL, NULL, NULL, NULL, NULL, '2021-09-13 20:05:44', '2021-09-13 20:05:44');
+INSERT INTO `emr_assessment_umum` VALUES (4, NULL, 1, 'Gangguan Miksi - Aliran', 2, 'Gangguan Miksi - Nyeri', NULL, NULL, 'bb', 'tb', 'td', 'nadi', 'p', 'suhu', '<p>penyakit sekarang</p>', '<p>penyakit dahulu</p>', 'alergi obar', 'alergi makanan', 'anamnesa perawat', 'diagnosa rujukan', '2021-09-13 20:06:28', '2021-09-13 20:06:28');
+INSERT INTO `emr_assessment_umum` VALUES (5, 'RJ21091300021', 1, 'Gangguan Miksi - Aliran', 2, 'Gangguan Miksi - Nyeri', NULL, NULL, 'bb', 'tb', 'td', 'nadi', 'p', 'suhu', '<p>penyakit sekarang</p>', '<p>penyakit dahulu</p>', 'alergi obar', 'alergi makanan', 'anamnesa perawat', 'diagnosa rujukan', '2021-09-13 20:07:07', '2021-09-13 20:07:07');
+INSERT INTO `emr_assessment_umum` VALUES (6, 'RJ21091300021', 2, 'Gangguan Miksi - Nyeri', 4, 'Sakit Pinggang', NULL, NULL, 'bb', 'tb', 'tb', 'nadi', 'p', 'suhu', '<p>penyakit sekarang</p>', '<p>penyakit dahulu</p>', 'alergi obar', 'alergi makanan', 'anamnesa perawat', 'diagnosa rujukan', '2021-09-13 20:09:56', '2021-09-13 20:09:56');
+INSERT INTO `emr_assessment_umum` VALUES (7, 'RJ21091300021', 1, 'Gangguan Miksi - Aliran', NULL, NULL, NULL, NULL, 'bb', 'tb', 'tb', 'nadi', 'p', 'suhu', '<p>penyakit sekarang</p>', '<p>penyakit dahulu</p>', 'alergi obar', 'alergi makanan', 'anamnesa perawat', 'diagnosa rujukan', '2021-09-13 20:11:37', '2021-09-13 20:11:37');
+INSERT INTO `emr_assessment_umum` VALUES (8, 'RJ21091300021', 1, 'Gangguan Miksi - Aliran', 3, 'Gangguan Miksi - Hematuria', NULL, NULL, 'bb', 'tb', 'tb', 'nadi', 'p', 'suhu', '<p>penyakit sekarang</p>', '<p>penyakit dahulu</p>', 'alergi obar', 'alergi makanan', 'anamnesa perawat', 'diagnosa rujukan', '2021-09-13 20:12:32', '2021-09-13 20:12:32');
 
 -- ----------------------------
 -- Table structure for emr_diagnosa
@@ -266,8 +280,8 @@ CREATE TABLE `emr_diagnosa`  (
   `created_at` datetime NULL DEFAULT NULL,
   `updated_at` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `noreg`(`noreg`) USING BTREE,
-  UNIQUE INDEX `noreg_2`(`noreg`, `icd10_code`) USING BTREE
+  UNIQUE INDEX `noreg_2`(`noreg`, `icd10_code`) USING BTREE,
+  INDEX `noreg`(`noreg`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 57 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
@@ -1040,6 +1054,92 @@ INSERT INTO `emr_mst_pemeriksaan` VALUES ('RA98', 'MULTI SLICE CT SCAN Larynk/Le
 INSERT INTO `emr_mst_pemeriksaan` VALUES ('RA99', 'MULTI SLICE CT SCAN Larynk/Leher/Thyroid TANPA KONTRAS', '003', '0', 'RAD', '01');
 
 -- ----------------------------
+-- Table structure for emr_objective
+-- ----------------------------
+DROP TABLE IF EXISTS `emr_objective`;
+CREATE TABLE `emr_objective`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `noreg` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `notes` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `created_at` datetime NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of emr_objective
+-- ----------------------------
+INSERT INTO `emr_objective` VALUES (1, 'RJ21091300021', '<p>asdasdasd</p>', '2021-09-13 15:48:00', '2021-09-13 15:48:00');
+INSERT INTO `emr_objective` VALUES (2, 'RJ21091300021', '<p>asdasdasd edit</p>', '2021-09-13 19:43:44', '2021-09-13 19:43:44');
+INSERT INTO `emr_objective` VALUES (3, 'RJ21091300021', '<p>asdasdasd edit asdasd</p>', '2021-09-13 19:44:05', '2021-09-13 19:44:05');
+
+-- ----------------------------
+-- Table structure for emr_subjective
+-- ----------------------------
+DROP TABLE IF EXISTS `emr_subjective`;
+CREATE TABLE `emr_subjective`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `noreg` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `keluhan_utama_id` int NULL DEFAULT NULL,
+  `keluhan_utama_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `keluhan_utama_sejak` date NULL DEFAULT NULL,
+  `keluhan_tambahan_id` int NULL DEFAULT NULL,
+  `keluhan_tambahan_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `keluhan_tambahan_sejak` date NULL DEFAULT NULL,
+  `bb` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `tb` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `td` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `nadi` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `p` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `suhu` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `riwayat_penyakit_skrg` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `riwayat_penyakit_dulu` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `alergi_obat` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `alergi_makanan` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `anamnesa_perawat` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `diagnosa_rujukan` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `created_at` datetime NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of emr_subjective
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for emr_test_order
+-- ----------------------------
+DROP TABLE IF EXISTS `emr_test_order`;
+CREATE TABLE `emr_test_order`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `noreg` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `unit` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `tipe_id` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `tipe_name` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `test_id` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `test_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `test_cat_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `test_group_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `remark` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `created_at` datetime NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of emr_test_order
+-- ----------------------------
+INSERT INTO `emr_test_order` VALUES (1, 'RJ21091300021', NULL, 'nonCito', NULL, '1209', 'Paket Uji Fungsi Trombosit (PFA) Screening Disfungsi Trombosit & Uji Respon P2Y (Clopidogrel & Golongan)', 'KOAGULASI', 'HEMATOLOGI', NULL, '2021-09-13 17:29:07', '2021-09-13 17:29:07');
+INSERT INTO `emr_test_order` VALUES (2, 'RJ21091300021', NULL, 'nonCito', NULL, '1203', 'APTT', 'KOAGULASI', 'HEMATOLOGI', NULL, '2021-09-13 17:29:17', '2021-09-13 17:29:17');
+INSERT INTO `emr_test_order` VALUES (3, 'RJ21091300021', 'lab', 'nonCito', NULL, '1209', 'Paket Uji Fungsi Trombosit (PFA) Screening Disfungsi Trombosit & Uji Respon P2Y (Clopidogrel & Golongan)', 'KOAGULASI', 'HEMATOLOGI', NULL, '2021-09-13 17:29:47', '2021-09-13 17:29:47');
+INSERT INTO `emr_test_order` VALUES (4, 'RJ21091300021', 'lab', 'nonCito', 'Non Cito', '1114', 'Analisa Hb (HPLC)', 'HEMATOLOGI', 'HEMATOLOGI', NULL, '2021-09-13 17:30:18', '2021-09-13 17:30:18');
+INSERT INTO `emr_test_order` VALUES (5, 'RJ21091300021', 'lab', 'nonCito', 'Non Cito', '1000', 'Hematologi Rutin', 'HEMATOLOGI', 'HEMATOLOGI', 'asdasdasd', '2021-09-13 17:30:28', '2021-09-13 17:30:28');
+INSERT INTO `emr_test_order` VALUES (6, 'RJ21091300021', 'rad', 'nonCito', 'Non Cito', '1000', 'Renal', 'USG', NULL, NULL, '2021-09-13 17:48:03', '2021-09-13 17:48:03');
+INSERT INTO `emr_test_order` VALUES (7, 'RJ21091300021', 'rad', 'nonCito', 'Non Cito', '1000', 'Abdomen Atas ( Wanita : Ginekologi )', 'USG', NULL, 'remark ara', '2021-09-13 17:48:25', '2021-09-13 17:48:25');
+INSERT INTO `emr_test_order` VALUES (8, 'RJ21091300021', 'lab', 'nonCito', 'Non Cito', '1209', 'Paket Uji Fungsi Trombosit (PFA) Screening Disfungsi Trombosit & Uji Respon P2Y (Clopidogrel & Golongan)', 'KOAGULASI', 'HEMATOLOGI', NULL, '2021-09-13 18:48:33', '2021-09-13 18:48:33');
+
+-- ----------------------------
 -- Table structure for emr_test_order_detail
 -- ----------------------------
 DROP TABLE IF EXISTS `emr_test_order_detail`;
@@ -1099,7 +1199,7 @@ CREATE TABLE `emr_test_order_head`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `tipe`(`tipe`) USING BTREE,
   INDEX `noreg`(`noreg`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of emr_test_order_head
@@ -1117,6 +1217,7 @@ INSERT INTO `emr_test_order_head` VALUES (10, NULL, NULL, 'cito', 'T39.1', '4-AM
 INSERT INTO `emr_test_order_head` VALUES (11, NULL, NULL, 'cito', 'T39.1', '4-AMINOPHENOL DERIVATIVES', 'bebet', 'remark', 'rad', NULL, NULL);
 INSERT INTO `emr_test_order_head` VALUES (12, NULL, NULL, 'nonCito', 'T39.1', '4-AMINOPHENOL DERIVATIVES', 'bebet', 'remarks', 'rad', NULL, NULL);
 INSERT INTO `emr_test_order_head` VALUES (13, 'RJ21080600031', NULL, 'cito', 'T51.2', '2-PROPANOL', 'bebet', 'asdasd', 'lab', NULL, NULL);
+INSERT INTO `emr_test_order_head` VALUES (14, 'RJ21091300021', NULL, 'nonCito', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for emr_tindakan

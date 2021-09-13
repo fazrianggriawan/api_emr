@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TestOrderDetail;
-use App\Models\TestOrderHead;
+use App\Models\TestOrder;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
@@ -11,43 +10,34 @@ class TestOrderController extends BaseController
 {
     public function save(Request $request)
     {
-        $modTestOrderHead = new TestOrderHead();
-        $insert = array();
-//        $insert['tanggal'] = $request->tanggal;
-        $insert['tipe'] = $request->tipe['id'];
-        $insert['diagnosa_icd10_code'] = $request->diagnosa['id'];
-        $insert['diagnosa_icd10_name'] = $request->diagnosa['name'];
-        $insert['physician_id'] = $request->physician;
-        $insert['remarks'] = $request->remarks;
-        $insert['unit'] = $request->unit;
-        $insert['noreg'] = $request->noreg;
-
-        $id_head = $modTestOrderHead->saveData($insert);
-
-        $modTestOrderDetail = new TestOrderDetail();
-        $insertDetail = array();
-        foreach ($request->data as $index => $row){
-            $a = array();
-            $a['id_emr_test_order_head'] = $id_head;
-            $a['pemeriksaan_id'] = $row['id'];
-            $a['pemeriksaan_name'] = $row['name'];
-            $a['pemeriksaan_cat_name'] = @$row['cat_name'];
-            $a['pemeriksaan_group_name'] = @$row['group_name'];
-            array_push($insertDetail, $a);
+        $modTestOrder = new TestOrder();
+        $modTestOrder['noreg'] = $request->noreg;
+        $modTestOrder['unit'] = $request->unit;
+        $modTestOrder['tipe_id'] = $request->tipe['id'];
+        $modTestOrder['tipe_name'] = $request->tipe['name'];
+        if( $request->unit == 'lab' ){
+            $modTestOrder['test_id'] = $request->data['id'];
+            $modTestOrder['test_name'] = $request->data['name'];
+            $modTestOrder['test_cat_name'] = $request->data['cat_name'];
+            $modTestOrder['test_group_name'] = $request->data['group_name'];
+        }elseif ( $request->unit == 'rad' ){
+            $modTestOrder['test_id'] = $request->data['id_mst_radiologi'];
+            $modTestOrder['test_name'] = $request->data['name'];
+            $modTestOrder['test_cat_name'] = $request->data['category']['name'];
         }
-        $save = $modTestOrderDetail->saveData($insertDetail);
-        if( !isset($save->errorInfo) ){
-            $res = array('status'=>true, 'message'=>'Data berhasil disimpan');
-        }else{
-            $res = array('status'=>false, 'message'=>$save->errorInfo[2]);
+        $modTestOrder['remark'] = $request->remarks;
+        try {
+            $modTestOrder->save();
+        }catch (\Exception $e){
+            dd($e->getMessage());
         }
-        return json_encode($res);
     }
 
-    public function getAllData(Request $request)
+    public function getData(Request $request)
     {
-        $mod = new Tindakan();
-        return $mod->getAll();
+        $modTestOrder = new TestOrder();
+        $data = $modTestOrder->getData($request->noreg, $request->unit);
+        return json_encode($data);
     }
 
 }
