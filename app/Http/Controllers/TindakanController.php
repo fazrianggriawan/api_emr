@@ -11,20 +11,21 @@ class TindakanController extends BaseController
     public function save(Request $request)
     {
         $mod = new Tindakan();
-        $insert = array();
-        foreach ($request->icd as $index => $row){
-            $a['noreg'] = $request->noreg;
-            $a['icd9_code'] = $row['id'];
-            $a['icd9_name'] = $row['name'];
-            array_push($insert, $a);
+
+        $mod->noreg = $request['noreg'];
+        $mod->icd9_code = $request['icd9_code'];
+        $mod->icd9_name = $request['icd9_name'];
+        $mod->tindakan_id = $request['tindakan']['id'];
+        $mod->tindakan_name = $request['tindakan']['name'];
+        $mod->operasi_id = $request['operasi']['id'];
+        $mod->operasi_name = $request['operasi']['name'];
+
+        try {
+            $mod->save();
+        } catch (Exception $e) {
+            dd($e);
         }
-        $save = $mod->saveData($insert);
-        if( !isset($save->errorInfo) ){
-            $res = array('status'=>true, 'message'=>'Data berhasil disimpan');
-        }else{
-            $res = array('status'=>false, 'message'=>$save->errorInfo[2]);
-        }
-        return json_encode($res);
+
     }
 
     public function getAllData(Request $request)

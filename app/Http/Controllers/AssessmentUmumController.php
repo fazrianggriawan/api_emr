@@ -14,6 +14,8 @@ class AssessmentUmumController extends Controller{
 
         try {
             $mod->noreg = $request['noreg'];
+            $mod->asal_kunjungan_id = @$request['asalKunjungan']['id'];
+            $mod->asal_kunjungan_name = @$request['asalKunjungan']['name'];
             $mod->keluhan_utama_id = @$request['keluhanUtama']['id'];
             $mod->keluhan_utama_name = @$request['keluhanUtama']['name'];
             $mod->keluhan_utama_sejak = $request['keluhanUtamaSejak'];
