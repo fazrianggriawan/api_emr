@@ -11,21 +11,20 @@ class MasterController extends BaseController
 {
     public function poliklinik(Request $request)
     {
-        $endpoint = setEndpoint('/api/master/poli/all');
+        $endpoint = setEndpoint('/master/poli/getADataPoliBpjs');
         $client = new Client();
 
-        $req = $client->request('GET', $endpoint, ['headers'=>getHeaderEndPoint()]);
+        $req = $client->request('GET', $endpoint);
         $json = json_decode($req->getBody()->getContents());
 
-        if( $json->metadata->status == 200 ){
-            if( isset($json->response) ){
-                return json_encode(array('status'=>200, 'data'=>$json->response->data, 'message'=>''));
-            }else{
-                return json_encode(array('status'=>204, 'data'=>'', 'message'=>$json->metadata->message));
-            }
-        }else{
-            return json_encode(array('status'=>204, 'data'=>'', 'message'=>$json->metadata->message));
-        }
+        return json_encode($json);
+
+        // if( $json->code == 200 ){
+        //     return json_encode($json->data);
+        // }else{
+        //     return '';
+        // }
+
     }
 
     public function keluhan()

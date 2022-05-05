@@ -15,10 +15,10 @@ class DokterController extends BaseController
             'group' => 'dokter',
         );
         $client = new Client();
-        $req = $client->request('POST', setEndpoint('/api/master/pelaksana/getdata'), ['headers'=>getHeaderEndPoint(), 'body'=>json_encode($data)]);
+        $req = $client->request('GET', setEndpoint('/master/dokter/dokterBpjs'));
         $json = json_decode($req->getBody()->getContents());
-        if( $json->metadata->status == 200 ){
-            return json_encode($json->response->data);
+        if( $json->code == 200 ){
+            return json_encode($json->data);
         }else{
             return '';
         }
