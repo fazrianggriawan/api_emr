@@ -12,9 +12,7 @@ class RegistrasiController extends Controller{
         $tanggal = $request->input('tanggal');
 
         $data = array(
-            'tgl_reg_from' => $tanggal,
-            'tgl_reg_to' => $tanggal,
-            'id_ruangan' => "034"
+            'tgl' => Date('Y-m-d')
         );
 
         if( $request->input('id_pasien') ){
@@ -23,20 +21,16 @@ class RegistrasiController extends Controller{
             $data['tgl_reg_to'] = '2021-12-31';
         }
 
-        $endpoint = setEndpoint('/api/registrasi/pencarian');
+        $endpoint = setEndpoint('/online/get/antrian');
         $client = new Client();
 
-        $req = $client->request('POST', $endpoint, ['headers'=>getHeaderEndPoint(), 'body'=>json_encode($data)]);
+        $req = $client->request('POST', $endpoint, ['body'=>json_encode($data)]);
         $json = json_decode($req->getBody()->getContents());
 
-        if( $json->metadata->status == 200 ){
-            if( isset($json->response) ){
-                return json_encode(array('status'=>200, 'data'=>$json->response->data, 'message'=>''));
-            }else{
-                return json_encode(array('status'=>204, 'data'=>'', 'message'=>$json->metadata->message));
-            }
+        if( $json->code == 200 ){
+            return json_encode(array('status'=>200, 'data'=>$json->data, 'message'=>''));
         }else{
-            return json_encode(array('status'=>204, 'data'=>'', 'message'=>$json->metadata->message));
+            return json_encode(array('status'=>204, 'data'=>'', 'message'=>$json->message));
         }
     }
 

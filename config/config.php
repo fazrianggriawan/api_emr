@@ -1,7 +1,8 @@
 <?php
     use \Firebase\JWT\JWT;
 
-    const SIMRS_API_URL = 'http://115.124.86.60:8888';
+    // const SIMRS_API_URL = 'http://115.124.86.60:8888';
+    const SIMRS_API_URL = 'http://localhost/simrsmandiri/api/index.php';
 
     function getEndPointHost(){
         return SIMRS_API_URL;

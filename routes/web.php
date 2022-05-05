@@ -84,6 +84,7 @@ $router->get('print_tcpdf', 'PrintController@tcpdf');
 $router->get('get_test_order', 'TestOrderController@getData');
 $router->get('get_objective', 'ObjectiveController@getData');
 $router->get('get_assessment_umum', 'AssessmentUmumController@getData');
+$router->get('get_image', 'AssessmentUmumController@getImage');
 
 $router->post('registrasi', 'RegistrasiController@getDataRegistrasi');
 $router->post('cppt', 'CpptController@save');

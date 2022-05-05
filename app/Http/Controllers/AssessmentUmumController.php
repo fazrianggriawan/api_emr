@@ -59,4 +59,11 @@ class AssessmentUmumController extends Controller{
         return json_encode($data);
     }
 
+    public function getImage()
+    {
+        $img = './images/body.jpg';
+        header('Content-Type: image/jpeg');
+        return readfile($img);
+    }
+
 }
