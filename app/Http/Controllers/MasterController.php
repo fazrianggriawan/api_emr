@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Keluhan;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -25,6 +26,12 @@ class MasterController extends BaseController
         }else{
             return json_encode(array('status'=>204, 'data'=>'', 'message'=>$json->metadata->message));
         }
+    }
+
+    public function keluhan()
+    {
+        $mod = new Keluhan();
+        return $mod->getTpl();
     }
 
 }

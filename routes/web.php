@@ -53,7 +53,7 @@ $router->put('registrasi', function (Request $request){
 });
 
 $router->get('tpl_keluhan', function(){
-    return json_encode(Keluhan::all()->where('active', 1)->all());
+    return json_encode(Keluhan::all()->where('active', 1)->get());
 });
 
 $router->get('icd10', function(){
@@ -75,6 +75,7 @@ $router->get('master_rad', 'RadiologiController@getAllMaster');
 $router->get('master_rad_detail', 'RadiologiController@getAllMasterDetail');
 $router->get('master_pat_anatomi', 'PatAnatomiController@getAllMaster');
 $router->get('master_poli', 'MasterController@poliklinik');
+$router->get('master_keluhan', 'MasterController@keluhan');
 $router->get('icd9', 'IcdController@Icd9');
 $router->get('sig_template', 'FarmasiController@getSigTemplate');
 $router->get('print_farmasi', 'PrintController@farmasi');
