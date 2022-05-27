@@ -51,6 +51,9 @@ $router->get('rikkes/dataPeserta', 'RikkesController@GetDataPeserta');
 $router->get('rikkes/peserta/noUrut/{noUrut}', 'RikkesController@GetPesertaByNoUrut');
 $router->post('rikkes/save', 'RikkesController@Save');
 
+// Upload File
+$router->post('upload', 'UploadController@doUpload');
+
 // Module
 // $router->get('modules/{username}', 'ModulesController@Modules');
 // $router->get('modules/submenu/module/{module}/username/{username}', 'ModulesController@Submenu');
@@ -83,7 +86,6 @@ $router->post('rikkes/save', 'RikkesController@Save');
 // $router->post('cppt', 'CpptController@save');
 // $router->post('do_login', 'LoginController@doLogin');
 // $router->post('aa', 'LoginController@aa');
-// $router->post('upload', 'UploadController@doUpload');
 // $router->post('save_sig_template', 'FarmasiController@saveSigTemplate');
 // $router->post('save_diagnosa', 'DiagnosaController@save');
 // $router->post('save_tindakan', 'TindakanController@save');
