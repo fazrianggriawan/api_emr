@@ -54,6 +54,9 @@ $router->post('rikkes/save', 'RikkesController@Save');
 // Upload File
 $router->post('upload', 'UploadController@doUpload');
 
+// Export Excel
+$router->get('export', 'ExcelController@Export');
+
 // Module
 // $router->get('modules/{username}', 'ModulesController@Modules');
 // $router->get('modules/submenu/module/{module}/username/{username}', 'ModulesController@Submenu');
