@@ -105,6 +105,7 @@ class RikkesController extends BaseController
         header("Content-type:application/pdf");
 
         $peserta = DB::table('rikkes_peserta')->where('noUrut', $noUrut)->get();
+        $arrPeserta = DB::table('rikkes_peserta')->get();
 
 		$border = 0;
 		$heightCell = 3;
@@ -116,6 +117,7 @@ class RikkesController extends BaseController
 		$fontWeight = '';
 
 		$pdf = new PDFBarcode();
+
 		$pdf->AddPage('L', [60,30], 0);
 		$pdf->SetAutoPageBreak(false);
 		$pdf->SetLeftMargin($marginLeft);
@@ -135,7 +137,45 @@ class RikkesController extends BaseController
 
 		$pdf->Output();
         exit;
+    }
 
+    public function PrintStickerAllPeserta()
+    {
+        header("Content-type:application/pdf");
 
+        $arrPeserta = DB::table('rikkes_peserta')->get();
+
+		$pdf = new PDFBarcode();
+
+        foreach ($arrPeserta as $key => $value) {
+            $border = 0;
+            $heightCell = 3;
+            $widthCell = 57;
+            $fontWeight = '';
+
+            $fontBody = 9;
+            $marginLeft = 3;
+            $fontWeight = '';
+
+            $pdf->AddPage('L', [60,30], 0);
+            $pdf->SetAutoPageBreak(false);
+            $pdf->SetLeftMargin($marginLeft);
+            $pdf->SetTopMargin(0);
+
+            $pdf->SetFont('arial', $fontWeight, $fontBody);
+            $pdf->SetY(1);
+            $pdf->Cell($widthCell, $heightCell+2, strtoupper($value->nama), $border);
+            $pdf->ln();
+            $heightCell++;
+            $pdf->Cell($widthCell, $heightCell, 'No.Peserta : '.$value->noUrut.' - '.$value->noPeserta, $border);
+            $pdf->ln();
+            $pdf->Cell($widthCell, $heightCell, 'Tgl.Lahir : '.$value->tglLahir.' ('.strtoupper($value->jnsKelamin).')', $border);
+            $pdf->SetFont('arial', '', $fontBody);
+            $pdf->Code128( $marginLeft+1.3, 15, $value->noPeserta, 40, 9); // Barcode
+            $pdf->SetFont('arial', $fontWeight, $fontBody);
+        }
+
+		$pdf->Output();
+        exit;
     }
 }

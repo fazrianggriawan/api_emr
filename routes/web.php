@@ -51,6 +51,7 @@ $router->get('rikkes/dataPeserta', 'RikkesController@GetDataPeserta');
 $router->get('rikkes/peserta/noUrut/{noUrut}', 'RikkesController@GetPesertaByNoUrut');
 $router->post('rikkes/save', 'RikkesController@Save');
 $router->get('rikkes/printSticker/noUrut/{noUrut}', 'RikkesController@PrintSticker');
+$router->get('rikkes/printStickerAllPeserta', 'RikkesController@PrintStickerAllPeserta');
 
 // Upload File
 $router->post('upload', 'UploadController@doUpload');
