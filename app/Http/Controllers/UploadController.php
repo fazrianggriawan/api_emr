@@ -12,7 +12,7 @@ class UploadController extends BaseController
 {
     public function doUpload(Request $request)
     {
-        $destination_path = '../uploads/';
+        $destination_path = base_path().'/public/uploads/';
         $file = $request->file('file');
         $name = $file->getClientOriginalName();
         $image = Image::make($file->getRealPath());
