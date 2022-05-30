@@ -6,6 +6,7 @@ use App\Http\Libraries\LibApp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
+use App\Http\Libraries\PDFBarcode;
 
 class RikkesController extends BaseController
 {
@@ -97,5 +98,44 @@ class RikkesController extends BaseController
         $hasil = DB::table('rikkes_hasil')->insert($data);
 
         return LibApp::response_success($hasil);
+    }
+
+    public function PrintSticker($noUrut)
+    {
+        header("Content-type:application/pdf");
+
+        $peserta = DB::table('rikkes_peserta')->where('noUrut', $noUrut)->get();
+
+		$border = 0;
+		$heightCell = 3;
+		$widthCell = 57;
+		$fontWeight = '';
+
+		$fontBody = 9;
+		$marginLeft = 3;
+		$fontWeight = '';
+
+		$pdf = new PDFBarcode();
+		$pdf->AddPage('L', [60,30], 0);
+		$pdf->SetAutoPageBreak(false);
+		$pdf->SetLeftMargin($marginLeft);
+		$pdf->SetTopMargin(0);
+
+		$pdf->SetFont('arial', $fontWeight, $fontBody);
+		$pdf->SetY(1);
+		$pdf->Cell($widthCell, $heightCell+2, strtoupper($peserta[0]->nama), $border);
+		$pdf->ln();
+        $heightCell++;
+		$pdf->Cell($widthCell, $heightCell, 'No.Peserta : '.$peserta[0]->noUrut.' - '.$peserta[0]->noPeserta, $border);
+		$pdf->ln();
+		$pdf->Cell($widthCell, $heightCell, 'Tgl.Lahir : '.$peserta[0]->tglLahir.' ('.strtoupper($peserta[0]->jnsKelamin).')', $border);
+		$pdf->SetFont('arial', '', $fontBody);
+		$pdf->Code128( $marginLeft+1.3, 15, $peserta[0]->noPeserta, 40, 9); // Barcode
+		$pdf->SetFont('arial', $fontWeight, $fontBody);
+
+		$pdf->Output();
+        exit;
+
+
     }
 }

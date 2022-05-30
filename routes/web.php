@@ -50,12 +50,14 @@ $router->get('pasien/getPasien/norm/{norm}', 'PasienController@GetPasien');
 $router->get('rikkes/dataPeserta', 'RikkesController@GetDataPeserta');
 $router->get('rikkes/peserta/noUrut/{noUrut}', 'RikkesController@GetPesertaByNoUrut');
 $router->post('rikkes/save', 'RikkesController@Save');
+$router->get('rikkes/printSticker/noUrut/{noUrut}', 'RikkesController@PrintSticker');
 
 // Upload File
 $router->post('upload', 'UploadController@doUpload');
 
 // Export Excel
 $router->get('export', 'ExcelController@Export');
+
 
 // Module
 // $router->get('modules/{username}', 'ModulesController@Modules');
