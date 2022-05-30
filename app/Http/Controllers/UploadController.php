@@ -19,7 +19,7 @@ class UploadController extends BaseController
         $image->save($destination_path.$name);
 
         $res = array(
-            'image' => 'uploads/'.$name,
+            'image' => 'public/uploads/'.$name,
             'filename' => $name,
             'type' => $file->getMimeType(),
             'size' => round($file->getSize() / 1024 / 1024, 2).' Mb'
