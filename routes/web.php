@@ -57,6 +57,7 @@ $router->get('rikkes/export', 'ExcelController@Export');
 
 // Upload File
 $router->post('upload', 'UploadController@doUpload');
+$router->get('upload/getFiles/idPeserta/{idPeserta}', 'UploadController@getFileUploaded');
 
 
 

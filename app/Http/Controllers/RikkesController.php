@@ -108,8 +108,6 @@ class RikkesController extends BaseController
             $hasil = DB::table('rikkes_hasil')->where('id', $request->input('id'))->update($data);
             return LibApp::response_success($hasil);
         }
-
-
     }
 
     public function PrintSticker($noUrut)
