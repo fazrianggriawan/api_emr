@@ -139,11 +139,11 @@ class RikkesController extends BaseController
         exit;
     }
 
-    public function PrintStickerAllPeserta()
+    public function PrintStickerAllPeserta($noUrutFrom, $noUrutTo)
     {
         header("Content-type:application/pdf");
 
-        $arrPeserta = DB::table('rikkes_peserta')->get();
+        $arrPeserta = DB::table('rikkes_peserta')->where('noUrut','>=',$noUrutFrom)->where('noUrut','<=',$noUrutTo)->get();
 
 		$pdf = new PDFBarcode();
 
