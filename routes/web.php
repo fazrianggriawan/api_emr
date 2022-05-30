@@ -48,16 +48,16 @@ $router->get('pasien/getPasien/norm/{norm}', 'PasienController@GetPasien');
 
 // Rikkes
 $router->get('rikkes/dataPeserta', 'RikkesController@GetDataPeserta');
+$router->get('rikkes/getData/idPeserta/{idPeserta}', 'RikkesController@GetDataRikkes');
 $router->get('rikkes/peserta/noUrut/{noUrut}', 'RikkesController@GetPesertaByNoUrut');
-$router->post('rikkes/save', 'RikkesController@Save');
 $router->get('rikkes/printSticker/noUrut/{noUrut}', 'RikkesController@PrintSticker');
 $router->get('rikkes/printStickerAllPeserta/dari/{noUrutFrom}/sampai/{noUrutTo}', 'RikkesController@PrintStickerAllPeserta');
+$router->post('rikkes/save', 'RikkesController@Save');
+$router->get('rikkes/export', 'ExcelController@Export');
 
 // Upload File
 $router->post('upload', 'UploadController@doUpload');
 
-// Export Excel
-$router->get('export', 'ExcelController@Export');
 
 
 // Module

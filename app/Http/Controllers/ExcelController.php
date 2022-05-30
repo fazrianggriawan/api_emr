@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExcelController extends BaseController
 {
@@ -118,6 +119,17 @@ class ExcelController extends BaseController
         }
 
         $writer = new Xlsx($spreadsheet);
-        $writer->save('hello world.xlsx');
+
+        $response =  new StreamedResponse(
+            function () use ($writer) {
+                $writer->save('php://output');
+            }
+        );
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
+        $response->headers->set('Content-Disposition', 'attachment;filename="Summary-Data-Rikkes.xls"');
+        $response->headers->set('Cache-Control','max-age=0');
+        return $response;
+
+        // $writer->save('hello world.xlsx');
     }
 }

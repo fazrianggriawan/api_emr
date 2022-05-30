@@ -22,6 +22,12 @@ class RikkesController extends BaseController
         return LibApp::response_success(@$peserta[0]);
     }
 
+    public function GetDataRikkes($idPeserta)
+    {
+        $data = DB::table('rikkes_hasil')->where('id_rikkes_peserta', $idPeserta)->get();
+        return LibApp::response_success(@$data[0]);
+    }
+
     public function Save(Request $request)
     {
         $data = array(
@@ -91,13 +97,19 @@ class RikkesController extends BaseController
             'L' => $request->input('L'),
             'U' => $request->input('U'),
             'stakes' => $request->input('stakes'),
-            'hasil' => $request->input('hasil')['name'],
+            'hasil' => $request->input('hasil'),
             'dateCreated' => date('Y-m-d h:i:s'),
         );
 
-        $hasil = DB::table('rikkes_hasil')->insert($data);
+        if( !$request->input('id') ){
+            $hasil = DB::table('rikkes_hasil')->insert($data);
+            return LibApp::response_success($hasil);
+        }else{
+            $hasil = DB::table('rikkes_hasil')->where('id', $request->input('id'))->update($data);
+            return LibApp::response_success($hasil);
+        }
 
-        return LibApp::response_success($hasil);
+
     }
 
     public function PrintSticker($noUrut)
