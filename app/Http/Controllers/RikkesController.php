@@ -24,8 +24,18 @@ class RikkesController extends BaseController
 
     public function GetDataRikkes($idPeserta)
     {
-        $data = DB::table('rikkes_hasil')->where('id_rikkes_peserta', $idPeserta)->get();
-        return LibApp::response_success(@$data[0]);
+        $rikkes = DB::table('rikkes_hasil_1')
+                ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
+                ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
+                ->where('rikkes_hasil_1.id_rikkes_peserta', $idPeserta)->get();
+
+        $odontogram = DB::table('rikkes_hasil_odontogram')
+                    ->where('id_rikkes_peserta', $idPeserta)
+                    ->where('active', 1)->get();
+
+        $res = array('rikkes'=>@$rikkes[0], 'odontogram'=>$odontogram);
+
+        return LibApp::response_success($res);
     }
 
     public function Save(Request $request)
@@ -53,6 +63,11 @@ class RikkesController extends BaseController
             'campus' => $request->input('campus'),
             'kenalWarna' => $request->input('kenalWarna'),
             'lainLain' => $request->input('lainLain'),
+            'dateCreated' => date('Y-m-d h:i:s'),
+        );
+
+        $data2 = array(
+            'id_rikkes_peserta' => $request->input('peserta')['id'],
             'telinga' => $request->input('telinga'),
             'ad' => $request->input('ad'),
             'as' => $request->input('as'),
@@ -82,6 +97,11 @@ class RikkesController extends BaseController
             'angGerakBawah' => $request->input('angGerakBawah'),
             'kulit' => $request->input('kulit'),
             'refleks' => $request->input('refleks'),
+            'dateCreated' => date('Y-m-d h:i:s'),
+        );
+
+        $data3 = array(
+            'id_rikkes_peserta' => $request->input('peserta')['id'],
             'hasilLab' => $request->input('hasilLab'),
             'hasilEkg' => $request->input('hasilEkg'),
             'hasilRadiologi' => $request->input('hasilRadiologi'),
@@ -101,13 +121,36 @@ class RikkesController extends BaseController
             'dateCreated' => date('Y-m-d h:i:s'),
         );
 
-        if( !$request->input('id') ){
-            $hasil = DB::table('rikkes_hasil')->insert($data);
-            return LibApp::response_success($hasil);
-        }else{
-            $hasil = DB::table('rikkes_hasil')->where('id', $request->input('id'))->update($data);
-            return LibApp::response_success($hasil);
+        DB::beginTransaction();
+
+        DB::table('rikkes_hasil_odontogram')->where('id_rikkes_peserta', $request->input('peserta')['id'])->update(array('active'=>0));
+
+        foreach ($request->input('odontogram') as $key => $value) {
+            $odontogram = array(
+                'keterangan' => $value['keterangan'],
+                'atas' => $value['atas'],
+                'bawah' => $value['bawah'],
+                'posisi' => $value['posisi'],
+                'id_rikkes_peserta' => $request->input('peserta')['id'],
+                'dateCreated' => date('Y-m-d h:i:s'),
+            );
+            DB::table('rikkes_hasil_odontogram')->insert($odontogram);
         }
+
+        if( !$request->input('id') ){
+            $hasil = DB::table('rikkes_hasil_1')->insert($data);
+            $hasil = DB::table('rikkes_hasil_2')->insert($data2);
+            $hasil = DB::table('rikkes_hasil_3')->insert($data3);
+        }else{
+            $hasil = DB::table('rikkes_hasil_1')->where('id', $request->input('peserta')['id'])->update($data);
+            $hasil = DB::table('rikkes_hasil_2')->where('id', $request->input('peserta')['id'])->update($data2);
+            $hasil = DB::table('rikkes_hasil_3')->where('id', $request->input('peserta')['id'])->update($data3);
+        }
+
+        DB::commit();
+
+        return LibApp::response_success($hasil);
+
     }
 
     public function PrintSticker($noUrut)

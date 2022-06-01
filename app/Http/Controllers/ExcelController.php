@@ -55,14 +55,18 @@ class ExcelController extends BaseController
 
         $rowNumber = 8;
 
+
         $peserta = DB::table('rikkes_peserta')
-                    ->leftJoin('rikkes_hasil', 'rikkes_peserta.id', '=', 'rikkes_hasil.id_rikkes_peserta')->get();
+                    ->leftJoin('rikkes_hasil_1', 'rikkes_peserta.id', '=', 'rikkes_hasil_1.id_rikkes_peserta')
+                    ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
+                    ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
+                    ->get();
 
         foreach ($peserta as $key => $value) {
             $sheet->setCellValue('A'.$rowNumber, $value->noUrut);
             $sheet->setCellValue('B'.$rowNumber, '');
             $sheet->setCellValue('C'.$rowNumber, strtoupper($value->nama));
-            $sheet->setCellValue('D'.$rowNumber, ($value->id_rikkes_peserta) ? $value->tinggi.' / '.$value->berat : 'TH');
+            $sheet->setCellValue('D'.$rowNumber, ($value->id_rikkes_peserta) ? $value->tinggi.' cm / '.$value->berat.' kg' : 'TH');
             $sheet->setCellValue('E'.$rowNumber, ($value->id_rikkes_peserta) ? $value->tekananDarah.' / '.$value->nadi : 'TH');
             $sheet->setCellValue('F'.$rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('G'.$rowNumber, ($value->id_rikkes_peserta) ? $value->hasilEkg : 'TH');
@@ -128,6 +132,7 @@ class ExcelController extends BaseController
         $response->headers->set('Content-Type', 'application/vnd.ms-excel');
         $response->headers->set('Content-Disposition', 'attachment;filename="Summary-Data-Rikkes.xls"');
         $response->headers->set('Cache-Control','max-age=0');
+
         return $response;
 
         // $writer->save('hello world.xlsx');
