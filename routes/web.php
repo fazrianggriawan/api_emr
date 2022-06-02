@@ -54,6 +54,7 @@ $router->get('rikkes/printSticker/noUrut/{noUrut}', 'RikkesController@PrintStick
 $router->get('rikkes/printStickerAllPeserta/dari/{noUrutFrom}/sampai/{noUrutTo}', 'RikkesController@PrintStickerAllPeserta');
 $router->get('rikkes/export', 'ExcelController@Export');
 $router->get('rikkes/getHasilLab/idPeserta/{idPeserta}', 'RikkesController@GetHasilLab');
+$router->get('rikkes/getHasilLabKeterangan/idPeserta/{idPeserta}', 'RikkesController@GetHasilLabKeterangan');
 $router->get('rikkes/printHasilLab/idPeserta/{idPeserta}', 'RikkesController@PrintHasilLab');
 $router->post('rikkes/save', 'RikkesController@Save');
 $router->post('rikkes/save/hasilLab', 'RikkesController@SaveHasilLab');

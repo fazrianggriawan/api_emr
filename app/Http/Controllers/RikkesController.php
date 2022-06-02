@@ -278,6 +278,16 @@ class RikkesController extends BaseController
         return LibApp::response_success($data);
     }
 
+    public function GetHasilLabKeterangan($idPeserta)
+    {
+        $data = DB::table('rikkes_hasil_lab_keterangan')
+                ->select('catatan','pemeriksa')
+                ->where('id_rikkes_peserta', $idPeserta)
+                ->where('active', 1)
+                ->get();
+        return LibApp::response_success($data);
+    }
+
     public function PrintHasilLab($idPeserta)
     {
         $peserta = DB::table('rikkes_peserta')->where('id', $idPeserta)->get();
@@ -302,7 +312,7 @@ class RikkesController extends BaseController
         $data = collect($hasilLab)->groupBy('group');
 
         $border = 0;
-        $heightCell = 3;
+        $heightCell = 2;
         $widthCell = 57;
         $fontWeight = '';
 
@@ -313,6 +323,7 @@ class RikkesController extends BaseController
         $pdf = new PDFBarcode();
 
         $pdf->AddPage('P');
+        $pdf->SetAutoPageBreak(false);
 
         $pdf->SetFont('arial', $fontWeight, $fontBody);
 
