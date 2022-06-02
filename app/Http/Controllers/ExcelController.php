@@ -56,40 +56,43 @@ class ExcelController extends BaseController
         $rowNumber = 8;
 
 
-        $peserta = DB::table('rikkes_peserta')->get();
-
-        foreach ($peserta as $keyPeserta => $valuePeserta) {
-            $hasil = DB::table('rikkes_hasil_1')
+        $peserta = DB::table('rikkes_peserta')
+                    ->leftJoin('rikkes_hasil_1', 'rikkes_peserta.id', '=', 'rikkes_hasil_1.id_rikkes_peserta')
                     ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
                     ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
-                    ->where('rikkes_hasil_1.id_rikkes_peserta', $valuePeserta->id)
-                    ->where('rikkes_hasil_1.active', 1)
+                    ->groupBy('rikkes_peserta.id')
                     ->get();
-            foreach ($hasil as $key => $value) {
-                $sheet->setCellValue('A'.$rowNumber, $value->noUrut);
-                $sheet->setCellValue('B'.$rowNumber, '');
-                $sheet->setCellValue('C'.$rowNumber, strtoupper($value->nama));
-                $sheet->setCellValue('D'.$rowNumber, ($value->id_rikkes_peserta) ? $value->tinggi.' cm / '.$value->berat.' kg' : 'TH');
-                $sheet->setCellValue('E'.$rowNumber, ($value->id_rikkes_peserta) ? $value->tekananDarah.' / '.$value->nadi : 'TH');
-                $sheet->setCellValue('F'.$rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
-                $sheet->setCellValue('G'.$rowNumber, ($value->id_rikkes_peserta) ? $value->hasilEkg : 'TH');
-                $sheet->setCellValue('H'.$rowNumber, ($value->id_rikkes_peserta) ? $value->hasilRadiologi : 'TH');
-                $sheet->setCellValue('I'.$rowNumber, ($value->id_rikkes_peserta) ? $value->hasilLab : 'TH');
-                $sheet->setCellValue('J'.$rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
-                $sheet->setCellValue('K'.$rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
-                $sheet->setCellValue('L'.$rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
-                $sheet->setCellValue('M'.$rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
-                $sheet->setCellValue('N'.$rowNumber, ($value->id_rikkes_peserta) ? $value->A : 'TH');
-                $sheet->setCellValue('O'.$rowNumber, ($value->id_rikkes_peserta) ? $value->B : 'TH');
-                $sheet->setCellValue('P'.$rowNumber, ($value->id_rikkes_peserta) ? $value->L : 'TH');
-                $sheet->setCellValue('Q'.$rowNumber, ($value->id_rikkes_peserta) ? $value->G : 'TH');
-                $sheet->setCellValue('R'.$rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
-                $sheet->setCellValue('S'.$rowNumber, ($value->id_rikkes_peserta) ? $value->stakes : 'TH');
-                $sheet->setCellValue('T'.$rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
-                $sheet->setCellValue('U'.$rowNumber, ($value->id_rikkes_peserta) ? $value->hasil : 'TH');
-                $sheet->setCellValue('V'.$rowNumber, ($value->id_rikkes_peserta) ? $value->kesimpulanPemeriksaan : 'TH');
-                $rowNumber++;
-            }
+
+        foreach ($peserta as $key => $value) {
+            $peserta = DB::table('rikkes_peserta')
+                    ->leftJoin('rikkes_hasil_1', 'rikkes_peserta.id', '=', 'rikkes_hasil_1.id_rikkes_peserta')
+                    ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
+                    ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
+                    ->get();
+
+            $sheet->setCellValue('A'.$rowNumber, $value->noUrut);
+            $sheet->setCellValue('B'.$rowNumber, '');
+            $sheet->setCellValue('C'.$rowNumber, strtoupper($value->nama));
+            $sheet->setCellValue('D'.$rowNumber, ($value->id_rikkes_peserta) ? $value->tinggi.' cm / '.$value->berat.' kg' : 'TH');
+            $sheet->setCellValue('E'.$rowNumber, ($value->id_rikkes_peserta) ? $value->tekananDarah.' / '.$value->nadi : 'TH');
+            $sheet->setCellValue('F'.$rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
+            $sheet->setCellValue('G'.$rowNumber, ($value->id_rikkes_peserta) ? $value->hasilEkg : 'TH');
+            $sheet->setCellValue('H'.$rowNumber, ($value->id_rikkes_peserta) ? $value->hasilRadiologi : 'TH');
+            $sheet->setCellValue('I'.$rowNumber, ($value->id_rikkes_peserta) ? $value->hasilLab : 'TH');
+            $sheet->setCellValue('J'.$rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
+            $sheet->setCellValue('K'.$rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
+            $sheet->setCellValue('L'.$rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
+            $sheet->setCellValue('M'.$rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
+            $sheet->setCellValue('N'.$rowNumber, ($value->id_rikkes_peserta) ? $value->A : 'TH');
+            $sheet->setCellValue('O'.$rowNumber, ($value->id_rikkes_peserta) ? $value->B : 'TH');
+            $sheet->setCellValue('P'.$rowNumber, ($value->id_rikkes_peserta) ? $value->L : 'TH');
+            $sheet->setCellValue('Q'.$rowNumber, ($value->id_rikkes_peserta) ? $value->G : 'TH');
+            $sheet->setCellValue('R'.$rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
+            $sheet->setCellValue('S'.$rowNumber, ($value->id_rikkes_peserta) ? $value->stakes : 'TH');
+            $sheet->setCellValue('T'.$rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
+            $sheet->setCellValue('U'.$rowNumber, ($value->id_rikkes_peserta) ? $value->hasil : 'TH');
+            $sheet->setCellValue('V'.$rowNumber, ($value->id_rikkes_peserta) ? $value->kesimpulanPemeriksaan : 'TH');
+            $rowNumber++;
         }
         $sheet->getStyle('A8:V'.$rowNumber)
                 ->getAlignment()
