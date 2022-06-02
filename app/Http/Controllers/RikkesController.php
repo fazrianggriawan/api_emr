@@ -294,7 +294,7 @@ class RikkesController extends BaseController
                     ->where('active', 1)
                     ->get();
 
-        if( !$hasilLab ){
+        if( count($hasilLab) == 0 ){
             echo 'Data Belum Terinput';
             exit;
         }
