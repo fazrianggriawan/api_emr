@@ -231,4 +231,33 @@ class RikkesController extends BaseController
 		$pdf->Output();
         exit;
     }
+
+    public function SaveHasilLab(Request $request) {
+        DB::beginTransaction();
+
+        DB::table('rikkes_hasil_lab')->where('id_rikkes_peserta', $request->idPeserta)->update(array('active'=>0));
+
+        $data = array();
+        foreach ($request->data as $key => $value) {
+            $data[$key] = $value;
+            $data[$key]['dateCreated'] = date('Y-m-d h:i:s');
+            $data[$key]['id_rikkes_peserta'] = $request->idPeserta;
+        }
+
+        $update = DB::table('rikkes_hasil_lab')->insert($data);
+
+        DB::commit();
+
+        return LibApp::response_success($update);
+    }
+
+    public function GetHasilLab($idPeserta)
+    {
+        $data = DB::table('rikkes_hasil_lab')
+                    ->select('name','hasil','nilaiRujukan','group')
+                    ->where('id_rikkes_peserta', $idPeserta)
+                    ->where('active', 1)
+                    ->get();
+        return LibApp::response_success($data);
+    }
 }
