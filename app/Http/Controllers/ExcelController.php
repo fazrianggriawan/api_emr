@@ -62,7 +62,7 @@ class ExcelController extends BaseController
             $hasil = DB::table('rikkes_hasil_1')
                     ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
                     ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
-                    ->where('id_rikkes_peserta', $valuePeserta->id)
+                    ->where('rikkes_hasil_1.id_rikkes_peserta', $valuePeserta->id)
                     ->get();
 
             foreach ($hasil as $key => $value) {
