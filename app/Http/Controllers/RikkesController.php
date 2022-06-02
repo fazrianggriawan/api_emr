@@ -294,6 +294,11 @@ class RikkesController extends BaseController
                     ->where('active', 1)
                     ->get();
 
+        if( !$hasilLab ){
+            echo 'Data Belum Terinput';
+            exit;
+        }
+
         $data = collect($hasilLab)->groupBy('group');
 
         $border = 0;
