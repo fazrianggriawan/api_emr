@@ -236,6 +236,7 @@ class RikkesController extends BaseController
         DB::beginTransaction();
 
         DB::table('rikkes_hasil_lab')->where('id_rikkes_peserta', $request->idPeserta)->update(array('active'=>0));
+        DB::table('rikkes_hasil_lab_keterangan')->where('id_rikkes_peserta', $request->idPeserta)->update(array('active'=>0));
 
         $data = array();
         foreach ($request->data as $key => $value) {
@@ -244,20 +245,127 @@ class RikkesController extends BaseController
             $data[$key]['id_rikkes_peserta'] = $request->idPeserta;
         }
 
-        $update = DB::table('rikkes_hasil_lab')->insert($data);
+        $keteranganHasil = $request->keterangan;
+        $keterangan = array(
+                'id_rikkes_peserta'=>$request->idPeserta,
+                'catatan'=>$keteranganHasil['catatan'],
+                'pemeriksa'=>$keteranganHasil['pemeriksa'],
+                'dateCreated'=>date('Y-m-d h:i:s'),
+            );
+        $insert = DB::table('rikkes_hasil_lab_keterangan')->insert($keterangan);
+
+        $insert = DB::table('rikkes_hasil_lab')->insert($data);
 
         DB::commit();
 
-        return LibApp::response_success($update);
+        return LibApp::response_success($insert);
     }
 
     public function GetHasilLab($idPeserta)
     {
-        $data = DB::table('rikkes_hasil_lab')
+        $data['hasil'] = DB::table('rikkes_hasil_lab')
                     ->select('name','hasil','nilaiRujukan','group')
                     ->where('id_rikkes_peserta', $idPeserta)
                     ->where('active', 1)
                     ->get();
+
+        $data['keterangan'] = DB::table('rikkes_hasil_lab_keterangan')
+                    ->select('catatan','pemeriksa')
+                    ->where('id_rikkes_peserta', $idPeserta)
+                    ->where('active', 1)
+                    ->get();
+
         return LibApp::response_success($data);
+    }
+
+    public function PrintHasilLab($idPeserta)
+    {
+        $peserta = DB::table('rikkes_peserta')->where('id', $idPeserta)->get();
+        $hasilLab = DB::table('rikkes_hasil_lab')
+                    ->select('name','hasil','nilaiRujukan','group','dateCreated')
+                    ->where('id_rikkes_peserta', $idPeserta)
+                    ->where('hasil', '<>', '')
+                    ->where('active', 1)
+                    ->get();
+
+        $keterangan = DB::table('rikkes_hasil_lab_keterangan')
+                    ->select('catatan','pemeriksa')
+                    ->where('id_rikkes_peserta', $idPeserta)
+                    ->where('active', 1)
+                    ->get();
+
+        $data = collect($hasilLab)->groupBy('group');
+
+        $border = 0;
+        $heightCell = 3;
+        $widthCell = 57;
+        $fontWeight = '';
+
+        $fontBody = 9;
+        $marginLeft = 3;
+        $fontWeight = '';
+
+        $pdf = new PDFBarcode();
+
+        $pdf->AddPage('P');
+
+        $pdf->SetFont('arial', $fontWeight, $fontBody);
+
+        $pdf->setY(5);
+        $pdf->Cell($widthCell+20, $heightCell+1, 'DENKESYAH 030401 BOGOR', $border);
+        $pdf->Cell($widthCell, $heightCell+1, 'PEMERIKSAAN KESEHATAN', $border);
+        $pdf->ln();
+        $pdf->Cell($widthCell+20, $heightCell+1, 'RUMAH SAKIT TK III 030702 SALAK', $border);
+        $pdf->Cell($widthCell, $heightCell+1, 'JAM/TGL : '.date("h:i:s d/m/Y", strtotime($hasilLab[0]->dateCreated)), $border);
+        $pdf->ln();
+        $pdf->Cell($widthCell+20, $heightCell+1, 'JL JENDERAL SUDIRMAN NO 8 - BOGOR', $border);
+        $pdf->Cell($widthCell, $heightCell+1, 'NO. PESERTA : '.$peserta['0']->noPeserta, $border);
+        $pdf->ln();
+        $pdf->Cell($widthCell+20, $heightCell+1, '', $border);
+        $pdf->Cell($widthCell, $heightCell+1, 'NO. URUT : '.$peserta[0]->noUrut, $border);
+        $pdf->ln();
+
+        $pdf->Cell($widthCell, $heightCell+10, '', $border);
+        $pdf->Cell($widthCell+60, $heightCell+10, 'HASIL PEMERIKSAAN LABORATORIUM', $border);
+
+        $pdf->ln();
+        $pdf->Cell($widthCell+60, $heightCell, 'Nama Peserta : '.strtoupper($peserta[0]->nama), $border);
+        $pdf->Cell($widthCell, $heightCell, 'Jenis Kelamin : '.strtoupper($peserta[0]->jnsKelamin), $border);
+        $pdf->ln(7);
+
+        $pdf->Cell($widthCell+4, $heightCell+5, 'PEMERIKSAAN', 'T');
+        $pdf->Cell($widthCell, $heightCell+5, 'HASIL PEMERIKSAAN', 'T');
+        $pdf->Cell($widthCell, $heightCell+5, 'NILAI RUJUKAN', 'T');
+        $pdf->ln();
+
+        $border = 1;
+        foreach ($data as $key => $value) {
+            $pdf->SetFont('Arial','B', $fontBody);
+            $pdf->Cell(($widthCell*3)+5, $heightCell+2, strtoupper($key), '');
+            $pdf->ln();
+            foreach ($value as $key2 => $value2) {
+                $pdf->SetFont('Arial','', $fontBody);
+                $pdf->Cell(5, $heightCell+2, '', '');
+                $pdf->Cell($widthCell, $heightCell+2, strtoupper($value2->name), 'B');
+                $pdf->Cell($widthCell, $heightCell+2, $value2->hasil, 'B');
+                $pdf->Cell($widthCell, $heightCell+2, $value2->nilaiRujukan, 'B');
+                $pdf->ln();
+            }
+            $pdf->ln(3);
+        }
+        $pdf->ln(3);
+        $pdf->Cell($widthCell+62, $heightCell+5, 'CATATAN :', '');
+        $pdf->Cell($widthCell, $heightCell+5, 'PEMERIKSA', '');
+        $pdf->ln(20);
+        $pdf->Cell($widthCell+62, $heightCell+5, '', '');
+        $pdf->Cell($widthCell, $heightCell+5, strtoupper($keterangan[0]->pemeriksa), '');
+        $pdf->ln();
+        $x = $pdf->GetX();
+        $y = $pdf->GetY();
+        $pdf->SetXY($x, $y-20);
+        $pdf->MultiCell($widthCell+40, $heightCell+1, $keterangan[0]->catatan, '');
+        $pdf->Output();
+        exit;
+
     }
 }
