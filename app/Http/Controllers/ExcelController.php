@@ -66,9 +66,9 @@ class ExcelController extends BaseController
                     ->get();
 
             foreach ($hasil as $key => $value) {
-                $sheet->setCellValue('A'.$rowNumber, $value->noUrut);
+                $sheet->setCellValue('A'.$rowNumber, $valuePeserta->noUrut);
                 $sheet->setCellValue('B'.$rowNumber, '');
-                $sheet->setCellValue('C'.$rowNumber, strtoupper($value->nama));
+                $sheet->setCellValue('C'.$rowNumber, strtoupper($valuePeserta->nama));
                 $sheet->setCellValue('D'.$rowNumber, ($value->id_rikkes_peserta) ? $value->tinggi.' cm / '.$value->berat.' kg' : 'TH');
                 $sheet->setCellValue('E'.$rowNumber, ($value->id_rikkes_peserta) ? $value->tekananDarah.' / '.$value->nadi : 'TH');
                 $sheet->setCellValue('F'.$rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
