@@ -240,6 +240,7 @@ class RikkesController extends BaseController
         $data = array(
             'id_rikkes_peserta' => $request->idPeserta,
             'keterangan' => $request->hasil,
+            'dokter' => $request->dokter,
             'dateCreated' => date("Y-m-d h:i:s")
         );
         $insert = DB::table('rikkes_hasil_radiologi')->insert($data);
@@ -476,7 +477,7 @@ class RikkesController extends BaseController
         $pdf->Cell($widthCell, $heightCell+5, 'Dokter Pemeriksa,', $border);
         $pdf->ln(20);
         $pdf->Cell($widthCell+60, $heightCell+5, '', $border);
-        $pdf->Cell($widthCell, $heightCell+5, 'dr. Priatna, Sp. Rad', $border);
+        $pdf->Cell($widthCell, $heightCell+5, $hasil[0]->dokter, $border);
         $pdf->Output();
         exit;
 
