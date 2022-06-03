@@ -57,6 +57,7 @@ $router->get('rikkes/getHasilLab/idPeserta/{idPeserta}', 'RikkesController@GetHa
 $router->get('rikkes/getHasilLabKeterangan/idPeserta/{idPeserta}', 'RikkesController@GetHasilLabKeterangan');
 $router->get('rikkes/printHasilLab/idPeserta/{idPeserta}', 'RikkesController@PrintHasilLab');
 $router->get('rikkes/getHasilRadiologi/idPeserta/{idPeserta}', 'RikkesController@GetHasilRadiologi');
+$router->get('rikkes/printHasilRadiologi/idPeserta/{idPeserta}', 'RikkesController@PrintHasilRadiologi');
 $router->post('rikkes/save', 'RikkesController@Save');
 $router->post('rikkes/save/hasilRadiologi', 'RikkesController@SaveHasilRadiologi');
 $router->post('rikkes/save/hasilLab', 'RikkesController@SaveHasilLab');

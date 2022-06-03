@@ -353,17 +353,17 @@ class RikkesController extends BaseController
         $pdf->SetFont('arial', $fontWeight, $fontBody);
 
         $pdf->setY(5);
-        $pdf->Cell($widthCell+20, $heightCell+1, 'DENKESYAH 030401 BOGOR', $border);
-        $pdf->Cell($widthCell, $heightCell+1, 'PEMERIKSAAN KESEHATAN', $border);
+        $pdf->Cell($widthCell+20, $heightCell+2, 'DENKESYAH 030401 BOGOR', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'PEMERIKSAAN KESEHATAN', $border);
         $pdf->ln();
-        $pdf->Cell($widthCell+20, $heightCell+1, 'RUMAH SAKIT TK III 030702 SALAK', $border);
-        $pdf->Cell($widthCell, $heightCell+1, 'JAM/TGL : '.date("h:i:s d/m/Y", strtotime($hasilLab[0]->dateCreated)), $border);
+        $pdf->Cell($widthCell+20, $heightCell+2, 'RUMAH SAKIT TK III 030702 SALAK', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'JAM/TGL : '.date("h:i:s d-m-Y", strtotime($hasilLab[0]->dateCreated)), $border);
         $pdf->ln();
-        $pdf->Cell($widthCell+20, $heightCell+1, 'JL JENDERAL SUDIRMAN NO 8 - BOGOR', $border);
-        $pdf->Cell($widthCell, $heightCell+1, 'NO. PESERTA : '.$peserta['0']->noPeserta, $border);
+        $pdf->Cell($widthCell+20, $heightCell+2, 'JL JENDERAL SUDIRMAN NO 8 - BOGOR', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'NO. PESERTA : '.$peserta[0]->noPeserta, $border);
         $pdf->ln();
-        $pdf->Cell($widthCell+20, $heightCell+1, '', $border);
-        $pdf->Cell($widthCell, $heightCell+1, 'NO. URUT : '.$peserta[0]->noUrut, $border);
+        $pdf->Cell($widthCell+20, $heightCell+2, '', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'NO. URUT : '.$peserta[0]->noUrut, $border);
         $pdf->ln();
 
         $pdf->Cell($widthCell, $heightCell+10, '', $border);
@@ -405,6 +405,78 @@ class RikkesController extends BaseController
         $y = $pdf->GetY();
         $pdf->SetXY($x, $y-20);
         $pdf->MultiCell($widthCell+40, $heightCell+1, $keterangan[0]->catatan, '');
+        $pdf->Output();
+        exit;
+
+    }
+
+    public function PrintHasilRadiologi($idPeserta)
+    {
+        $peserta = DB::table('rikkes_peserta')->where('id', $idPeserta)->get();
+        $hasil = DB::table('rikkes_hasil_radiologi')
+                    ->where('id_rikkes_peserta', $idPeserta)
+                    ->where('active', 1)
+                    ->get();
+
+        if( count($hasil) == 0 ){
+            echo 'Data Belum Terinput';
+            exit;
+        }
+
+        $border = 0;
+        $heightCell = 2;
+        $widthCell = 57;
+        $fontWeight = '';
+
+        $fontBody = 9;
+        $marginLeft = 3;
+        $fontWeight = '';
+
+        $pdf = new PDFBarcode();
+
+        $pdf->AddPage('P');
+        $pdf->SetAutoPageBreak(false);
+
+        $pdf->SetFont('arial', $fontWeight, $fontBody);
+
+        $pdf->setY(5);
+        $pdf->Cell($widthCell+20, $heightCell+2, 'DENKESYAH 030401 BOGOR', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'PEMERIKSAAN KESEHATAN', $border);
+        $pdf->ln();
+        $pdf->Cell($widthCell+20, $heightCell+2, 'RUMAH SAKIT TK III 030702 SALAK', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'JAM/TGL : '.date("h:i:s d-m-Y", strtotime($hasil[0]->dateCreated)), $border);
+        $pdf->ln();
+        $pdf->Cell($widthCell+20, $heightCell+2, 'JL JENDERAL SUDIRMAN NO 8 - BOGOR', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'NO. PESERTA : '.$peserta[0]->noPeserta, $border);
+        $pdf->ln();
+        $pdf->Cell($widthCell+20, $heightCell+2, '', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'NO. URUT : '.$peserta[0]->noUrut, $border);
+        $pdf->ln();
+
+        $pdf->Cell($widthCell, $heightCell+10, '', $border);
+        $pdf->Cell($widthCell+60, $heightCell+10, 'HASIL PEMERIKSAAN RADIOLOGI', $border);
+
+        $pdf->ln();
+        $pdf->Cell($widthCell+60, $heightCell+3, 'Nama Peserta : '.strtoupper($peserta[0]->nama), $border);
+        $pdf->Cell($widthCell, $heightCell+3, 'Jenis Kelamin : '.strtoupper($peserta[0]->jnsKelamin), $border);
+        $pdf->ln(7);
+
+        $pdf->Cell($widthCell, $heightCell+5, 'HASIL PEMERIKSAAN', 'B');
+        $pdf->ln(8);
+        $pdf->Cell($widthCell, $heightCell+3, 'Ts. Yth :', $border);
+        $pdf->ln(2);
+        $pdf->SetLeftMargin(20);
+        $pdf->WriteHTML($hasil[0]->keterangan);
+        $pdf->SetLeftMargin(10);
+        $pdf->ln();
+        $pdf->Cell($widthCell+100, $heightCell+5, '', 'B');
+
+        $pdf->ln(8);
+        $pdf->Cell($widthCell+60, $heightCell+5, 'Terima kasi atas kepercayaan sejawat', $border);
+        $pdf->Cell($widthCell, $heightCell+5, 'Dokter Pemeriksa,', $border);
+        $pdf->ln(20);
+        $pdf->Cell($widthCell+60, $heightCell+5, '', $border);
+        $pdf->Cell($widthCell, $heightCell+5, 'dr. Priatna, Sp. Rad', $border);
         $pdf->Output();
         exit;
 
