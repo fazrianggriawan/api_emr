@@ -232,6 +232,31 @@ class RikkesController extends BaseController
         exit;
     }
 
+    public function SaveHasilRadiologi(Request $request) {
+        DB::beginTransaction();
+
+        DB::table('rikkes_hasil_radiologi')->where('id_rikkes_peserta', $request->idPeserta)->update(array('active'=>0));
+
+        $data = array(
+            'id_rikkes_peserta' => $request->idPeserta,
+            'keterangan' => $request->hasil,
+            'dateCreated' => date("Y-m-d h:i:s")
+        );
+        $insert = DB::table('rikkes_hasil_radiologi')->insert($data);
+        DB::commit();
+
+        return LibApp::response_success($insert);
+    }
+
+    public function GetHasilRadiologi($idPeserta)
+    {
+        $data = DB::table('rikkes_hasil_radiologi')
+                ->where('id_rikkes_peserta', $idPeserta)
+                ->where('active', 1)
+                ->get();
+        return LibApp::response_success(@$data[0]);
+    }
+
     public function SaveHasilLab(Request $request) {
         DB::beginTransaction();
 

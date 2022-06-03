@@ -56,7 +56,9 @@ $router->get('rikkes/export', 'ExcelController@Export');
 $router->get('rikkes/getHasilLab/idPeserta/{idPeserta}', 'RikkesController@GetHasilLab');
 $router->get('rikkes/getHasilLabKeterangan/idPeserta/{idPeserta}', 'RikkesController@GetHasilLabKeterangan');
 $router->get('rikkes/printHasilLab/idPeserta/{idPeserta}', 'RikkesController@PrintHasilLab');
+$router->get('rikkes/getHasilRadiologi/idPeserta/{idPeserta}', 'RikkesController@GetHasilRadiologi');
 $router->post('rikkes/save', 'RikkesController@Save');
+$router->post('rikkes/save/hasilRadiologi', 'RikkesController@SaveHasilRadiologi');
 $router->post('rikkes/save/hasilLab', 'RikkesController@SaveHasilLab');
 
 // Upload File
