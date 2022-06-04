@@ -242,6 +242,7 @@ class RikkesController extends BaseController
         $data = array(
             'id_rikkes_peserta' => $request->idPeserta,
             'keterangan' => $request->hasil,
+            'hasil' => strip_tags($request->hasil),
             'dokter' => $request->dokter,
             'dateCreated' => date("Y-m-d h:i:s")
         );
