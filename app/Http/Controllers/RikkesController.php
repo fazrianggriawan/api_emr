@@ -39,22 +39,6 @@ class RikkesController extends BaseController
         return LibApp::response_success($res);
     }
 
-    public function debug($idPeserta)
-    {
-        $rikkes = DB::table(DB::raw('(SELECT * from rikkes_hasil_1 WHERE id_rikkes_peserta = '.$idPeserta.' ORDER BY dateCreated LIMIT 1) as rikkes_hasil_1'))
-                    ->leftJoin(DB::raw('(SELECT * from rikkes_hasil_2 WHERE id_rikkes_peserta = '.$idPeserta.' ORDER BY dateCreated LIMIT 1) as rikkes_hasil_2'), 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
-                    ->leftJoin(DB::raw('(SELECT * from rikkes_hasil_3 WHERE id_rikkes_peserta = '.$idPeserta.' ORDER BY dateCreated LIMIT 1) as rikkes_hasil_3'), 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
-                    ->get();
-
-        $odontogram = DB::table('rikkes_hasil_odontogram')
-                    ->where('id_rikkes_peserta', $idPeserta)
-                    ->where('active', 1)->get();
-
-        $res = array('rikkes'=>@$rikkes[0], 'odontogram'=>$odontogram);
-
-        return LibApp::response_success($res);
-    }
-
     public function Save(Request $request)
     {
         $data = array(
@@ -159,9 +143,9 @@ class RikkesController extends BaseController
             $hasil = DB::table('rikkes_hasil_2')->insert($data2);
             $hasil = DB::table('rikkes_hasil_3')->insert($data3);
         }else{
-            $hasil = DB::table('rikkes_hasil_1')->where('id', $request->input('peserta')['id'])->update($data);
-            $hasil = DB::table('rikkes_hasil_2')->where('id', $request->input('peserta')['id'])->update($data2);
-            $hasil = DB::table('rikkes_hasil_3')->where('id', $request->input('peserta')['id'])->update($data3);
+            $hasil = DB::table('rikkes_hasil_1')->where('id_rikkes_peserta', $request->input('peserta')['id'])->update($data);
+            $hasil = DB::table('rikkes_hasil_2')->where('id_rikkes_peserta', $request->input('peserta')['id'])->update($data2);
+            $hasil = DB::table('rikkes_hasil_3')->where('id_rikkes_peserta', $request->input('peserta')['id'])->update($data3);
         }
 
         DB::commit();
