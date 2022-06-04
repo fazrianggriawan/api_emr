@@ -27,6 +27,7 @@ class RikkesController extends BaseController
         $rikkes = DB::table('rikkes_hasil_1')
                 ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
                 ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
+                ->orderBy('rikkes_hasil_1.dateCreated', 'desc')
                 ->where('rikkes_hasil_1.id_rikkes_peserta', $idPeserta)->get();
 
         $odontogram = DB::table('rikkes_hasil_odontogram')
