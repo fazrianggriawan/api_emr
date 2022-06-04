@@ -24,10 +24,9 @@ class RikkesController extends BaseController
 
     public function GetDataRikkes($idPeserta)
     {
-        $rikkes = DB::table('rikkes_hasil_1')
-                ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
-                ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
-                ->orderBy('rikkes_hasil_1.dateCreated', 'desc')
+        $rikkes = DB::table(DB::raw('(SELECT * from rikkes_hasil_1 ORDER BY dateCreated LIMIT 1) as rikkes_hasil_1'))
+                ->leftJoin(DB::raw('(SELECT * from rikkes_hasil_2 ORDER BY dateCreated LIMIT 1) as rikkes_hasil_2'), 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
+                ->leftJoin(DB::raw('(SELECT * from rikkes_hasil_3 ORDER BY dateCreated LIMIT 1) as rikkes_hasil_3'), 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
                 ->where('rikkes_hasil_1.id_rikkes_peserta', $idPeserta)->get();
 
         $odontogram = DB::table('rikkes_hasil_odontogram')
