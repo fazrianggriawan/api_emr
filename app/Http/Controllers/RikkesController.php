@@ -242,7 +242,6 @@ class RikkesController extends BaseController
         $data = array(
             'id_rikkes_peserta' => $request->idPeserta,
             'keterangan' => $request->hasil,
-            'hasil' => strip_tags($request->hasil),
             'dokter' => $request->dokter,
             'dateCreated' => date("Y-m-d h:i:s")
         );
@@ -258,6 +257,9 @@ class RikkesController extends BaseController
                 ->where('id_rikkes_peserta', $idPeserta)
                 ->where('active', 1)
                 ->get();
+        if( count($data) > 0 ){
+            $data[0]->hasil = strip_tags($data[0]->keterangan);
+        }
         return LibApp::response_success(@$data[0]);
     }
 
