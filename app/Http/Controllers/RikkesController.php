@@ -119,7 +119,7 @@ class RikkesController extends BaseController
             'U' => $request->input('U'),
             'stakes' => $request->input('stakes'),
             'hasil' => $request->input('hasil'),
-            'odontogramIdentifikasi' => $request->input('odontogramIdentifikasi'),
+            'odontogram' => $request->input('odontogram'),
             'dateCreated' => date('Y-m-d h:i:s'),
         );
 
