@@ -41,7 +41,7 @@ class RikkesController extends BaseController
 
     public function debug($idPeserta)
     {
-        $rikkes = DB::table('rikkes_hasil_1')
+        $rikkes = DB::table(DB::raw('(SELECT * from rikkes_hasil_1 ORDER BY dateCreated) as rikkes_hasil_1'))
                     ->leftJoin(DB::raw('(SELECT * from rikkes_hasil_2 ORDER BY dateCreated) as rikkes_hasil_2'), 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
                     ->leftJoin(DB::raw('(SELECT * from rikkes_hasil_3 ORDER BY dateCreated) as rikkes_hasil_3'), 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
                     ->orderBy('rikkes_hasil_1.dateCreated', 'desc')
