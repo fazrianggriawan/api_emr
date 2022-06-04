@@ -41,10 +41,10 @@ class RikkesController extends BaseController
 
     public function debug($idPeserta)
     {
-        $rikkes = DB::table(DB::raw('(SELECT * from rikkes_hasil_1 ORDER BY dateCreated LIMIT 1) as rikkes_hasil_1'))
-                    ->leftJoin(DB::raw('(SELECT * from rikkes_hasil_2 ORDER BY dateCreated LIMIT 1) as rikkes_hasil_2'), 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
-                    ->leftJoin(DB::raw('(SELECT * from rikkes_hasil_3 ORDER BY dateCreated LIMIT 1) as rikkes_hasil_3'), 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
-                    ->where('rikkes_hasil_1.id_rikkes_peserta', $idPeserta)->get();
+        $rikkes = DB::table(DB::raw('(SELECT * from rikkes_hasil_1 WHERE id_rikkes_peserta = '.$idPeserta.' ORDER BY dateCreated LIMIT 1) as rikkes_hasil_1'))
+                    ->leftJoin(DB::raw('(SELECT * from rikkes_hasil_2 WHERE id_rikkes_peserta = '.$idPeserta.' ORDER BY dateCreated LIMIT 1) as rikkes_hasil_2'), 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
+                    ->leftJoin(DB::raw('(SELECT * from rikkes_hasil_3 WHERE id_rikkes_peserta = '.$idPeserta.' ORDER BY dateCreated LIMIT 1) as rikkes_hasil_3'), 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
+                    ->get();
 
         $odontogram = DB::table('rikkes_hasil_odontogram')
                     ->where('id_rikkes_peserta', $idPeserta)
