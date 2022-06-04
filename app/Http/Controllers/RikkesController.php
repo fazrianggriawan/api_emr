@@ -39,6 +39,23 @@ class RikkesController extends BaseController
         return LibApp::response_success($res);
     }
 
+    public function debug($idPeserta)
+    {
+        $rikkes = DB::table('rikkes_hasil_1')
+                    ->leftJoin(DB::raw('(SELECT * from rikkes_hasil_2 ORDER BY dateCreated) as rikkes_hasil_2'), 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta' )
+                    ->leftJoin(DB::raw('(SELECT * from rikkes_hasil_3 ORDER BY dateCreated) as rikkes_hasil_3'), 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta' )
+                    ->orderBy('rikkes_hasil_1.dateCreated', 'desc')
+                    ->where('rikkes_hasil_1.id_rikkes_peserta', $idPeserta)->get();
+
+        $odontogram = DB::table('rikkes_hasil_odontogram')
+                    ->where('id_rikkes_peserta', $idPeserta)
+                    ->where('active', 1)->get();
+
+        $res = array('rikkes'=>@$rikkes[0], 'odontogram'=>$odontogram);
+
+        return LibApp::response_success($res);
+    }
+
     public function Save(Request $request)
     {
         $data = array(

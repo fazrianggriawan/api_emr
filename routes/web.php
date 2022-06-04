@@ -63,6 +63,8 @@ $router->post('rikkes/save', 'RikkesController@Save');
 $router->post('rikkes/save/hasilRadiologi', 'RikkesController@SaveHasilRadiologi');
 $router->post('rikkes/save/hasilLab', 'RikkesController@SaveHasilLab');
 
+$router->get('rikkes/debug/idPeserta/{idPeserta}', 'RikkesController@debug');
+
 // Upload File
 $router->post('upload', 'UploadController@doUpload');
 $router->get('upload/getFiles/idPeserta/{idPeserta}', 'UploadController@getFileUploaded');
