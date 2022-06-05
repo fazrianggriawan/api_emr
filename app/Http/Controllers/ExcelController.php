@@ -70,7 +70,7 @@ class ExcelController extends BaseController
             $sheet->setCellValue('E' . $rowNumber, ($value->id_rikkes_peserta) ? $value->tekananDarah . ' / ' . $value->nadi : 'TH');
             $sheet->setCellValue('F' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('G' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilEkg : 'TH');
-            $sheet->setCellValue('H' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilRadiologi : 'TH');
+            $sheet->setCellValue('H' . $rowNumber, ($value->id_rikkes_peserta) ? strip_tags($value->hasilRadiologi) : 'TH');
             $sheet->setCellValue('I' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilLab : 'TH');
             $sheet->setCellValue('J' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('K' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
@@ -205,7 +205,7 @@ class ExcelController extends BaseController
             $i = 0;
             foreach ($value as $key2 => $value2) {
                 $colName = $this->getNameFromNumber($i);
-                $sheet->setCellValue($colName . $rowNumber, $value2);
+                $sheet->setCellValue($colName . $rowNumber, strip_tags($value2));
                 $i++;
             }
             $rowNumber++;
