@@ -68,6 +68,7 @@ $router->get('rikkes/debug/idPeserta/{idPeserta}', 'RikkesController@debug');
 // Upload File
 $router->post('upload', 'UploadController@doUpload');
 $router->get('upload/getFiles/idPeserta/{idPeserta}', 'UploadController@getFileUploaded');
+$router->post('upload/delete/image', 'UploadController@deleteImage');
 
 
 

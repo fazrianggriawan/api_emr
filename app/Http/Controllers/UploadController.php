@@ -36,8 +36,17 @@ class UploadController extends BaseController
 
     public function getFileUploaded($idPeserta)
     {
-        $files = DB::table('rikkes_fileupload')->where('id_rikkes_peserta', $idPeserta)->get();
+        $files = DB::table('rikkes_fileupload')
+            ->where('id_rikkes_peserta', $idPeserta)
+            ->where('active', 1)
+            ->get();
         return LibApp::response_success($files);
+    }
+
+    public function deleteImage(Request $request)
+    {
+        $update = DB::table('rikkes_fileupload')->where('id', $request->id)->update(array('active'=>0));
+        return LibApp::response_success($update);
     }
 
 }
