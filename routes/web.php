@@ -35,6 +35,7 @@ $router->get('master/angkatan', 'MasterController@Angkatan');
 $router->get('master/pangkat', 'MasterController@Pangkat');
 $router->get('master/group_pasien', 'MasterController@GroupPasien');
 $router->get('master/golongan_pasien/id_grouppasien/{idGroupPasien}', 'MasterController@GolonganPasien');
+$router->get('master/poliklinik', 'MasterController@Poliklinik');
 
 // Tarif
 $router->get('tarif/byCategory/{categoryId}', 'TarifController@GetByCategory');
@@ -45,6 +46,7 @@ $router->post('pasien/save', 'PasienController@Save');
 $router->post('pasien/update', 'PasienController@Update');
 $router->post('pasien/filtering', 'PasienController@Filtering');
 $router->get('pasien/getPasien/norm/{norm}', 'PasienController@GetPasien');
+$router->get('pasien/searchBy/{searchBy}/key/{key}', 'PasienController@SearchBy');
 
 // Rikkes
 $router->get('rikkes/dataPeserta', 'RikkesController@GetDataPeserta');
@@ -59,6 +61,7 @@ $router->get('rikkes/getHasilLabKeterangan/idPeserta/{idPeserta}', 'RikkesContro
 $router->get('rikkes/printHasilLab/idPeserta/{idPeserta}', 'RikkesController@PrintHasilLab');
 $router->get('rikkes/getHasilRadiologi/idPeserta/{idPeserta}', 'RikkesController@GetHasilRadiologi');
 $router->get('rikkes/printHasilRadiologi/idPeserta/{idPeserta}', 'RikkesController@PrintHasilRadiologi');
+$router->get('rikkes/getHasilPsikometri/noUrut/{noUrut}', 'RikkesController@GetHasilPsikometri');
 $router->post('rikkes/save', 'RikkesController@Save');
 $router->post('rikkes/save/hasilRadiologi', 'RikkesController@SaveHasilRadiologi');
 $router->post('rikkes/save/hasilLab', 'RikkesController@SaveHasilLab');

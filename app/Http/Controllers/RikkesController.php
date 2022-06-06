@@ -109,6 +109,7 @@ class RikkesController extends BaseController
             'hasilAudiometri' => $request->input('hasilAudiometri'),
             'hasilKeswaKode' => $request->input('hasilKeswaKode'),
             'hasilKeswaKeterangan' => $request->input('hasilKeswaKeterangan'),
+            'hasilKeswaPleton' => $request->input('hasilKeswaPleton'),
             'kesimpulanPemeriksaan' => $request->input('kesimpulanPemeriksaan'),
             'A' => $request->input('A'),
             'B' => $request->input('B'),
@@ -255,6 +256,16 @@ class RikkesController extends BaseController
     {
         $data = DB::table('rikkes_hasil_radiologi')
                 ->where('id_rikkes_peserta', $idPeserta)
+                ->where('active', 1)
+                ->get();
+
+        return LibApp::response_success(@$data[0]);
+    }
+
+    public function GetHasilPsikometri($noUrut)
+    {
+        $data = DB::table('rikkes_hasil_psikometri')
+                ->where('noUrut', $noUrut)
                 ->where('active', 1)
                 ->get();
 
