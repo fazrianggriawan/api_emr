@@ -69,9 +69,14 @@ class ExcelController extends BaseController
         foreach ($peserta as $key => $value) {
             $radiologi = strstr(strtolower(strip_tags($value->hasilRadiologi)), 'kesan');
             $bmi = $this->hitungBmi($value->imt, $value->jnsKelamin);
-            $mata = $value->od1.' '.$value->od2.' '.$value->od3;
-            $mata = $mata.'          '.$value->os1.' '.$value->os2.' '.$value->os3;
-            $mata = $mata.'          '.$value->mata;
+            if( $value->mata == 'L1' ){
+                $mata = 'ODS '.$value->od1.' '.$value->od2.' '.$value->od3;
+                $mata = $mata.'          '.$value->mata;
+            }else{
+                $mata = 'ODS '.$value->od1.' '.$value->od2.' '.$value->od3;
+                $mata = $mata.'          '.$value->os1.' '.$value->os2.' '.$value->os3;
+                $mata = $mata.'          '.$value->mata;
+            }
 
             $sheet->setCellValue('A' . $rowNumber, $value->noUrut);
             $sheet->setCellValue('B' . $rowNumber, '');
