@@ -98,13 +98,11 @@ class ExcelController extends BaseController
 
             $tht = $value->telinga.' '.$value->ad.' '.$value->as.' '.$value->tajamPend.' '.$value->membranTymp.' '.$value->penyTel.' '.$value->hidung.' '.$value->tenggorokan;
             $tht = str_replace('NORMAL','',strtoupper($tht));
-            $tht = str_replace('N','',strtoupper($tht));
 
             $bedah = $value->regioInguinalis.' '.$value->genitalia.' '.$value->perineum;
             $bedah = str_replace('NORMAL','',strtoupper($bedah));
             $bedah = str_replace('DBN','',strtoupper($bedah));
             $bedah = str_replace('TAK','',strtoupper($bedah));
-            $bedah = str_replace('N','',strtoupper($bedah));
 
             $sheet->setCellValue('A' . $rowNumber, $value->noUrut);
             $sheet->setCellValue('B' . $rowNumber, '');
