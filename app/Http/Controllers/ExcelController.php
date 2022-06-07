@@ -92,7 +92,7 @@ class ExcelController extends BaseController
             $sheet->setCellValue('P' . $rowNumber, ($value->id_rikkes_peserta) ? $value->L : 'TH');
             $sheet->setCellValue('Q' . $rowNumber, ($value->id_rikkes_peserta) ? $value->G : 'TH');
             $sheet->setCellValue('R' . $rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
-            $sheet->setCellValue('S' . $rowNumber, ($value->id_rikkes_peserta) ? $value->stakes : 'TH');
+            $sheet->setCellValue('S' . $rowNumber, ($value->id_rikkes_peserta) ? $value->U : 'TH');
             $sheet->setCellValue('T' . $rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
             $sheet->setCellValue('U' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilStakes : 'TH');
             $sheet->setCellValue('V' . $rowNumber, ($value->id_rikkes_peserta) ? $value->kesimpulanPemeriksaan : 'TH');
