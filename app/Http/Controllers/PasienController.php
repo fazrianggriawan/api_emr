@@ -90,4 +90,14 @@ class PasienController extends Controller
 
     }
 
+    public function SearchBy($searchBy, $key)
+    {
+        if( $searchBy == 'nama' ) $where['nama'] = $key;
+        if( $searchBy == 'noAsuransi' ) $where['no_asuransi'] = $key;
+        if( $searchBy == 'noTlp' ) $where['tlp'] = $key;
+        if( $searchBy == 'norm' ) $where['norm'] = $key;
+        $data = DB::table('pasien')->where($where)->get();
+        return LibApp::response_success(@$data[0]);
+    }
+
 }

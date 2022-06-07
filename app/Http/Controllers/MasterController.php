@@ -110,20 +110,8 @@ class MasterController extends BaseController
 
     public function poliklinik(Request $request)
     {
-        $endpoint = setEndpoint('/master/poli/getADataPoliBpjs');
-        $client = new Client();
-
-        $req = $client->request('GET', $endpoint);
-        $json = json_decode($req->getBody()->getContents());
-
-        return json_encode($json);
-
-        // if( $json->code == 200 ){
-        //     return json_encode($json->data);
-        // }else{
-        //     return '';
-        // }
-
+        // $data = DB::table('mst_golpas')->where('status', 1)->where('group', $idGroupPasien)->get();
+        // return LibApp::response_success($data);
     }
 
     public function keluhan()

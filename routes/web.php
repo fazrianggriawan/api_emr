@@ -73,6 +73,8 @@ $router->post('upload', 'UploadController@doUpload');
 $router->get('upload/getFiles/idPeserta/{idPeserta}', 'UploadController@getFileUploaded');
 $router->post('upload/delete/image', 'UploadController@deleteImage');
 
+$router->post('do_login', 'LoginController@doLogin');
+
 
 
 // Module
@@ -105,7 +107,6 @@ $router->post('upload/delete/image', 'UploadController@deleteImage');
 
 // $router->post('registrasi', 'RegistrasiController@getDataRegistrasi');
 // $router->post('cppt', 'CpptController@save');
-// $router->post('do_login', 'LoginController@doLogin');
 // $router->post('aa', 'LoginController@aa');
 // $router->post('save_sig_template', 'FarmasiController@saveSigTemplate');
 // $router->post('save_diagnosa', 'DiagnosaController@save');
