@@ -91,8 +91,8 @@ class ExcelController extends BaseController
             $sheet->setCellValue('K' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('L' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('M' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
-            $sheet->setCellValue('N' . $rowNumber, ($value->id_rikkes_peserta) ? $value->A : 'TH');
-            $sheet->setCellValue('O' . $rowNumber, ($value->id_rikkes_peserta) ? $value->B : 'TH');
+            $sheet->setCellValue('N' . $rowNumber, ($value->id_rikkes_peserta) ? $value->angGerakAtas : 'TH');
+            $sheet->setCellValue('O' . $rowNumber, ($value->id_rikkes_peserta) ? $value->angGerakBawah : 'TH');
             $sheet->setCellValue('P' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilAudiometri : 'TH');
             $sheet->setCellValue('Q' . $rowNumber, ($value->id_rikkes_peserta) ? $mata : 'TH');
             $sheet->setCellValue('R' . $rowNumber, ($value->id_rikkes_peserta) ? $value->G : 'TH');
