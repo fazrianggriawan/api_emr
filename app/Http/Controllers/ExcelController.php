@@ -96,7 +96,10 @@ class ExcelController extends BaseController
                 $hasilAudiometri = $value->hasilAudiometri;
             }
 
-            $sheet->setCellValue('A' . $rowNumber, $value->noUrut);
+            $tht = $value->telinga.' '.$value->ad.' '.$value->as.' '.$value->tajamPend.' '.$value->membranTymp.' '.$value->penyTel.' '.$value->hidung.' '.$value->tenggorokan;
+            $tht = str_replace('NORMAL','',$tht);
+
+            $sheet->setCellValue('A' .' '.$rowNumber, $value->noUrut);
             $sheet->setCellValue('B' . $rowNumber, '');
             $sheet->setCellValue('C' . $rowNumber, strtoupper($value->nama));
             $sheet->setCellValue('D' . $rowNumber, ($value->id_rikkes_peserta) ? $value->tinggi . ' cm / ' . $value->berat . ' kg'.' / '.$value->imt.' ('.$bmi.')' : 'TH');
@@ -105,7 +108,7 @@ class ExcelController extends BaseController
             $sheet->setCellValue('G' . $rowNumber, ($value->id_rikkes_peserta) ? $hasilEkg : 'TH');
             $sheet->setCellValue('H' . $rowNumber, ($value->id_rikkes_peserta) ? $radiologi : 'TH');
             $sheet->setCellValue('I' . $rowNumber, ($value->id_rikkes_peserta) ? $hasilLab : 'TH');
-            $sheet->setCellValue('J' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
+            $sheet->setCellValue('J' . $rowNumber, ($value->id_rikkes_peserta) ? $tht : 'TH');
             $sheet->setCellValue('K' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('L' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('M' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
@@ -113,7 +116,7 @@ class ExcelController extends BaseController
             $sheet->setCellValue('O' . $rowNumber, ($value->id_rikkes_peserta) ? $value->angGerakBawah : 'TH');
             $sheet->setCellValue('P' . $rowNumber, ($value->id_rikkes_peserta) ? $hasilAudiometri : 'TH');
             $sheet->setCellValue('Q' . $rowNumber, ($value->id_rikkes_peserta) ? $mata : 'TH');
-            $sheet->setCellValue('R' . $rowNumber, ($value->id_rikkes_peserta) ? $value->gigiMulut.' '.$value->odontogramIdentifikasi : 'TH');
+            $sheet->setCellValue('R' . $rowNumber, ($value->id_rikkes_peserta) ? $value->odontogramIdentifikasi.' '.$value->gigiMulut : 'TH');
             $sheet->setCellValue('S' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilPsikometriKode : 'TH');
             $sheet->setCellValue('T' . $rowNumber, ($value->id_rikkes_peserta) ? $value->U : 'TH');
             $sheet->setCellValue('U' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilStakes : 'TH');
