@@ -195,16 +195,21 @@ class ExcelController extends BaseController
         $rowNumber = 7;
 
         $peserta = DB::table('rikkes_peserta')
-            ->select('noUrut','noPeserta','nama','anamnesa','tinggi','berat','imt','tekananDarah','nadi','tubuhBentuk','tubuhGerak','kepala','muka','leher','mata','od1','od2','od3','os1','os2','os3','campus','kenalWarna','lainLain','telinga','ad','as','tajamPend','membranTymp','penyTel','hidung','tenggorokan','gigiMulut','gigiD','gigiM','gigiF','karang','protesa','penyMulut','thoraxPernafasan','thoraxBentuk','cor','pulmo','abdomen','lien','hepar','regioInguinalis','genitalia','perineum','angGerakAtas','angGerakBawah','kulit','refleks','hasilLab','hasilEkg','hasilRadiologi','hasilAudiometri','hasilKeswaKode','hasilKeswaKeterangan','kesimpulanPemeriksaan','A','B','D','G','J','L','U','stakes','hasil')
+            ->select('rikkes_peserta.noUrut','rikkes_peserta.noPeserta','rikkes_peserta.nama','anamnesa','tinggi','berat','imt','tekananDarah','nadi','tubuhBentuk','tubuhGerak','kepala','muka','leher','mata','od1','od2','od3','os1','os2','os3','campus','kenalWarna','lainLain','telinga','ad','as','tajamPend','membranTymp','penyTel','hidung','tenggorokan','gigiMulut','gigiD','gigiM','gigiF','karang','protesa','penyMulut','thoraxPernafasan','thoraxBentuk','cor','pulmo','abdomen','lien','hepar','regioInguinalis','genitalia','perineum','angGerakAtas','angGerakBawah','kulit','refleks','hasilLab','rikkes_hasil_ekg.hasil','hasilRadiologi','hasilAudiometri','rikkes_hasil_psikometri.hasil as hasilPsikometriKode','rikkes_hasil_psikometri.keterangan','rikkes_hasil_psikometri.pleton','odontogramIdentifikasi','kesimpulanPemeriksaan','A','B','D','G','J','L','U','stakes')
             ->leftJoin('rikkes_hasil_1', 'rikkes_peserta.id', '=', 'rikkes_hasil_1.id_rikkes_peserta')
             ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta')
             ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta')
+            ->leftJoin('rikkes_hasil_ekg', 'rikkes_peserta.noUrut', '=', 'rikkes_hasil_ekg.noUrut')
+            ->leftJoin('rikkes_hasil_psikometri', 'rikkes_peserta.noUrut', '=', 'rikkes_hasil_psikometri.noUrut')
             ->get();
 
         foreach ($peserta as $key => $value) {
             $i = 0;
             foreach ($value as $key2 => $value2) {
                 $colName = $this->getNameFromNumber($i);
+                if( $key2 == 'hasilRadiologi' ){
+                    $value2 = strstr(strtolower(strip_tags($value2)), 'kesan');
+                }
                 $sheet->setCellValue($colName . $rowNumber, strip_tags($value2));
                 $i++;
             }
