@@ -52,7 +52,7 @@ class ExcelController extends BaseController
         $sheet->setCellValue('S6', 'JIWA (J)')->mergeCells('S6:S7');
         $sheet->setCellValue('T6', 'STAKES UMUM')->mergeCells('T6:T7');
         $sheet->setCellValue('U6', 'STAKES JIWA')->mergeCells('U6:U7');
-        $sheet->setCellValue('V6', 'KETERANGAN')->mergeCells('V6:X7');
+        $sheet->setCellValue('V6', 'KETERANGAN')->mergeCells('V6:W7');
 
         $rowNumber = 8;
 
@@ -88,13 +88,14 @@ class ExcelController extends BaseController
             $sheet->setCellValue('M' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('N' . $rowNumber, ($value->id_rikkes_peserta) ? $value->A : 'TH');
             $sheet->setCellValue('O' . $rowNumber, ($value->id_rikkes_peserta) ? $value->B : 'TH');
-            $sheet->setCellValue('P' . $rowNumber, ($value->id_rikkes_peserta) ? $mata : 'TH');
-            $sheet->setCellValue('Q' . $rowNumber, ($value->id_rikkes_peserta) ? $value->G : 'TH');
-            $sheet->setCellValue('R' . $rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
-            $sheet->setCellValue('S' . $rowNumber, ($value->id_rikkes_peserta) ? $value->U : 'TH');
-            $sheet->setCellValue('T' . $rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
-            $sheet->setCellValue('U' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilStakes : 'TH');
-            $sheet->setCellValue('V' . $rowNumber, ($value->id_rikkes_peserta) ? $value->kesimpulanPemeriksaan : 'TH');
+            $sheet->setCellValue('P' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilAudiometri : 'TH');
+            $sheet->setCellValue('Q' . $rowNumber, ($value->id_rikkes_peserta) ? $mata : 'TH');
+            $sheet->setCellValue('R' . $rowNumber, ($value->id_rikkes_peserta) ? $value->G : 'TH');
+            $sheet->setCellValue('S' . $rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
+            $sheet->setCellValue('T' . $rowNumber, ($value->id_rikkes_peserta) ? $value->U : 'TH');
+            $sheet->setCellValue('U' . $rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
+            $sheet->setCellValue('V' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilStakes : 'TH');
+            $sheet->setCellValue('W' . $rowNumber, ($value->id_rikkes_peserta) ? $value->kesimpulanPemeriksaan : 'TH');
             $rowNumber++;
         }
         $sheet->getStyle('A8:V' . $rowNumber)
