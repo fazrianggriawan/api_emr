@@ -46,12 +46,13 @@ class ExcelController extends BaseController
         $sheet->setCellValue('M7', 'BEDAH');
         $sheet->setCellValue('N6', 'ATAS (A)')->mergeCells('N6:N7');
         $sheet->setCellValue('O6', 'BAWAH (B)')->mergeCells('O6:O7');
-        $sheet->setCellValue('P6', 'MATA (L)')->mergeCells('P6:P7');
-        $sheet->setCellValue('Q6', 'GIGI (G)')->mergeCells('Q6:Q7');
-        $sheet->setCellValue('R6', 'JIWA (J)')->mergeCells('R6:R7');
-        $sheet->setCellValue('S6', 'STAKES UMUM')->mergeCells('S6:S7');
-        $sheet->setCellValue('T6', 'STAKES JIWA')->mergeCells('T6:T7');
-        $sheet->setCellValue('U6', 'KETERANGAN')->mergeCells('U6:V7');
+        $sheet->setCellValue('P6', 'DENGAR (D)')->mergeCells('P6:P7');
+        $sheet->setCellValue('Q6', 'MATA (L)')->mergeCells('Q6:Q7');
+        $sheet->setCellValue('R6', 'GIGI (G)')->mergeCells('R6:R7');
+        $sheet->setCellValue('S6', 'JIWA (J)')->mergeCells('S6:S7');
+        $sheet->setCellValue('T6', 'STAKES UMUM')->mergeCells('T6:T7');
+        $sheet->setCellValue('U6', 'STAKES JIWA')->mergeCells('U6:U7');
+        $sheet->setCellValue('V6', 'KETERANGAN')->mergeCells('V6:X7');
 
         $rowNumber = 8;
 
@@ -65,15 +66,13 @@ class ExcelController extends BaseController
             ->leftJoin(DB::raw('(select * from rikkes_hasil_radiologi where active = 1) as rikkes_hasil_radiologi'), 'rikkes_peserta.id', '=', 'rikkes_hasil_radiologi.id_rikkes_peserta')
             ->get();
 
-        // $peserta = DB::table('rikkes_peserta')
-        //     ->leftJoin('rikkes_hasil_1', 'rikkes_peserta.id', '=', 'rikkes_hasil_1.id_rikkes_peserta')
-        //     ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta')
-        //     ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta')
-        //     ->get();
-
         foreach ($peserta as $key => $value) {
             $radiologi = strstr(strtolower(strip_tags($value->hasilRadiologi)), 'kesan');
             $bmi = $this->hitungBmi($value->imt, $value->jnsKelamin);
+            $mata = $value->od1.' '.$value->od2.' '.$value->od3;
+            $mata = $mata.'          '.$value->os1.' '.$value->os2.' '.$value->os3;
+            $mata = $mata.'          '.$value->mata;
+
             $sheet->setCellValue('A' . $rowNumber, $value->noUrut);
             $sheet->setCellValue('B' . $rowNumber, '');
             $sheet->setCellValue('C' . $rowNumber, strtoupper($value->nama));
@@ -89,7 +88,7 @@ class ExcelController extends BaseController
             $sheet->setCellValue('M' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('N' . $rowNumber, ($value->id_rikkes_peserta) ? $value->A : 'TH');
             $sheet->setCellValue('O' . $rowNumber, ($value->id_rikkes_peserta) ? $value->B : 'TH');
-            $sheet->setCellValue('P' . $rowNumber, ($value->id_rikkes_peserta) ? $value->L : 'TH');
+            $sheet->setCellValue('P' . $rowNumber, ($value->id_rikkes_peserta) ? $mata : 'TH');
             $sheet->setCellValue('Q' . $rowNumber, ($value->id_rikkes_peserta) ? $value->G : 'TH');
             $sheet->setCellValue('R' . $rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
             $sheet->setCellValue('S' . $rowNumber, ($value->id_rikkes_peserta) ? $value->U : 'TH');
