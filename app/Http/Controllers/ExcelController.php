@@ -120,8 +120,8 @@ class ExcelController extends BaseController
             $sheet->setCellValue('H' . $rowNumber, ($value->id_rikkes_peserta) ? $radiologi : 'TH');
             $sheet->setCellValue('I' . $rowNumber, ($value->id_rikkes_peserta) ? $hasilLab : 'TH');
             $sheet->setCellValue('J' . $rowNumber, ($value->id_rikkes_peserta) ? strtoupper($tht) : 'TH');
-            $sheet->setCellValue('K' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
-            $sheet->setCellValue('L' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
+            $sheet->setCellValue('K' . $rowNumber, ($value->id_rikkes_peserta) ? $value->refleks : 'TH');
+            $sheet->setCellValue('L' . $rowNumber, ($value->id_rikkes_peserta) ? $value->kulit : 'TH');
             $sheet->setCellValue('M' . $rowNumber, ($value->id_rikkes_peserta) ? strtoupper($bedah) : 'TH');
             $sheet->setCellValue('N' . $rowNumber, ($value->id_rikkes_peserta) ? $value->angGerakAtas : 'TH');
             $sheet->setCellValue('O' . $rowNumber, ($value->id_rikkes_peserta) ? $value->angGerakBawah : 'TH');
