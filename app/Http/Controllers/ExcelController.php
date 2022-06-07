@@ -70,11 +70,12 @@ class ExcelController extends BaseController
             $bmi = $this->hitungBmi($value->imt, $value->jnsKelamin);
             if( $value->mata == 'L1' ){
                 $mata = 'ODS '.$value->od1.' '.$value->od2.' '.$value->od3;
-                $mata = $mata.'          '.$value->mata;
+                $mata .= '          '.$value->mata;
             }else{
-                $mata = 'ODS '.$value->od1.' '.$value->od2.' '.$value->od3;
-                $mata = $mata.'          '.$value->os1.' '.$value->os2.' '.$value->os3;
-                $mata = $mata.'          '.$value->mata;
+                $mata = 'VOD '.$value->od1.' '.$value->od2.' '.$value->od3;
+                $mata .= '          ';
+                $mata .= 'VOS '.$value->os1.' '.$value->os2.' '.$value->os3;
+                $mata .= '          '.$value->mata;
             }
 
             $sheet->setCellValue('A' . $rowNumber, $value->noUrut);
@@ -266,31 +267,31 @@ class ExcelController extends BaseController
         $hasilBmi = '';
         if (strtolower($jnsKelamin) == 'perempuan') {
             if ($bmi >= 19 && $bmi <= 23.9) {
-                $hasilBmi = 'STAKES 1';
+                $hasilBmi = 'U1';
             } else if ($bmi >= 24 && $bmi <= 25.9) {
-                $hasilBmi = 'STAKES 2';
+                $hasilBmi = 'U2';
             } else if ($bmi >= 18.5 && $bmi <= 18.9) {
-                $hasilBmi = 'STAKES 2';
+                $hasilBmi = 'U2';
             } else if ($bmi >= 26 && $bmi <= 28.9) {
-                $hasilBmi = 'STAKES 3';
+                $hasilBmi = 'U3';
             } else if ($bmi >= 15 && $bmi <= 18.4) {
-                $hasilBmi = 'STAKES 3';
+                $hasilBmi = 'U3';
             } else if ($bmi >= 29 || $bmi <= 14.9) {
-                $hasilBmi = 'STAKES 4';
+                $hasilBmi = 'U4';
             }
         }
 
         if (strtolower($jnsKelamin) == 'laki-laki') {
             if ($bmi >= 20 && $bmi <= 24.9) {
-                $hasilBmi = 'STAKES 1';
+                $hasilBmi = 'U1';
             } else if ($bmi >= 18.5 && $bmi <= 19.9) {
-                $hasilBmi = 'STAKES 2';
+                $hasilBmi = 'U2';
             } else if ($bmi >= 15 && $bmi <= 18.4) {
-                $hasilBmi = 'STAKES 2';
+                $hasilBmi = 'U2';
             } else if ($bmi >= 27 && $bmi <= 29.9) {
-                $hasilBmi = 'STAKES 3';
+                $hasilBmi = 'U3';
             } else if ($bmi >= 30 || $bmi <= 14.9) {
-                $hasilBmi = 'STAKES 4';
+                $hasilBmi = 'U4';
             }
         }
         return $hasilBmi;
