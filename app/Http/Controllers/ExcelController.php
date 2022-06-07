@@ -34,7 +34,7 @@ class ExcelController extends BaseController
         $sheet->setCellValue('B6', 'SATUAN')->mergeCells('B6:B7');
         $sheet->setCellValue('C6', 'NAMA / PANGKAT / NRP / JABATAN / KESATUAN')->mergeCells('C6:C7');
         $sheet->setCellValue('D6', 'UMUM')->mergeCells('D6:M6');
-        $sheet->setCellValue('D7', 'TB / BB');
+        $sheet->setCellValue('D7', 'TB / BB / IMT');
         $sheet->setCellValue('E7', 'TENSI / NADI');
         $sheet->setCellValue('F7', 'PENY. DALAM');
         $sheet->setCellValue('G7', 'EKG');
@@ -55,9 +55,8 @@ class ExcelController extends BaseController
 
         $rowNumber = 8;
 
-
         $peserta = DB::table('rikkes_peserta')
-            ->select('rikkes_peserta.id as id_rikkes_peserta','rikkes_peserta.noUrut','rikkes_peserta.noPeserta','rikkes_peserta.nama','anamnesa','tinggi','berat','imt','tekananDarah','nadi','tubuhBentuk','tubuhGerak','kepala','muka','leher','mata','od1','od2','od3','os1','os2','os3','campus','kenalWarna','lainLain','telinga','ad','as','tajamPend','membranTymp','penyTel','hidung','tenggorokan','gigiMulut','gigiD','gigiM','gigiF','karang','protesa','penyMulut','thoraxPernafasan','thoraxBentuk','cor','pulmo','abdomen','lien','hepar','regioInguinalis','genitalia','perineum','angGerakAtas','angGerakBawah','kulit','refleks','hasilLab','rikkes_hasil_ekg.hasil as hasilEkg','rikkes_hasil_radiologi.keterangan as hasilRadiologi','hasilAudiometri','rikkes_hasil_psikometri.hasil as hasilPsikometriKode','rikkes_hasil_psikometri.keterangan','rikkes_hasil_psikometri.pleton','odontogramIdentifikasi','kesimpulanPemeriksaan','A','B','D','G','J','L','U','stakes','rikkes_hasil_3.hasil as hasilStakes')
+            ->select('rikkes_peserta.id as id_rikkes_peserta','rikkes_peserta.jnsKelamin','rikkes_peserta.noUrut','rikkes_peserta.noPeserta','rikkes_peserta.nama','anamnesa','tinggi','berat','imt','tekananDarah','nadi','tubuhBentuk','tubuhGerak','kepala','muka','leher','mata','od1','od2','od3','os1','os2','os3','campus','kenalWarna','lainLain','telinga','ad','as','tajamPend','membranTymp','penyTel','hidung','tenggorokan','gigiMulut','gigiD','gigiM','gigiF','karang','protesa','penyMulut','thoraxPernafasan','thoraxBentuk','cor','pulmo','abdomen','lien','hepar','regioInguinalis','genitalia','perineum','angGerakAtas','angGerakBawah','kulit','refleks','hasilLab','rikkes_hasil_ekg.hasil as hasilEkg','rikkes_hasil_radiologi.keterangan as hasilRadiologi','hasilAudiometri','rikkes_hasil_psikometri.hasil as hasilPsikometriKode','rikkes_hasil_psikometri.keterangan','rikkes_hasil_psikometri.pleton','odontogramIdentifikasi','kesimpulanPemeriksaan','A','B','D','G','J','L','U','stakes','rikkes_hasil_3.hasil as hasilStakes')
             ->leftJoin('rikkes_hasil_1', 'rikkes_peserta.id', '=', 'rikkes_hasil_1.id_rikkes_peserta')
             ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta')
             ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta')
@@ -74,10 +73,11 @@ class ExcelController extends BaseController
 
         foreach ($peserta as $key => $value) {
             $radiologi = strstr(strtolower(strip_tags($value->hasilRadiologi)), 'kesan');
+            $bmi = $this->hitungBmi($value->imt, $value->jnsKelamin);
             $sheet->setCellValue('A' . $rowNumber, $value->noUrut);
             $sheet->setCellValue('B' . $rowNumber, '');
             $sheet->setCellValue('C' . $rowNumber, strtoupper($value->nama));
-            $sheet->setCellValue('D' . $rowNumber, ($value->id_rikkes_peserta) ? $value->tinggi . ' cm / ' . $value->berat . ' kg' : 'TH');
+            $sheet->setCellValue('D' . $rowNumber, ($value->id_rikkes_peserta) ? $value->tinggi . ' cm / ' . $value->berat . ' kg'.' / '.$value->imt.' ('.$bmi.')' : 'TH');
             $sheet->setCellValue('E' . $rowNumber, ($value->id_rikkes_peserta) ? $value->tekananDarah . ' / ' . $value->nadi : 'TH');
             $sheet->setCellValue('F' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('G' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilEkg : 'TH');
@@ -257,5 +257,39 @@ class ExcelController extends BaseController
         } else {
             return $letter;
         }
+    }
+
+    public function hitungBmi($bmi, $jnsKelamin) {
+        $hasilBmi = '';
+        if (strtolower($jnsKelamin) == 'perempuan') {
+            if ($bmi >= 19 && $bmi <= 23.9) {
+                $hasilBmi = 'STAKES 1';
+            } else if ($bmi >= 24 && $bmi <= 25.9) {
+                $hasilBmi = 'STAKES 2';
+            } else if ($bmi >= 18.5 && $bmi <= 18.9) {
+                $hasilBmi = 'STAKES 2';
+            } else if ($bmi >= 26 && $bmi <= 28.9) {
+                $hasilBmi = 'STAKES 3';
+            } else if ($bmi >= 15 && $bmi <= 18.4) {
+                $hasilBmi = 'STAKES 3';
+            } else if ($bmi >= 29 || $bmi <= 14.9) {
+                $hasilBmi = 'STAKES 4';
+            }
+        }
+
+        if (strtolower($jnsKelamin) == 'laki-laki') {
+            if ($bmi >= 20 && $bmi <= 24.9) {
+                $hasilBmi = 'STAKES 1';
+            } else if ($bmi >= 18.5 && $bmi <= 19.9) {
+                $hasilBmi = 'STAKES 2';
+            } else if ($bmi >= 15 && $bmi <= 18.4) {
+                $hasilBmi = 'STAKES 2';
+            } else if ($bmi >= 27 && $bmi <= 29.9) {
+                $hasilBmi = 'STAKES 3';
+            } else if ($bmi >= 30 || $bmi <= 14.9) {
+                $hasilBmi = 'STAKES 4';
+            }
+        }
+        return $hasilBmi;
     }
 }
