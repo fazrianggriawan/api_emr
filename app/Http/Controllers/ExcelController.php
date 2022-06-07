@@ -99,7 +99,7 @@ class ExcelController extends BaseController
             $tht = $value->telinga.' '.$value->ad.' '.$value->as.' '.$value->tajamPend.' '.$value->membranTymp.' '.$value->penyTel.' '.$value->hidung.' '.$value->tenggorokan;
             $tht = str_replace('NORMAL','',$tht);
 
-            $sheet->setCellValue('A' .' '.$rowNumber, $value->noUrut);
+            $sheet->setCellValue('A' . $rowNumber, $value->noUrut);
             $sheet->setCellValue('B' . $rowNumber, '');
             $sheet->setCellValue('C' . $rowNumber, strtoupper($value->nama));
             $sheet->setCellValue('D' . $rowNumber, ($value->id_rikkes_peserta) ? $value->tinggi . ' cm / ' . $value->berat . ' kg'.' / '.$value->imt.' ('.$bmi.')' : 'TH');
