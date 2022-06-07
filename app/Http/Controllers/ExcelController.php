@@ -57,12 +57,23 @@ class ExcelController extends BaseController
 
 
         $peserta = DB::table('rikkes_peserta')
+            ->select('rikkes_peserta.id as id_rikkes_peserta','rikkes_peserta.noUrut','rikkes_peserta.noPeserta','rikkes_peserta.nama','anamnesa','tinggi','berat','imt','tekananDarah','nadi','tubuhBentuk','tubuhGerak','kepala','muka','leher','mata','od1','od2','od3','os1','os2','os3','campus','kenalWarna','lainLain','telinga','ad','as','tajamPend','membranTymp','penyTel','hidung','tenggorokan','gigiMulut','gigiD','gigiM','gigiF','karang','protesa','penyMulut','thoraxPernafasan','thoraxBentuk','cor','pulmo','abdomen','lien','hepar','regioInguinalis','genitalia','perineum','angGerakAtas','angGerakBawah','kulit','refleks','hasilLab','rikkes_hasil_ekg.hasil as hasilEkg','rikkes_hasil_radiologi.keterangan as hasilRadiologi','hasilAudiometri','rikkes_hasil_psikometri.hasil as hasilPsikometriKode','rikkes_hasil_psikometri.keterangan','rikkes_hasil_psikometri.pleton','odontogramIdentifikasi','kesimpulanPemeriksaan','A','B','D','G','J','L','U','stakes','rikkes_hasil_3.hasil as hasilStakes')
             ->leftJoin('rikkes_hasil_1', 'rikkes_peserta.id', '=', 'rikkes_hasil_1.id_rikkes_peserta')
             ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta')
             ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta')
+            ->leftJoin('rikkes_hasil_ekg', 'rikkes_peserta.noUrut', '=', 'rikkes_hasil_ekg.noUrut')
+            ->leftJoin('rikkes_hasil_psikometri', 'rikkes_peserta.noUrut', '=', 'rikkes_hasil_psikometri.noUrut')
+            ->leftJoin(DB::raw('(select * from rikkes_hasil_radiologi where active = 1) as rikkes_hasil_radiologi'), 'rikkes_peserta.id', '=', 'rikkes_hasil_radiologi.id_rikkes_peserta')
             ->get();
 
+        // $peserta = DB::table('rikkes_peserta')
+        //     ->leftJoin('rikkes_hasil_1', 'rikkes_peserta.id', '=', 'rikkes_hasil_1.id_rikkes_peserta')
+        //     ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta')
+        //     ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta')
+        //     ->get();
+
         foreach ($peserta as $key => $value) {
+            $radiologi = strstr(strtolower(strip_tags($value->hasilRadiologi)), 'kesan');
             $sheet->setCellValue('A' . $rowNumber, $value->noUrut);
             $sheet->setCellValue('B' . $rowNumber, '');
             $sheet->setCellValue('C' . $rowNumber, strtoupper($value->nama));
@@ -70,7 +81,7 @@ class ExcelController extends BaseController
             $sheet->setCellValue('E' . $rowNumber, ($value->id_rikkes_peserta) ? $value->tekananDarah . ' / ' . $value->nadi : 'TH');
             $sheet->setCellValue('F' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('G' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilEkg : 'TH');
-            $sheet->setCellValue('H' . $rowNumber, ($value->id_rikkes_peserta) ? strip_tags($value->hasilRadiologi) : 'TH');
+            $sheet->setCellValue('H' . $rowNumber, ($value->id_rikkes_peserta) ? $radiologi : 'TH');
             $sheet->setCellValue('I' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilLab : 'TH');
             $sheet->setCellValue('J' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('K' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
@@ -83,7 +94,7 @@ class ExcelController extends BaseController
             $sheet->setCellValue('R' . $rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
             $sheet->setCellValue('S' . $rowNumber, ($value->id_rikkes_peserta) ? $value->stakes : 'TH');
             $sheet->setCellValue('T' . $rowNumber, ($value->id_rikkes_peserta) ? $value->J : 'TH');
-            $sheet->setCellValue('U' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasil : 'TH');
+            $sheet->setCellValue('U' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilStakes : 'TH');
             $sheet->setCellValue('V' . $rowNumber, ($value->id_rikkes_peserta) ? $value->kesimpulanPemeriksaan : 'TH');
             $rowNumber++;
         }
@@ -195,12 +206,13 @@ class ExcelController extends BaseController
         $rowNumber = 7;
 
         $peserta = DB::table('rikkes_peserta')
-            ->select('rikkes_peserta.noUrut','rikkes_peserta.noPeserta','rikkes_peserta.nama','anamnesa','tinggi','berat','imt','tekananDarah','nadi','tubuhBentuk','tubuhGerak','kepala','muka','leher','mata','od1','od2','od3','os1','os2','os3','campus','kenalWarna','lainLain','telinga','ad','as','tajamPend','membranTymp','penyTel','hidung','tenggorokan','gigiMulut','gigiD','gigiM','gigiF','karang','protesa','penyMulut','thoraxPernafasan','thoraxBentuk','cor','pulmo','abdomen','lien','hepar','regioInguinalis','genitalia','perineum','angGerakAtas','angGerakBawah','kulit','refleks','hasilLab','rikkes_hasil_ekg.hasil','hasilRadiologi','hasilAudiometri','rikkes_hasil_psikometri.hasil as hasilPsikometriKode','rikkes_hasil_psikometri.keterangan','rikkes_hasil_psikometri.pleton','odontogramIdentifikasi','kesimpulanPemeriksaan','A','B','D','G','J','L','U','stakes')
+            ->select('rikkes_peserta.noUrut','rikkes_peserta.noPeserta','rikkes_peserta.nama','anamnesa','tinggi','berat','imt','tekananDarah','nadi','tubuhBentuk','tubuhGerak','kepala','muka','leher','mata','od1','od2','od3','os1','os2','os3','campus','kenalWarna','lainLain','telinga','ad','as','tajamPend','membranTymp','penyTel','hidung','tenggorokan','gigiMulut','gigiD','gigiM','gigiF','karang','protesa','penyMulut','thoraxPernafasan','thoraxBentuk','cor','pulmo','abdomen','lien','hepar','regioInguinalis','genitalia','perineum','angGerakAtas','angGerakBawah','kulit','refleks','hasilLab','rikkes_hasil_ekg.hasil','rikkes_hasil_radiologi.keterangan as hasilRadiologi','hasilAudiometri','rikkes_hasil_psikometri.hasil as hasilPsikometriKode','rikkes_hasil_psikometri.keterangan','rikkes_hasil_psikometri.pleton','odontogramIdentifikasi','kesimpulanPemeriksaan','A','B','D','G','J','L','U','stakes')
             ->leftJoin('rikkes_hasil_1', 'rikkes_peserta.id', '=', 'rikkes_hasil_1.id_rikkes_peserta')
             ->leftJoin('rikkes_hasil_2', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_2.id_rikkes_peserta')
             ->leftJoin('rikkes_hasil_3', 'rikkes_hasil_1.id_rikkes_peserta', '=', 'rikkes_hasil_3.id_rikkes_peserta')
             ->leftJoin('rikkes_hasil_ekg', 'rikkes_peserta.noUrut', '=', 'rikkes_hasil_ekg.noUrut')
             ->leftJoin('rikkes_hasil_psikometri', 'rikkes_peserta.noUrut', '=', 'rikkes_hasil_psikometri.noUrut')
+            ->leftJoin(DB::raw('(select * from rikkes_hasil_radiologi where active = 1) as rikkes_hasil_radiologi'), 'rikkes_peserta.id', '=', 'rikkes_hasil_radiologi.id_rikkes_peserta')
             ->get();
 
         foreach ($peserta as $key => $value) {
