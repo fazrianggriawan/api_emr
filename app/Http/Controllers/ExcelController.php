@@ -78,22 +78,34 @@ class ExcelController extends BaseController
                 $mata .= '          '.$value->mata;
             }
 
+            if( $value->hasilLab == '' || strtolower($value->hasilLab) == 'tak' || strtolower($value->hasilLab) == 'dbn' || strtolower($value->hasilLab) == 'normal' ){
+                $hasilLab = $value->hasilLab.' (U1)';
+            }
+
+            if( $value->hasilEkg == '' || strtolower($value->hasilEkg) == 'tak' || strtolower($value->hasilEkg) == 'dbn' || strtolower($value->hasilEkg) == 'normal' ){
+                $hasilEkg = $value->hasilEkg.' (U1)';
+            }
+
+            if( $value->hasilAudiometri == '' || strtolower($value->hasilAudiometri) == 'tak' || strtolower($value->hasilAudiometri) == 'dbn' || strtolower($value->hasilAudiometri) == 'normal' ){
+                $hasilAudiometri = $value->hasilAudiometri.' (U1)';
+            }
+
             $sheet->setCellValue('A' . $rowNumber, $value->noUrut);
             $sheet->setCellValue('B' . $rowNumber, '');
             $sheet->setCellValue('C' . $rowNumber, strtoupper($value->nama));
             $sheet->setCellValue('D' . $rowNumber, ($value->id_rikkes_peserta) ? $value->tinggi . ' cm / ' . $value->berat . ' kg'.' / '.$value->imt.' ('.$bmi.')' : 'TH');
             $sheet->setCellValue('E' . $rowNumber, ($value->id_rikkes_peserta) ? $value->tekananDarah . ' / ' . $value->nadi : 'TH');
             $sheet->setCellValue('F' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
-            $sheet->setCellValue('G' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilEkg : 'TH');
+            $sheet->setCellValue('G' . $rowNumber, ($value->id_rikkes_peserta) ? $hasilEkg : 'TH');
             $sheet->setCellValue('H' . $rowNumber, ($value->id_rikkes_peserta) ? $radiologi : 'TH');
-            $sheet->setCellValue('I' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilLab : 'TH');
+            $sheet->setCellValue('I' . $rowNumber, ($value->id_rikkes_peserta) ? $hasilLab : 'TH');
             $sheet->setCellValue('J' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('K' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('L' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('M' . $rowNumber, ($value->id_rikkes_peserta) ? '' : 'TH');
             $sheet->setCellValue('N' . $rowNumber, ($value->id_rikkes_peserta) ? $value->angGerakAtas : 'TH');
             $sheet->setCellValue('O' . $rowNumber, ($value->id_rikkes_peserta) ? $value->angGerakBawah : 'TH');
-            $sheet->setCellValue('P' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilAudiometri : 'TH');
+            $sheet->setCellValue('P' . $rowNumber, ($value->id_rikkes_peserta) ? $hasilAudiometri : 'TH');
             $sheet->setCellValue('Q' . $rowNumber, ($value->id_rikkes_peserta) ? $mata : 'TH');
             $sheet->setCellValue('R' . $rowNumber, ($value->id_rikkes_peserta) ? $value->G : 'TH');
             $sheet->setCellValue('S' . $rowNumber, ($value->id_rikkes_peserta) ? $value->hasilPsikometriKode : 'TH');
