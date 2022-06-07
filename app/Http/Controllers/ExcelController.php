@@ -80,14 +80,20 @@ class ExcelController extends BaseController
 
             if( $value->hasilLab == '' || strtolower($value->hasilLab) == 'tak' || strtolower($value->hasilLab) == 'dbn' || strtolower($value->hasilLab) == 'normal' ){
                 $hasilLab = $value->hasilLab.' (U1)';
+            }else{
+                $hasilLab = $value->hasilLab;
             }
 
             if( $value->hasilEkg == '' || strtolower($value->hasilEkg) == 'tak' || strtolower($value->hasilEkg) == 'dbn' || strtolower($value->hasilEkg) == 'normal' ){
                 $hasilEkg = $value->hasilEkg.' (U1)';
+            }else{
+                $hasilEkg = $value->hasilEkg;
             }
 
             if( $value->hasilAudiometri == '' || strtolower($value->hasilAudiometri) == 'tak' || strtolower($value->hasilAudiometri) == 'dbn' || strtolower($value->hasilAudiometri) == 'normal' ){
                 $hasilAudiometri = $value->hasilAudiometri.' (U1)';
+            }else{
+                $hasilAudiometri = $value->hasilAudiometri;
             }
 
             $sheet->setCellValue('A' . $rowNumber, $value->noUrut);
