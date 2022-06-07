@@ -272,6 +272,16 @@ class RikkesController extends BaseController
         return LibApp::response_success(@$data[0]);
     }
 
+    public function GetHasilEkg($noUrut)
+    {
+        $data = DB::table('rikkes_hasil_ekg')
+                ->where('noUrut', $noUrut)
+                ->where('active', 1)
+                ->get();
+
+        return LibApp::response_success(@$data[0]);
+    }
+
     public function SaveHasilLab(Request $request) {
         DB::beginTransaction();
 
