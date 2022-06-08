@@ -7,16 +7,19 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Http\Libraries\LibApp;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class UploadController extends BaseController
 {
     public function doUpload(Request $request)
     {
-        $destination_path = base_path().'/public/uploads';
+        $destination_path = base_path().'/public/uploads/';
         $file = $request->file('file');
         $name = $file->getClientOriginalName();
         // $image = Image::make($file->getRealPath());
-        $uploaded = $file->move($destination_path, $name);
+        $uploaded = Storage::disk('public')->put($name, 'Contents');
+
+        //$uploaded = $file->move('uploads', $name);
 
         if( $uploaded ){
             $res = array(
