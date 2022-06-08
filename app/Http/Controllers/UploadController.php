@@ -54,7 +54,7 @@ class UploadController extends BaseController
 
     public function getImage($filename)
     {
-        $img = './uploads/'.$filename;
+        $img =  base_path().'/public/uploads/'.$filename;
         header('Content-Type: image/jpeg');
         return readfile($img);
     }
