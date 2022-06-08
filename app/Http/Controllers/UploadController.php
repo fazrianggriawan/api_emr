@@ -16,10 +16,8 @@ class UploadController extends BaseController
         $destination_path = base_path().'/public/uploads/';
         $file = $request->file('file');
         $name = $file->getClientOriginalName();
-        // $image = Image::make($file->getRealPath());
-        $uploaded = Storage::disk('public')->put($name, 'Contents');
-
-        //$uploaded = $file->move('uploads', $name);
+        $image = Image::make($file->getRealPath());
+        $uploaded = $image->move($destination_path.$name);
 
         if( $uploaded ){
             $res = array(
@@ -50,13 +48,6 @@ class UploadController extends BaseController
     {
         $update = DB::table('rikkes_fileupload')->where('id', $request->id)->update(array('active'=>0));
         return LibApp::response_success($update);
-    }
-
-    public function getImage($filename)
-    {
-        $img =  base_path().'/public/uploads/'.$filename;
-        header('Content-Type: image/jpeg');
-        return readfile($img);
     }
 
 }
