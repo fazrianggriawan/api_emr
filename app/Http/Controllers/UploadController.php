@@ -16,7 +16,7 @@ class UploadController extends BaseController
         $file = $request->file('file');
         $name = $file->getClientOriginalName();
         // $image = Image::make($file->getRealPath());
-        $uploaded = $file->move($destination_path.$name);
+        $uploaded = $file->move($destination_path, $name);
 
         if( $uploaded ){
             $res = array(
