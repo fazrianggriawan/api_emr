@@ -21,7 +21,7 @@ class UploadController extends BaseController
             $filelocation = 'public/uploads/'.$name;
             $uploaded = $image->save($destination_path.$name);
         }else{
-            $uploaded = Storage::putFile('public', $file);
+            $uploaded = Storage::putFile('public', $file, $name);
             $filelocation = 'public/storage/'.$name;
         }
 
