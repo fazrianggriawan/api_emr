@@ -16,13 +16,19 @@ class UploadController extends BaseController
         $destination_path = base_path().'/public/uploads/';
         $file = $request->file('file');
         $name = $file->getClientOriginalName();
-        $image = Image::make($file->getRealPath());
-        $uploaded = $image->save($destination_path.$name);
+        if( $file->getMimeType() == 'image/jpeg' || $file->getMimeType() == 'image/png' ){
+            $image = Image::make($file->getRealPath());
+            $filelocation = 'public/uploads/'.$name;
+            $uploaded = $image->save($destination_path.$name);
+        }else{
+            $uploaded = Storage::putFile('public', $file);
+            $filelocation = 'public/storage/'.$name;
+        }
 
         if( $uploaded ){
             $res = array(
                 'id_rikkes_peserta' => $request->input('idPeserta'),
-                'file_location' => 'public/uploads/'.$name,
+                'file_location' => $filelocation,
                 'filename' => $name,
                 'type' => $file->getMimeType(),
                 'size' => round($file->getSize() / 1024 / 1024, 2).' Mb',
