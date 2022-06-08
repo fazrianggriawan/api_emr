@@ -70,8 +70,9 @@ $router->post('rikkes/save/hasilLab', 'RikkesController@SaveHasilLab');
 $router->get('rikkes/debug/idPeserta/{idPeserta}', 'RikkesController@debug');
 
 // Upload File
-$router->post('upload', 'UploadController@doUpload');
 $router->get('upload/getFiles/idPeserta/{idPeserta}', 'UploadController@getFileUploaded');
+$router->get('upload/getImage/{filename}', 'UploadController@getImage');
+$router->post('upload', 'UploadController@doUpload');
 $router->post('upload/delete/image', 'UploadController@deleteImage');
 
 $router->post('do_login', 'LoginController@doLogin');

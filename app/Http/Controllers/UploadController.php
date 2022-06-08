@@ -52,4 +52,11 @@ class UploadController extends BaseController
         return LibApp::response_success($update);
     }
 
+    public function getImage($filename)
+    {
+        $img = './uploads/'.$filename;
+        header('Content-Type: image/jpeg');
+        return readfile($img);
+    }
+
 }
