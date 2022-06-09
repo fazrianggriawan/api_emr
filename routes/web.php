@@ -75,8 +75,11 @@ $router->get('upload/getImage/{filename}', 'UploadController@getImage');
 $router->post('upload', 'UploadController@doUpload');
 $router->post('upload/delete/image', 'UploadController@deleteImage');
 
+// Login
 $router->post('do_login', 'LoginController@doLogin');
 
+// Medical Record
+$router->get('medicalRecord', 'Billing\TarifController@hallo');
 
 
 // Module
