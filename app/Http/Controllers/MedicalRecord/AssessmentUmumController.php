@@ -1,11 +1,11 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\MedicalRecord;
 
 use App\Models\AssessmentUmum;
 use Illuminate\Http\Request;
+use Laravel\Lumen\Routing\Controller as BaseController;
 
-
-class AssessmentUmumController extends Controller{
+class AssessmentUmumController extends BaseController{
     public function save(Request $request)
     {
         $tanggal = $request->input('tanggal');

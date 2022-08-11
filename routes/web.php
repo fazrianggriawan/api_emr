@@ -19,27 +19,40 @@ $router->get('/', function () use ($router) {
 });
 
 // Master Data
-$router->get('master/rs', 'MasterController@Rs');
-$router->get('master/awalan_nama', 'MasterController@AwalanNama');
-$router->get('master/negara', 'MasterController@Negara');
-$router->get('master/provinsi', 'MasterController@Provinsi');
-$router->get('master/kota/id_provinsi/{idProvinsi}', 'MasterController@Kota');
-$router->get('master/kecamatan/id_kota/{idKota}', 'MasterController@Kecamatan');
-$router->get('master/kelurahan/id_kecamatan/{idKecamatan}', 'MasterController@Kelurahan');
-$router->get('master/suku', 'MasterController@Suku');
-$router->get('master/status_nikah', 'MasterController@StatusNikah');
-$router->get('master/agama', 'MasterController@Agama');
-$router->get('master/pekerjaan', 'MasterController@Pekerjaan');
-$router->get('master/pendidikan', 'MasterController@Pendidikan');
-$router->get('master/angkatan', 'MasterController@Angkatan');
-$router->get('master/pangkat', 'MasterController@Pangkat');
-$router->get('master/group_pasien', 'MasterController@GroupPasien');
-$router->get('master/golongan_pasien/id_grouppasien/{idGroupPasien}', 'MasterController@GolonganPasien');
-$router->get('master/poliklinik', 'MasterController@Poliklinik');
+$router->get('master/rs', 'Master\MasterController@Rs');
+$router->get('master/awalan_nama', 'Master\MasterController@AwalanNama');
+$router->get('master/negara', 'Master\MasterController@Negara');
+$router->get('master/provinsi', 'Master\MasterController@Provinsi');
+// $router->get('master/kota/id_provinsi/{idProvinsi}', 'Master\MasterController@Kota');
+$router->post('master/kota', 'Master\MasterController@Kota');
+$router->get('master/kecamatan/id_kota/{idKota}', 'Master\MasterController@Kecamatan');
+$router->get('master/kelurahan/id_kecamatan/{idKecamatan}', 'Master\MasterController@Kelurahan');
+$router->get('master/suku', 'Master\MasterController@Suku');
+$router->get('master/status_nikah', 'Master\MasterController@StatusNikah');
+$router->get('master/agama', 'Master\MasterController@Agama');
+$router->get('master/pekerjaan', 'Master\MasterController@Pekerjaan');
+$router->get('master/pendidikan', 'Master\MasterController@Pendidikan');
+$router->get('master/angkatan', 'Master\MasterController@Angkatan');
+$router->get('master/pangkat', 'Master\MasterController@Pangkat');
+$router->get('master/group_pasien', 'Master\MasterController@GroupPasien');
+$router->get('master/golongan_pasien/id_grouppasien/{idGroupPasien}', 'Master\MasterController@GolonganPasien');
+$router->get('master/poliklinik', 'Master\MasterController@Poliklinik');
+$router->get('master/dokter', 'Master\MasterController@Dokter');
+$router->get('master/dokterByPoli/{idRuangan}', 'Master\MasterController@DokterByPoli');
+$router->get('master/jnsPerawatan', 'Master\MasterController@JenisPerawatan');
+$router->get('master/waktuPelayanan', 'Master\MasterController@WaktuPelayanan');
+$router->get('master/ruangRawatInap', 'Master\MasterController@RuangRawatInap');
+$router->get('master/kelasRuangan', 'Master\MasterController@KelasRuangan');
+
+// Registrasi
+$router->post('registrasi/save', 'Registrasi\RegistrasiController@SaveRegistrasi');
+$router->get('registrasi/dataRegistrasi', 'Registrasi\RegistrasiController@GetDataRegistrasi');
 
 // Tarif
-$router->get('tarif/byCategory/{categoryId}', 'TarifController@GetByCategory');
-$router->get('tarif/category', 'TarifController@Category');
+$router->get('tarif/byCategory/{categoryId}', 'Billing\TarifController@TarifByCategory');
+$router->get('tarif/category', 'Billing\TarifController@Category');
+$router->get('tarif/jasa/{idTarifHarga}', 'Billing\TarifController@TarifJasa');
+$router->post('tarif/defaultPelaksana', 'Billing\TarifController@DefaultPelaksana');
 
 // Pasien
 $router->post('pasien/save', 'PasienController@Save');
@@ -47,6 +60,7 @@ $router->post('pasien/update', 'PasienController@Update');
 $router->post('pasien/filtering', 'PasienController@Filtering');
 $router->get('pasien/getPasien/norm/{norm}', 'PasienController@GetPasien');
 $router->get('pasien/searchBy/{searchBy}/key/{key}', 'PasienController@SearchBy');
+$router->get('pasien/allData', 'PasienController@AllData');
 
 // Rikkes
 $router->get('rikkes/dataPeserta', 'RikkesController@GetDataPeserta');
@@ -66,7 +80,6 @@ $router->get('rikkes/getHasilEkg/noUrut/{noUrut}', 'RikkesController@GetHasilEkg
 $router->post('rikkes/save', 'RikkesController@Save');
 $router->post('rikkes/save/hasilRadiologi', 'RikkesController@SaveHasilRadiologi');
 $router->post('rikkes/save/hasilLab', 'RikkesController@SaveHasilLab');
-
 $router->get('rikkes/debug/idPeserta/{idPeserta}', 'RikkesController@debug');
 
 // Upload File
@@ -79,29 +92,29 @@ $router->post('upload/delete/image', 'UploadController@deleteImage');
 $router->post('do_login', 'LoginController@doLogin');
 
 // Medical Record
-$router->get('medicalRecord', 'Billing\TarifController@hallo');
+// $router->get('medicalRecord', 'Billing\TarifController@hallo');
 
 
 // Module
 // $router->get('modules/{username}', 'ModulesController@Modules');
 // $router->get('modules/submenu/module/{module}/username/{username}', 'ModulesController@Submenu');
 
-// $router->get('master_poli', 'MasterController@poliklinik');
-// $router->get('master_keluhan', 'MasterController@keluhan');
-
+// // $router->get('master_poli', 'MasterController@poliklinik');
+// $router->get('master_keluhan', 'MasterController@Keluhan');
 
 // $router->get('master_obat', 'FarmasiController@getMasterObat');
 // $router->get('master_dokter', 'DokterController@getAllDokter');
 // $router->get('master_dokter_by_poli', 'DokterController@getAllDokterByPoli');
 // $router->get('master_lab', 'LabController@getAllMaster');
 // $router->get('master_lab_cito', 'LabController@getAllMasterCito');
-// $router->get('master_rad', 'RadiologiController@getAllMaster');
+// $router->get('master_rad', 'RadiologiController@allData');
 // $router->get('master_rad_detail', 'RadiologiController@getAllMasterDetail');
 // $router->get('master_pat_anatomi', 'PatAnatomiController@getAllMaster');
 
+// $router->get('icd10', 'IcdController@Icd10');
 // $router->get('icd9', 'IcdController@Icd9');
 // $router->get('sig_template', 'FarmasiController@getSigTemplate');
-// $router->get('print_farmasi', 'PrintController@farmasi');
+//$router->get('print_farmasi', 'PrintController@farmasi');
 // $router->get('print_lab', 'PrintController@laboratorium');
 // $router->get('print_rad', 'PrintController@radiologi');
 // $router->get('print_tcpdf', 'PrintController@tcpdf');
