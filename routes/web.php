@@ -121,14 +121,14 @@ $router->get('print/dataRegistrasi/{noreg}', 'Printer\Registrasi@DataRegistrasi'
 // $router->get('master_obat', 'FarmasiController@getMasterObat');
 // $router->get('master_dokter', 'DokterController@getAllDokter');
 // $router->get('master_dokter_by_poli', 'DokterController@getAllDokterByPoli');
-// $router->get('master_lab', 'LabController@getAllMaster');
+$router->get('master_lab', 'MedicalRecord\LabController@getAllMaster');
 // $router->get('master_lab_cito', 'LabController@getAllMasterCito');
 $router->get('master_rad', 'Radiologi\RadiologiController@getAllMaster');
 // $router->get('master_rad_detail', 'RadiologiController@getAllMasterDetail');
 // $router->get('master_pat_anatomi', 'PatAnatomiController@getAllMaster');
 
-// $router->get('icd10', 'IcdController@Icd10');
-// $router->get('icd9', 'IcdController@Icd9');
+$router->get('icd10', 'MedicalRecord\IcdController@Icd10');
+$router->get('icd9', 'MedicalRecord\IcdController@Icd9');
 // $router->get('sig_template', 'FarmasiController@getSigTemplate');
 //$router->get('print_farmasi', 'PrintController@farmasi');
 // $router->get('print_lab', 'PrintController@laboratorium');
@@ -137,7 +137,7 @@ $router->get('master_rad', 'Radiologi\RadiologiController@getAllMaster');
 // $router->get('get_test_order', 'TestOrderController@getData');
 // $router->get('get_objective', 'ObjectiveController@getData');
 // $router->get('get_assessment_umum', 'AssessmentUmumController@getData');
-// $router->get('get_image', 'AssessmentUmumController@getImage');
+$router->get('get_image', 'MedicalRecord\AssessmentUmumController@getImage');
 
 // $router->post('registrasi', 'RegistrasiController@getDataRegistrasi');
 // $router->post('cppt', 'CpptController@save');

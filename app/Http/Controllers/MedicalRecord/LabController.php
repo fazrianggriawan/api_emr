@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\MedicalRecord;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Models\Laboratorium;

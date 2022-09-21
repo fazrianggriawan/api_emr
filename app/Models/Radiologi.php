@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class Radiologi extends Model
 {
-    protected $table = 'mst_radiologi';
+    protected $table = 'mst_radiologi_detail';
     protected $primaryKey = 'id';
 
     public function getAllData(){
