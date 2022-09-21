@@ -123,7 +123,7 @@ $router->get('print/dataRegistrasi/{noreg}', 'Printer\Registrasi@DataRegistrasi'
 // $router->get('master_dokter_by_poli', 'DokterController@getAllDokterByPoli');
 // $router->get('master_lab', 'LabController@getAllMaster');
 // $router->get('master_lab_cito', 'LabController@getAllMasterCito');
-// $router->get('master_rad', 'RadiologiController@allData');
+$router->get('master_rad', 'Radiologi\RadiologiController@getAllMaster');
 // $router->get('master_rad_detail', 'RadiologiController@getAllMasterDetail');
 // $router->get('master_pat_anatomi', 'PatAnatomiController@getAllMaster');
 

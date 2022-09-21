@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Radiologi;
 
 use App\Models\Radiologi;
 use Illuminate\Http\Request;
