@@ -23,7 +23,7 @@ $router->get('master/rs', 'Master\MasterController@Rs');
 $router->get('master/awalan_nama', 'Master\MasterController@AwalanNama');
 $router->get('master/negara', 'Master\MasterController@Negara');
 $router->get('master/provinsi', 'Master\MasterController@Provinsi');
-// $router->get('master/kota/id_provinsi/{idProvinsi}', 'Master\MasterController@Kota');
+$router->get('master/kota/id_provinsi/{idProvinsi}', 'Master\MasterController@Kota');
 $router->post('master/kota', 'Master\MasterController@Kota');
 $router->get('master/kecamatan/id_kota/{idKota}', 'Master\MasterController@Kecamatan');
 $router->get('master/kelurahan/id_kecamatan/{idKecamatan}', 'Master\MasterController@Kelurahan');
@@ -41,26 +41,37 @@ $router->get('master/dokter', 'Master\MasterController@Dokter');
 $router->get('master/dokterByPoli/{idRuangan}', 'Master\MasterController@DokterByPoli');
 $router->get('master/jnsPerawatan', 'Master\MasterController@JenisPerawatan');
 $router->get('master/waktuPelayanan', 'Master\MasterController@WaktuPelayanan');
-$router->get('master/ruangRawatInap', 'Master\MasterController@RuangRawatInap');
+$router->get('master/ruangan', 'Master\MasterController@Ruangan');
 $router->get('master/kelasRuangan', 'Master\MasterController@KelasRuangan');
 
 // Registrasi
 $router->post('registrasi/save', 'Registrasi\RegistrasiController@SaveRegistrasi');
 $router->get('registrasi/dataRegistrasi', 'Registrasi\RegistrasiController@GetDataRegistrasi');
+$router->get('registrasi/registrasiByNoreg/{noreg}', 'Registrasi\RegistrasiController@GetRegistrasi');
 
 // Tarif
 $router->get('tarif/byCategory/{categoryId}', 'Billing\TarifController@TarifByCategory');
 $router->get('tarif/category', 'Billing\TarifController@Category');
-$router->get('tarif/jasa/{idTarifHarga}', 'Billing\TarifController@TarifJasa');
+$router->get('tarif/jasa/{idTarifHarga}/{noreg}/{ruangan}', 'Billing\TarifController@TarifJasa');
 $router->post('tarif/defaultPelaksana', 'Billing\TarifController@DefaultPelaksana');
 
+// Billing
+$router->post('billing/save', 'Billing\BillingController@Save');
+$router->post('billing/delete', 'Billing\BillingController@Delete');
+$router->post('billing/updateJumlah', 'Billing\BillingController@UpdateJumlah');
+$router->post('billing/addDiscount', 'Billing\BillingController@AddDiscount');
+$router->post('billing/addPembayaran', 'Billing\BillingController@AddPembayaran');
+$router->post('billing/deletePembayaran', 'Billing\BillingController@DeletePembayaran');
+$router->get('billing/billingByNoreg/{noreg}', 'Billing\BillingController@BillingByNoreg');
+$router->get('billing/dataPembayaran/{noreg}', 'Billing\BillingController@DataPembayaran');
+
 // Pasien
-$router->post('pasien/save', 'PasienController@Save');
-$router->post('pasien/update', 'PasienController@Update');
-$router->post('pasien/filtering', 'PasienController@Filtering');
-$router->get('pasien/getPasien/norm/{norm}', 'PasienController@GetPasien');
-$router->get('pasien/searchBy/{searchBy}/key/{key}', 'PasienController@SearchBy');
-$router->get('pasien/allData', 'PasienController@AllData');
+$router->post('pasien/save', 'Pasien\PasienController@Save');
+$router->post('pasien/update', 'Pasien\PasienController@Update');
+$router->post('pasien/filtering', 'Pasien\PasienController@Filtering');
+$router->get('pasien/getPasien/norm/{norm}', 'Pasien\PasienController@GetPasien');
+$router->get('pasien/searchBy/{searchBy}/key/{key}', 'Pasien\PasienController@SearchBy');
+$router->get('pasien/allData', 'Pasien\PasienController@AllData');
 
 // Rikkes
 $router->get('rikkes/dataPeserta', 'RikkesController@GetDataPeserta');
@@ -90,6 +101,11 @@ $router->post('upload/delete/image', 'UploadController@deleteImage');
 
 // Login
 $router->post('do_login', 'LoginController@doLogin');
+
+// Print
+$router->get('print/stickerBarcode/{idPasien}', 'Printer\Barcode@StickerBarcode');
+$router->get('print/biodataPasien/{idPasien}', 'Printer\Pasien@BiodataPasien');
+$router->get('print/dataRegistrasi/{noreg}', 'Printer\Registrasi@DataRegistrasi');
 
 // Medical Record
 // $router->get('medicalRecord', 'Billing\TarifController@hallo');

@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Billing;
 
+use App\Http\Controllers\Registrasi\RegistrasiController;
 use App\Http\Libraries\LibApp;
+use App\Models\Master;
+use App\Models\Pelaksana;
+use App\Models\Tarif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-class tarifController extends BaseController
+class TarifController extends BaseController
 {
     public function TarifByCategory($categoryId)
     {
@@ -30,24 +34,86 @@ class tarifController extends BaseController
         return LibApp::response_success($data);
     }
 
-    public function TarifJasa($idTarifHarga)
+    public function TarifJasa($idTarifHarga, $noreg, $ruangan)
     {
-        $data = DB::table('tarif_harga_jasa')
-                ->select('tarif_harga_jasa.id', 'tarif_harga_jasa.id_tarif_harga', 'tarif_harga_jasa.jasa', 'mst_group_jasa.name AS group_jasa_name', 'mst_group_jasa.id AS group_jasa_id')
-                ->leftJoin('mst_group_jasa', 'tarif_harga_jasa.id_group_jasa', '=', 'mst_group_jasa.id')
-                ->where('tarif_harga_jasa.id_tarif_harga', $idTarifHarga)
-                ->get();
-        return LibApp::response_success($data);
+
+        $cRegistrasi = new RegistrasiController();
+        $mTarif = new Tarif();
+        $mPelaksana = new Pelaksana();
+        $mMaster = new Master();
+
+        $registrasi = json_decode($cRegistrasi->GetRegistrasi($noreg))->data;
+        $data = $mTarif->TarifHarga($idTarifHarga);
+        $dataRuangan = $mMaster->RuanganById($ruangan);
+
+        if (count($data) > 0) {
+            $newData = array();
+            $arrayGroupJasa = array();
+            $i = 1;
+            foreach ($data as $key => $value) {
+                array_push($arrayGroupJasa, $value->group_jasa_id);
+
+                $item = array(
+                    'key' => "$value->group_jasa_id",
+                    'label' => $value->group_jasa_name,
+                    'value' => '',
+                    'options' => $mPelaksana->PelaksanaGroup($value->group_jasa_id),
+                    'order' => $i,
+                    'display' => TRUE,
+                    'required' => TRUE,
+                    'jasa' => $value->jasa
+                );
+
+                if ($value->group_jasa_id == 'dokter') {
+                    if ($registrasi->ruangan == $ruangan) {
+                        $item['value'] = $registrasi->dpjp_pelaksana;
+                    }else{
+                        if( $dataRuangan[0]->jns_perawatan == 'ri' ){
+                            $item['value'] = $registrasi->dpjp_pelaksana;
+                        }
+                    }
+                } else {
+                    $idPelaksana = $mPelaksana->PelaksanaRuangan($ruangan, $value->group_jasa_id)[0]->id_pelaksana;
+                    foreach ($item['options'] as $key => $data) {
+                        if( $data->key == $idPelaksana ){
+                            $item['value'] = $idPelaksana;
+                        }
+                    }
+                }
+
+                array_push($newData, $item);
+                $i++;
+            }
+
+            $groupJasa = DB::table('mst_group_jasa')->whereNotIn('id', $arrayGroupJasa)->get();
+
+            foreach ($groupJasa as $key => $value) {
+                $item = array(
+                    'key' => "$value->id",
+                    'label' => $value->name,
+                    'value' => '',
+                    'options' => [],
+                    'order' => $i,
+                    'display' => FALSE,
+                    'required' => FALSE,
+                    'jasa' => ''
+                );
+                array_push($newData, $item);
+                $i++;
+            }
+
+            return LibApp::response_success($newData);
+        }
     }
 
     public function DefaultPelaksana(Request $request)
     {
         $data = DB::table('mst_ruangan_pelaksana')
-                ->select('mst_ruangan_pelaksana.*', 'mst_pelaksana.name as pelaksana_name')
-                ->leftJoin('mst_pelaksana', 'mst_pelaksana.id', '=', 'mst_ruangan_pelaksana.id_pelaksana')
-                ->where('id_ruangan', $request->idRuangan)
-                ->whereIn('id_group_jasa', $request->idGroupJasa)
-                ->get();
+            ->select('mst_ruangan_pelaksana.*', 'mst_pelaksana.name as pelaksana_name')
+            ->leftJoin('mst_pelaksana', 'mst_pelaksana.id', '=', 'mst_ruangan_pelaksana.id_pelaksana')
+            ->where('id_ruangan', $request->idRuangan)
+            ->whereIn('id_group_jasa', $request->idGroupJasa)
+            ->get();
         return LibApp::response_success($data);
     }
 }

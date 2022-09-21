@@ -34,9 +34,9 @@ class MasterController extends BaseController
         return LibApp::response_success($data);
     }
 
-    public function Kota(Request $request)
+    public function Kota($idProvinsi)
     {
-        $data = DB::table('mst_kota')->where('id_provinsi', $request->id_propinsi)->toSql();
+        $data = DB::table('mst_kota')->where('id_provinsi', $idProvinsi)->get();
         return LibApp::response_success($data);
     }
 
@@ -160,10 +160,9 @@ class MasterController extends BaseController
         return LibApp::response_success($data);
     }
 
-    public function RuangRawatInap()
+    public function Ruangan()
     {
         $data = DB::table('mst_ruangan')
-                ->select('ruanganID as id', 'ruanganName as name')
                 ->where('active', 1)->get();
         return LibApp::response_success($data);
     }

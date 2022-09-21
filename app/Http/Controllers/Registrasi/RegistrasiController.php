@@ -39,7 +39,6 @@ class RegistrasiController extends BaseController
                     'jamReg' => date('H:i:s'),
                     'id_golpas' => $post->registrasi['golPasien'],
                     'rs' => $post->registrasi['rs'],
-                    'dpjp_pelaksana' => $post->registrasi['dokter'],
                     'ruangan' => $post->registrasi['ruanganPoli'],
                     'id_jns_perawatan' => $post->registrasi['jnsPerawatan'],
                     'status' => strtolower($post->registrasi['status']),
@@ -47,6 +46,10 @@ class RegistrasiController extends BaseController
                     'dateCreated' => date('Y-m-d H:i:s'),
                     'session_id' => $sessionID
                 );
+
+        if( $post->registrasi['dokter'] ){
+            $insert['dpjp_pelaksana'] = $post->registrasi['dokter'];
+        }
 
         $status = DB::table('registrasi')->insert($insert);
 
@@ -64,7 +67,7 @@ class RegistrasiController extends BaseController
     public function GetRegistrasi($noreg)
     {
         $data = DB::table('registrasi')
-                ->leftJoin('mst_pasien', 'mst_pasien.id', '=', 'registrasi.id_pasien')
+                ->leftJoin('pasien', 'pasien.id', '=', 'registrasi.id_pasien')
                 ->where('noreg', $noreg)->get();
         if( count($data) > 0 ){
             return LibApp::response(200, $data[0], 'success');
@@ -77,7 +80,14 @@ class RegistrasiController extends BaseController
     public function GetDataRegistrasi(Request $request)
     {
         $data = DB::table('registrasi')
-                ->select('registrasi.*', 'pasien.nama', 'mst_golpas.name as golpasName', 'mst_rs.name as rsName', 'mst_pelaksana.name as dokter', 'mst_ruangan.name as ruanganName', 'mst_jns_perawatan.name as jnsPerawatanName')
+                ->select(
+                    'registrasi.*',
+                    'pasien.nama',
+                    'mst_golpas.name as golpasName',
+                    'mst_rs.name as rsName',
+                    'mst_pelaksana.name as dokter',
+                    'mst_ruangan.name as ruanganName',
+                    'mst_jns_perawatan.name as jnsPerawatanName',)
                 ->leftJoin('pasien', 'pasien.id', '=', 'registrasi.id_pasien')
                 ->leftJoin('mst_golpas', 'mst_golpas.id', '=', 'registrasi.id_golpas')
                 ->leftJoin('mst_rs', 'mst_rs.id', '=', 'registrasi.rs')
