@@ -41,8 +41,9 @@ $router->get('master/dokter', 'Master\MasterController@Dokter');
 $router->get('master/dokterByPoli/{idRuangan}', 'Master\MasterController@DokterByPoli');
 $router->get('master/jnsPerawatan', 'Master\MasterController@JenisPerawatan');
 $router->get('master/waktuPelayanan', 'Master\MasterController@WaktuPelayanan');
-$router->get('master/ruangan', 'Master\MasterController@Ruangan');
+$router->get('master/ruangan/{jnsPerawatan}', 'Master\MasterController@Ruangan');
 $router->get('master/kelasRuangan', 'Master\MasterController@KelasRuangan');
+$router->get('master/tempatTidurByRuangan/{idRuangan}', 'Master\MasterController@TempatTidurByRuangan');
 
 // Registrasi
 $router->post('registrasi/save', 'Registrasi\RegistrasiController@SaveRegistrasi');

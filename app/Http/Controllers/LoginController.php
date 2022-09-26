@@ -13,7 +13,8 @@ class LoginController extends BaseController
     {
 
         $key = '1239JJasu!&&#@nas1Issj';
-        echo $password = md5($request->password.$key);
+
+        $password = md5($request->password.$key);
 
         $data = DB::table('login')->where('username', $request->username)->where('password', $password)->get();
 
@@ -24,6 +25,8 @@ class LoginController extends BaseController
             $array = array('auth'=>false,'token'=>null, 'role'=>null);
         }
         return $array;
+
+        // 98385608754114cbb18a9a3d51b1bb96{"auth":false,"token":null,"role":null}
     }
 
 }

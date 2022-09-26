@@ -122,17 +122,29 @@ class PasienController extends BaseController
 
     public function SearchBy($searchBy, $key)
     {
-        if ($searchBy == 'nama') $where['nama'] = $key;
-        if ($searchBy == 'noAsuransi') $where['no_asuransi'] = $key;
-        if ($searchBy == 'noTlp') $where['tlp'] = $key;
+        $where = array();
+        $like = array();
+
         if ($searchBy == 'norm') $where['norm'] = $key;
-        $data = DB::table('pasien')->where($where)->get();
-        return LibApp::response_success(@$data[0]);
+        if ($searchBy == 'nama') $like['nama'] = $key;
+        if ($searchBy == 'alamat') $like['alamat'] = $key;
+        if ($searchBy == 'tlp') $where['tlp'] = $key;
+        if ($searchBy == 'noaskes') $where['no_asuransi'] = $key;
+
+        $table = DB::table('pasien');
+        foreach ($where as $key => $value) {
+            $table->where($key, $value);
+        }
+        foreach ($like as $key => $value) {
+            $table->where($key, 'like', '%'.$value.'%');
+        }
+        $data = $table->get();
+        return LibApp::response(200, $data, '');
     }
 
     public function AllData()
     {
-        $pasien = DB::table('pasien')->limit(100)->get();
+        $pasien = DB::table('pasien')->limit(25)->get();
         return LibApp::response_success($pasien);
     }
 }

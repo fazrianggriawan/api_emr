@@ -6,6 +6,7 @@ use App\Http\Libraries\LibApp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
+use phpDocumentor\Reflection\PseudoTypes\LowercaseString;
 
 class MasterController extends BaseController
 {
@@ -160,9 +161,10 @@ class MasterController extends BaseController
         return LibApp::response_success($data);
     }
 
-    public function Ruangan()
+    public function Ruangan($jnsPerawatan)
     {
         $data = DB::table('mst_ruangan')
+                ->where('jns_perawatan', strtolower($jnsPerawatan))
                 ->where('active', 1)->get();
         return LibApp::response_success($data);
     }
@@ -172,6 +174,18 @@ class MasterController extends BaseController
         $data = DB::table('mst_kelas')
                 ->select('id', 'name')
                 ->where('active', 1)->get();
+        return LibApp::response_success($data);
+    }
+
+    public function TempatTidurByRuangan($idRuangan)
+    {
+        $data = DB::table('mst_ruangan_bed')
+                ->select('mst_ruangan.name as ruangan','mst_ruangan_bed.kamar', 'mst_ruangan_bed.no_bed','mst_kelas.name as kelas')
+                ->leftJoin('mst_kelas_ruangan', 'mst_kelas_ruangan.id', '=', 'mst_ruangan_bed.id_kelas_ruangan')
+                ->leftJoin('mst_ruangan', 'mst_ruangan.id', '=', 'mst_kelas_ruangan.id_ruangan')
+                ->leftJoin('mst_kelas', 'mst_kelas.id', '=', 'mst_kelas_ruangan.id_kelas')
+                ->where('mst_ruangan.id', $idRuangan)
+                ->get();
         return LibApp::response_success($data);
     }
 }
