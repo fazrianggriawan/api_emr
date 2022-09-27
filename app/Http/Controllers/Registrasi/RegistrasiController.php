@@ -58,7 +58,7 @@ class RegistrasiController extends BaseController
                 ->leftJoin('mst_ruangan', 'mst_ruangan.id', '=', 'registrasi.ruangan' )
                 ->leftJoin('pasien', 'pasien.id', '=', 'registrasi.id_pasien' )
                 ->leftJoin('mst_pelaksana', 'mst_pelaksana.id', '=', 'registrasi.dpjp_pelaksana' )
-                ->where('session_id', $sessionID)->get();
+                ->where('registrasi.session_id', $sessionID)->get();
 
         DB::commit();
 
