@@ -54,7 +54,7 @@ class RegistrasiController extends BaseController
         $status = DB::table('registrasi')->insert($insert);
 
         $data = DB::table('registrasi')
-                ->select('registrasi.*', 'mst_ruangan.nama as nama_ruangan', 'mst_pelaksana.name as nama_dpjp', 'pasien.name as nama_pasien')
+                ->select('registrasi.*', 'mst_ruangan.name as nama_ruangan', 'mst_pelaksana.name as nama_dpjp', 'pasien.nama as nama_pasien')
                 ->leftJoin('mst_ruangan', 'mst_ruangan.id', '=', 'registrasi.ruangan' )
                 ->leftJoin('pasien', 'pasien.id', '=', 'registrasi.id_pasien' )
                 ->leftJoin('mst_pelaksana', 'mst_pelaksana.id', '=', 'registrasi.dpjp_pelaksana' )
