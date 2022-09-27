@@ -101,7 +101,9 @@ $router->post('upload', 'UploadController@doUpload');
 $router->post('upload/delete/image', 'UploadController@deleteImage');
 
 // Login
-$router->post('do_login', 'LoginController@doLogin');
+//$router->post('do_login', 'LoginController@doLogin'); // http://localhost/bihealth_api/public/do_login
+
+$router->post('do_login', 'LoginController@doLogin'); // http://localhost/bihealth_api/public/do_login
 
 // Print
 $router->get('print/stickerBarcode/{idPasien}', 'Printer\Barcode@StickerBarcode');

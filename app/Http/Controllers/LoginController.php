@@ -14,7 +14,8 @@ class LoginController extends BaseController
 
         $key = '1239JJasu!&&#@nas1Issj';
 
-        $password = md5($request->password.$key);
+        //$password = md5($request->password.$key);
+        $password = $request->password;
 
         $data = DB::table('login')->where('username', $request->username)->where('password', $password)->get();
 
