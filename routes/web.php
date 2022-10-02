@@ -36,19 +36,18 @@ $router->get('master/angkatan', 'Master\MasterController@Angkatan');
 $router->get('master/pangkat', 'Master\MasterController@Pangkat');
 $router->get('master/group_pasien', 'Master\MasterController@GroupPasien');
 $router->get('master/golongan_pasien/id_grouppasien/{idGroupPasien}', 'Master\MasterController@GolonganPasien');
-$router->get('master/poliklinik', 'Master\MasterController@Poliklinik');
 $router->get('master/dokter', 'Master\MasterController@Dokter');
 $router->get('master/dokterByPoli/{idRuangan}', 'Master\MasterController@DokterByPoli');
 $router->get('master/jnsPerawatan', 'Master\MasterController@JenisPerawatan');
 $router->get('master/waktuPelayanan', 'Master\MasterController@WaktuPelayanan');
 $router->get('master/ruangan/{jnsPerawatan}', 'Master\MasterController@Ruangan');
-$router->get('master/kelasRuangan', 'Master\MasterController@KelasRuangan');
+$router->get('master/kelasRuangan', 'Master\MasterController@Kelas');
 $router->get('master/tempatTidurByRuangan/{idRuangan}', 'Master\MasterController@TempatTidurByRuangan');
 
 // Registrasi
 $router->post('registrasi/save', 'Registrasi\RegistrasiController@SaveRegistrasi');
 $router->get('registrasi/dataRegistrasi', 'Registrasi\RegistrasiController@GetDataRegistrasi');
-$router->get('registrasi/registrasiByNoreg/{noreg}', 'Registrasi\RegistrasiController@GetRegistrasi');
+$router->get('registrasi/registrasiByNoreg/{noreg}', 'Registrasi\RegistrasiController@GetRegistasi');
 
 // Tarif
 $router->get('tarif/byCategory/{categoryId}', 'Billing\TarifController@TarifByCategory');
@@ -94,6 +93,14 @@ $router->post('rikkes/save/hasilRadiologi', 'RikkesController@SaveHasilRadiologi
 $router->post('rikkes/save/hasilLab', 'RikkesController@SaveHasilLab');
 $router->get('rikkes/debug/idPeserta/{idPeserta}', 'RikkesController@debug');
 
+// EMR
+$router->post('emr/saveOrder', 'Emr\TestOrderController@SaveOrder');
+$router->post('emr/deleteOrder', 'Emr\TestOrderController@DeleteOrder');
+$router->get('emr/dataOrder/{noreg}/{unit}', 'Emr\TestOrderController@OrderByNoreg');
+
+// Radiologi
+$router->get('radiologi/dataOrder/{tanggal}/{status}', 'Radiologi\RadiologiController@DataOrder');
+
 // Upload File
 $router->get('upload/getFiles/idPeserta/{idPeserta}', 'UploadController@getFileUploaded');
 $router->get('upload/getImage/{filename}', 'UploadController@getImage');
@@ -109,6 +116,10 @@ $router->post('do_login', 'LoginController@doLogin'); // http://localhost/biheal
 $router->get('print/stickerBarcode/{idPasien}', 'Printer\Barcode@StickerBarcode');
 $router->get('print/biodataPasien/{idPasien}', 'Printer\Pasien@BiodataPasien');
 $router->get('print/dataRegistrasi/{noreg}', 'Printer\Registrasi@DataRegistrasi');
+$router->get('print/kwitansi/{noKwitansi}', 'Printer\Kwitansi@GoPrint');
+$router->get('print/rincianBilling/{noreg}', 'Printer\RincianBilling@GoPrint');
+
+$router->get('test', 'LoginController@Test');
 
 // Medical Record
 // $router->get('medicalRecord', 'Billing\TarifController@hallo');

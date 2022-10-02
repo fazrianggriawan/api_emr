@@ -29,9 +29,9 @@ class Pelaksana extends Model
 
     public function PelaksanaRuangan($idRuangan, $idGroupJasa)
     {
-        return DB::table('mst_ruangan_pelaksana')
-                ->select('mst_ruangan_pelaksana.*', 'mst_pelaksana.name as pelaksana_name')
-                ->leftJoin('mst_pelaksana', 'mst_pelaksana.id', '=', 'mst_ruangan_pelaksana.id_pelaksana')
+        return DB::table('mst_pelaksana_ruangan')
+                ->select('mst_pelaksana_ruangan.*', 'mst_pelaksana.name as pelaksana_name')
+                ->leftJoin('mst_pelaksana', 'mst_pelaksana.id', '=', 'mst_pelaksana_ruangan.id_pelaksana')
                 ->where('id_ruangan', $idRuangan)
                 ->where('id_group_jasa', $idGroupJasa)
                 ->get();

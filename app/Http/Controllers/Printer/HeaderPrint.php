@@ -2,32 +2,47 @@
 
 namespace App\Http\Controllers\Printer;
 
+use App\Models\Setting;
 use DateTime;
 use Laravel\Lumen\Routing\Controller as BaseController;
-
+use stdClass;
 
 class HeaderPrint extends BaseController
 {
+    public function GetSetting($class)
+    {
+        $class->kota        = 'Bogor';
+        $class->fontSize    = 9;
+        $class->border      = 0;
+        $class->fontWeight  = '';
+        $class->heightCell  = 5;
+		$class->widthCell   = 57;
+        $class->widthFull = $class->widthCell+133;
+
+        return $class;
+    }
+
     public function GetHeader($pdf)
     {
-        $fontSize = 9;
-        $border = 0;
-        $fontWeight = '';
-        $heightCell = 5;
-		$widthCell = 57;
+        header("Content-type:application/pdf");
 
-        $pdf->SetFont('arial', 'b', $fontSize+4);
-        $pdf->Cell($widthCell-7);
-        $pdf->Cell($widthCell+76, $heightCell+2, 'KLINIK EKSEKUTIF JAKARTA', $border);
-        $pdf->SetFont('arial', $fontWeight, $fontSize);
-        $pdf->ln();
-        $pdf->Cell($widthCell-7);
-        $pdf->Cell($widthCell+76, $heightCell, 'Jl. Minangkabau Barat No.17B RT.6/RW.8 Ps. Manggis', $border);
-        $pdf->ln();
-        $pdf->Cell($widthCell-7);
-        $pdf->Cell($widthCell+76, $heightCell, 'Kecamatan Setiabudi, Kuningan. DKI Jakarta 12970. Telp: 021 - 229 091 28', $border);
-        $pdf->SetLineWidth(0.4);
-        $pdf->Line(10, 30, 200, 30);
+        $setting = self::GetSetting(new stdClass());
+
+        $settingRs = Setting::find(1)->first();
+
+        $logoWidth = 20;
+
+        $pdf->Image('images/'.$settingRs->rs_logo, 23, 10, $logoWidth);
+
+        $pdf->SetFont('arial', 'b', $setting->fontSize+5);
+        $pdf->Cell($logoWidth+15);
+        $pdf->MultiCell($setting->widthCell+66, $setting->heightCell+2, $settingRs->rs_name, $setting->border, 'C');
+        $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
+        $pdf->Cell($logoWidth+23);
+        $pdf->MultiCell($setting->widthCell+50, $setting->heightCell-1, $settingRs->rs_alamat, $setting->border, 'C');
+        $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
+        $pdf->Cell($setting->widthFull, 3, '', 'B');
+        $pdf->ln(4);
 
         return $pdf;
     }

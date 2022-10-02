@@ -24,4 +24,13 @@ class LibApp
         );
         return \json_encode($array);
     }
+
+    public static function dateHuman($tanggal='')
+    {
+        if( $tanggal != '' ){
+            $aTanggal = explode('-', $tanggal);
+            return $aTanggal[2].'-'.$aTanggal[1].'-'.$aTanggal[0];
+        }
+    }
+
 }

@@ -3,125 +3,132 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Libraries\LibApp;
-use Illuminate\Http\Request;
+use App\Models\Mst_agama;
+use App\Models\Mst_angkatan;
+use App\Models\Mst_awalan;
+use App\Models\Mst_golpas;
+use App\Models\Mst_grouppas;
+use App\Models\Mst_jns_perawatan;
+use App\Models\Mst_kecamatan;
+use App\Models\Mst_kelas;
+use App\Models\Mst_kelurahan;
+use App\Models\Mst_kota;
+use App\Models\Mst_negara;
+use App\Models\Mst_pangkat;
+use App\Models\Mst_pekerjaan;
+use App\Models\Mst_pelaksana;
+use App\Models\Mst_pelaksana_poli;
+use App\Models\Mst_pendidikan;
+use App\Models\Mst_provinsi;
+use App\Models\Mst_rs;
+use App\Models\Mst_ruangan;
+use App\Models\Mst_ruangan_bed;
+use App\Models\Mst_status_nikah;
+use App\Models\Mst_suku;
+use App\Models\Mst_waktu_pelayanan;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
-use phpDocumentor\Reflection\PseudoTypes\LowercaseString;
 
 class MasterController extends BaseController
 {
 
     public function Rs()
     {
-        $data = DB::table('mst_rs')->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_rs::all());
     }
 
     public function AwalanNama()
     {
-        $data = DB::table('mst_awalan')->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_awalan::all());
     }
 
     public function Negara()
     {
-        $data = DB::table('mst_negara')->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_negara::all());
     }
 
     public function Provinsi()
     {
-        $data = DB::table('mst_provinsi')->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_provinsi::all());
     }
 
     public function Kota($idProvinsi)
     {
-        $data = DB::table('mst_kota')->where('id_provinsi', $idProvinsi)->get();
-        return LibApp::response_success($data);
+        $data = Mst_kota::with('r_provinsi')->where('id_provinsi', $idProvinsi)->get();
+        return LibApp::response(200, $data);
     }
 
     public function Kecamatan($idKota)
     {
-        $data = DB::table('mst_kecamatan')->where('id_kota', $idKota)->get();
-        return LibApp::response_success($data);
+        $data = Mst_kecamatan::with('r_kota')->where('id_kota', $idKota)->get();
+        return LibApp::response(200, $data);
     }
 
     public function Kelurahan($idKecamatan)
     {
-        $data = DB::table('mst_kelurahan')->where('id_kecamatan', $idKecamatan)->get();
+        $data = Mst_kelurahan::with('r_kecamatan')->where('id_kecamatan', $idKecamatan)->get();
         return LibApp::response_success($data);
     }
 
     public function Suku()
     {
-        $data = DB::table('mst_suku')->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_suku::all());
     }
 
     public function StatusNikah()
     {
-        $data = DB::table('mst_status_nikah')->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_status_nikah::all());
     }
 
     public function Agama()
     {
-        $data = DB::table('mst_agama')->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_agama::all());
     }
 
     public function Pekerjaan()
     {
-        $data = DB::table('mst_pekerjaan')->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_pekerjaan::all());
     }
 
     public function Pendidikan()
     {
-        $data = DB::table('mst_pendidikan')->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_pendidikan::all());
     }
 
     public function Angkatan()
     {
-        $data = DB::table('mst_angkatan')->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_angkatan::all());
     }
 
     public function Pangkat()
     {
-        $data = DB::table('mst_pangkat')->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_pangkat::all());
     }
 
     public function GroupPasien()
     {
-        $data = DB::table('mst_grouppas')
-                ->where('active', 1)
-                ->orderBy('increment')
-                ->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_grouppas::where('active', 1)->get());
     }
 
     public function GolonganPasien($idGroupPasien)
     {
-        $data = DB::table('mst_golpas')
-                ->select('id', 'name')
-                ->where('status', 1)
-                ->where('group', $idGroupPasien)
-                ->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_golpas::where('status', 1)->where('group', $idGroupPasien)->get());
     }
 
-    public function Poliklinik()
+    public function Dokter()
     {
-        $data = DB::table('mst_poli')
-                ->select('mst_ruangan.id', 'mst_ruangan.name', 'mst_poli.*')
-                ->leftJoin('mst_ruangan', 'mst_ruangan.id', '=', 'mst_poli.id_ruangan')
-                ->where('mst_ruangan.active', 1)->get();
-        return LibApp::response_success($data);
+        $data = Mst_pelaksana_poli::GetAllData()->get();
+        return LibApp::response(200, $data);
     }
+
+    public function DokterByPoli($idRuangan)
+    {
+        $data = Mst_pelaksana_poli::GetAllData()->where('id_ruangan', $idRuangan)->get();
+
+        return LibApp::response(200, $data);
+    }
+
+
 
     public function Keluhan()
     {
@@ -129,63 +136,36 @@ class MasterController extends BaseController
         return LibApp::response_success($data);
     }
 
-    public function Dokter()
-    {
-        $data = DB::table('mst_pelaksana')
-                ->select('id','name')
-                ->where('group', 'dokter')->get();
-        return LibApp::response_success($data);
-    }
-
-    public function DokterByPoli($idRuangan)
-    {
-        $data = DB::table('mst_pelaksana_poli')
-                ->select('mst_pelaksana.id','mst_pelaksana.name')
-                ->leftJoin('mst_pelaksana', 'mst_pelaksana.id', '=', 'mst_pelaksana_poli.id_pelaksana')
-                ->where('mst_pelaksana_poli.id_ruangan', $idRuangan)
-                ->where('mst_pelaksana.group', 'dokter')->get();
-        return LibApp::response_success($data);
-    }
-
     public function JenisPerawatan()
     {
-        $data = DB::table('mst_jns_perawatan')
-                ->where('active', 1)->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_jns_perawatan::where('active', 1)->get());
     }
 
     public function WaktuPelayanan()
     {
-        $data = DB::table('mst_waktu_pelayanan')
-                ->where('active', 1)->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_waktu_pelayanan::all());
     }
 
     public function Ruangan($jnsPerawatan)
     {
-        $data = DB::table('mst_ruangan')
-                ->where('jns_perawatan', strtolower($jnsPerawatan))
-                ->where('active', 1)->get();
-        return LibApp::response_success($data);
+        $data = Mst_ruangan::where('jns_perawatan', $jnsPerawatan)->where('active', 1)->get();
+        return LibApp::response(200, $data);
     }
 
-    public function KelasRuangan()
+    public function Kelas()
     {
-        $data = DB::table('mst_kelas')
-                ->select('id', 'name')
-                ->where('active', 1)->get();
-        return LibApp::response_success($data);
+        return LibApp::response(200, Mst_kelas::where('active', 1)->get());
     }
 
     public function TempatTidurByRuangan($idRuangan)
     {
-        $data = DB::table('mst_ruangan_bed')
-                ->select('mst_ruangan.name as ruangan','mst_ruangan_bed.kamar', 'mst_ruangan_bed.no_bed','mst_kelas.name as kelas')
-                ->leftJoin('mst_kelas_ruangan', 'mst_kelas_ruangan.id', '=', 'mst_ruangan_bed.id_kelas_ruangan')
-                ->leftJoin('mst_ruangan', 'mst_ruangan.id', '=', 'mst_kelas_ruangan.id_ruangan')
-                ->leftJoin('mst_kelas', 'mst_kelas.id', '=', 'mst_kelas_ruangan.id_kelas')
-                ->where('mst_ruangan.id', $idRuangan)
-                ->get();
-        return LibApp::response_success($data);
+        $this->idRuangan = $idRuangan;
+        $data = Mst_ruangan_bed::with(['r_kelas_ruangan' => function($a){
+                    return $a->with('r_ruangan', 'r_kelas');
+                }])->whereHas('r_kelas_ruangan', function($aa){
+                    return $aa->where('id_ruangan', $this->idRuangan);
+                })->get();
+
+        return LibApp::response(200, $data);
     }
 }

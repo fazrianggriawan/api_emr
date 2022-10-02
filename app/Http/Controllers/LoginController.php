@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Libraries\LibVclaim;
 use App\Models\Login;
+use App\Models\Mst_kota;
+use App\Models\Pasien;
+use App\Models\Registrasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -28,6 +32,39 @@ class LoginController extends BaseController
         return $array;
 
         // 98385608754114cbb18a9a3d51b1bb96{"auth":false,"token":null,"role":null}
+    }
+
+    public function Test()
+    {
+        $data = array(
+            "kodebooking" => '39F84A',
+            "jenispasien" => 'NON JKN',
+            "nomorkartu" => '',
+            "nik" => '8171027004940002',
+            "nohp" => '9182309128312',
+            "kodepoli" => 'ANA',
+            "namapoli" => 'ANAK',
+            "pasienbaru" => 0,
+            "norm" => '818181',
+            "tanggalperiksa" => '2022-10-02',
+            "kodedokter" => 3732, // * harus sesuai dengan bpjs
+            "namadokter" => 'dr. Novelia Z.L Mardin, Sp.A A',
+            "jampraktek" => '02:00-02:30',
+            "jeniskunjungan" => 2, // *
+            "nomorreferensi" => '', // * bisa asal 16 digit atau kosongkan jika jenispasien selain JKN
+            "nomorantrean" => 'A1-1',
+            "angkaantrean" => '1',
+            "estimasidilayani" => 110123100021, // boleh asal
+            "sisakuotajkn" => 20,
+            "kuotajkn" => 20,
+            "sisakuotanonjkn" => 20,
+            "kuotanonjkn" => 40,
+            "keterangan" => "Peserta harap 30 menit lebih awal guna pencatatan administrasi."
+        );
+
+		$url = 'antrean/add';
+        return LibVclaim::antrol('POST', $url, json_encode($data));
+
     }
 
 }

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Billing;
 
 use App\Http\Libraries\LibApp;
 use App\Models\Billing;
-use App\Models\Master;
-use App\Models\Tarif;
+use App\Models\Billing_jasa;
+use App\Models\Billing_pembayaran;
+use App\Models\Mst_ruangan;
+use App\Models\Tarif_harga_jasa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -14,48 +16,67 @@ class BillingController extends BaseController
 {
     public function Save(Request $request)
     {
-        $mRuangan = new Master();
-        $mTarif = new Tarif();
-
-        $idBilling = microtime(TRUE);
 
         $checkIt = DB::table('billing_pembayaran')->where('noreg', $request->noreg)->where('deleted', 0)->get();
 
+        $checkIt = Billing_pembayaran::where('noreg', $request->noreg)->where('deleted', 0)->get();
+
         if( count($checkIt) == 0 ){
 
-            $insert = array(
-                'id' => $idBilling,
-                'id_tarif_harga' => $request->tarif['id_tarif_harga'],
-                'noreg' => $request->noreg,
-                'qty' => 1,
-                'tgl_tindakan' => $request->tanggal,
-                'rs' => $mRuangan->RuanganById($request->ruangan)[0]->rs,
-                'lokasi_tindakan' => $request->ruangan,
-                'dateCreated' => date('Y-m-d H:i:s'),
-                'userCreated' => 'user',
-                'session_input' => $idBilling
-            );
+            DB::beginTransaction();
 
-            $save = DB::table('billing')->insert($insert);
+            try {
+                $billing = new Billing();
 
-            foreach ($request->jasa as $key => $value) {
-                if( $value ){
-                    $jasa = $mTarif->JasaTarif($value, $key);
-                    if( count($jasa) > 0 ){
-                        $insert = array(
+                $idBilling = microtime(TRUE);
+
+                $billing->id              = $idBilling;
+                $billing->id_tarif_harga  = $request->tarif['id_tarif_harga'];
+                $billing->noreg           = $request->noreg;
+                $billing->qty             = 1;
+                $billing->tgl_tindakan    = $request->tanggal;
+                $billing->rs              = Mst_ruangan::where('id', $request->ruangan)->first()->rs;
+                $billing->lokasi_tindakan = $request->ruangan;
+                $billing->dateCreated     = date('Y-m-d H:i:s');
+                $billing->userCreated     = 'user';
+                $billing->session_input   = $idBilling;
+
+                $billing->save();
+
+                $insertBillingJasa = array();
+
+                foreach ($request->jasa as $id_group_jasa => $pelaksana) {
+                    if( $pelaksana ){
+                        $id_tarif_harga_jasa = Tarif_harga_jasa::where('id_tarif_harga', $request->tarif['id_tarif_harga'])
+                                            ->where('id_group_jasa', $id_group_jasa)
+                                            ->first()->id;
+
+                        $array = array(
                             'id_billing' => $idBilling,
-                            'id_tarif_harga_jasa' => $jasa[0]->id,
-                            'id_pelaksana' => $value,
+                            'id_tarif_harga_jasa' => $id_tarif_harga_jasa,
+                            'id_pelaksana' => $pelaksana,
                             'dateCreated' => date('Y-m-d H:i:s'),
                             'userCreated' => 'user',
                             'session_id' => $idBilling
                         );
-                        DB::table('billing_jasa')->insert($insert);
+
+                        array_push($insertBillingJasa, $array);
                     }
                 }
-            }
 
-            return LibApp::response(200, $insert, 'sukses');
+                if( count($insertBillingJasa) > 0 ){
+                    Billing_jasa::insert($insertBillingJasa);
+                }
+
+                DB::commit();
+
+                return LibApp::response(200, [], 'Sukses');
+
+            } catch (\Exception $e) {
+                DB::rollback();
+                // something went wrong
+                return LibApp::response(201, [], 'Gagal menyimpan');
+            }
         }else{
             return LibApp::response(201, [], 'Billing Sudah Dibayar. Tidak dapat input billing');
         }
@@ -85,16 +106,20 @@ class BillingController extends BaseController
 
     public function BillingByNoreg($noreg)
     {
-        $data = DB::table('billing')
-                ->select('billing.*','tarif_harga.harga', 'tarif.name as  nama_tarif', DB::raw('COALESCE(billing_discount_percent.discount, 0) as discount'))
-                ->leftJoin('tarif_harga', 'tarif_harga.id', '=', 'billing.id_tarif_harga')
-                ->leftJoin('tarif', 'tarif.id', '=', 'tarif_harga.tarif_id')
-                ->leftJoin('billing_discount_percent', 'billing_discount_percent.id_billing', '=', 'billing.id')
-                ->where('billing.noreg', $noreg)
-                ->where('deleted', 0)
-                ->get();
+        $data = Billing::with(['r_registrasi',
+                               'r_ruangan',
+                               'r_tarif_harga' => function($q){
+                                    return $q->with('r_tarif', 'r_tarif_harga_jasa');
+                                },
+                                'r_billing_jasa' => function($q){
+                                    return $q->with('r_tarif_harga_jasa', 'r_pelaksana');
+                                }])
+                        ->where('noreg', $noreg)
+                        ->where('deleted', 0)
+                        ->orderBy('dateCreated', 'desc')
+                        ->get();
 
-        return LibApp::response(200, $data, 'sukses');
+        return LibApp::response(200, $data);
     }
 
     public function AddDiscount(Request $request)

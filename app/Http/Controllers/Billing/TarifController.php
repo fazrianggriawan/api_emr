@@ -6,6 +6,7 @@ use App\Http\Controllers\Registrasi\RegistrasiController;
 use App\Http\Libraries\LibApp;
 use App\Models\Master;
 use App\Models\Pelaksana;
+use App\Models\Registrasi;
 use App\Models\Tarif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -42,7 +43,8 @@ class TarifController extends BaseController
         $mPelaksana = new Pelaksana();
         $mMaster = new Master();
 
-        $registrasi = json_decode($cRegistrasi->GetRegistrasi($noreg))->data;
+        $registrasi = Registrasi::where('noreg', $noreg)->first();
+
         $data = $mTarif->TarifHarga($idTarifHarga);
         $dataRuangan = $mMaster->RuanganById($ruangan);
 
@@ -108,12 +110,13 @@ class TarifController extends BaseController
 
     public function DefaultPelaksana(Request $request)
     {
-        $data = DB::table('mst_ruangan_pelaksana')
-            ->select('mst_ruangan_pelaksana.*', 'mst_pelaksana.name as pelaksana_name')
-            ->leftJoin('mst_pelaksana', 'mst_pelaksana.id', '=', 'mst_ruangan_pelaksana.id_pelaksana')
+        $data = DB::table('mst_pelaksana_ruangan')
+            ->select('mst_pelaksana_ruangan.*', 'mst_pelaksana.name as pelaksana_name')
+            ->leftJoin('mst_pelaksana', 'mst_pelaksana.id', '=', 'mst_pelaksana_ruangan.id_pelaksana')
             ->where('id_ruangan', $request->idRuangan)
             ->whereIn('id_group_jasa', $request->idGroupJasa)
             ->get();
         return LibApp::response_success($data);
     }
+
 }

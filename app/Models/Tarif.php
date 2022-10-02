@@ -10,6 +10,11 @@ class Tarif extends Model
     protected $table = 'tarif';
     protected $primaryKey = 'id';
 
+    public function r_tarif_harga()
+    {
+        return $this->hasMany(Tarif_harga::class, 'tarif_id', 'id');
+    }
+
     public function TarifHarga($idTarifHarga)
     {
         return DB::table('tarif_harga_jasa')
@@ -22,8 +27,8 @@ class Tarif extends Model
     public function JasaTarif($idTarifHarga, $idGroupJasa)
     {
         return DB::table('tarif_harga_jasa')
-                ->where('id_tarif_harga', $idTarifHarga)
-                ->where('id_group_jasa', $idGroupJasa)
+                ->where('id_tarif_hargaa', $idTarifHarga)
+                ->where('id_group_jasaa', $idGroupJasa)
                 ->get();
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pasien;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Http\Libraries\LibApp;
+use App\Models\Pasien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -94,7 +95,10 @@ class PasienController extends BaseController
 
     public function GetPasien($norm)
     {
-        $pasien = DB::table('pasien')->where('norm', $norm)->get();
+
+        $pasien = Pasien::GetAllData()->where('norm', $norm)->first();
+
+        // $pasien = DB::table('pasien')->where('norm', $norm)->get();
 
         if (count($pasien) > 0)
             return LibApp::response_success($pasien);
@@ -122,29 +126,27 @@ class PasienController extends BaseController
 
     public function SearchBy($searchBy, $key)
     {
-        $where = array();
-        $like = array();
+        $data = Pasien::GetAllData();
 
-        if ($searchBy == 'norm') $where['norm'] = $key;
-        if ($searchBy == 'nama') $like['nama'] = $key;
-        if ($searchBy == 'alamat') $like['alamat'] = $key;
-        if ($searchBy == 'tlp') $where['tlp'] = $key;
-        if ($searchBy == 'noaskes') $where['no_asuransi'] = $key;
+        if ($searchBy == 'norm') $data->where('norm', str_pad($key, 6, "0", STR_PAD_LEFT));
+        if ($searchBy == 'nama') $data->where('nama', 'like', $key.'%');
+        if ($searchBy == 'alamat') $data->where('alamat', 'like', '%'.$key.'%');
+        if ($searchBy == 'tlp') $data->where('tlp', $key);
+        if ($searchBy == 'noaskes') $data->where('no_asuransi', $key);
+        if ($searchBy == 'tglLahir'){
+            $key = implode('-',array_reverse(explode('-', $key)));
+            $data->where('tgl_lahir', 'like', '%'.$key.'%');
+        }
 
-        $table = DB::table('pasien');
-        foreach ($where as $key => $value) {
-            $table->where($key, $value);
-        }
-        foreach ($like as $key => $value) {
-            $table->where($key, 'like', '%'.$value.'%');
-        }
-        $data = $table->get();
+        $data = $data->get();
+
         return LibApp::response(200, $data, '');
     }
 
     public function AllData()
     {
-        $pasien = DB::table('pasien')->limit(25)->get();
+        // $pasien = DB::table('pasien')->limit(25)->get();
+        $pasien = Pasien::GetAllData()->limit(25)->get();
         return LibApp::response_success($pasien);
     }
 }
