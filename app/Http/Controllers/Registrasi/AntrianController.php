@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Registrasi;
 
 use App\Http\Libraries\LibApp;
 use App\Models\Antrian;
+use App\Models\Mst_golpas;
 use App\Models\Mst_poli;
 use App\Models\Pasien;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ class AntrianController extends BaseController
             $pasien = Pasien::GetAllData()->where('id', $request->id_pasien)->first();
             $queryNoAntrian = Antrian::QueryNomorAntrian($request);
             $poliklinik     = Mst_poli::where('id_ruangan', $request->jadwalDokter['kodepoli'])->first();
+            $golpas         = Mst_golpas::where('id', '')->first();
 
             $antrian->booking_code    = $kodeBooking;
             $antrian->nama            = $pasien->nama;
@@ -32,7 +34,7 @@ class AntrianController extends BaseController
             $antrian->prefix_antrian  = $poliklinik->prefix_antrian;
             $antrian->no_antrian      = DB::raw($queryNoAntrian);
             $antrian->poli            = $poliklinik->kode_bpjs;
-            $antrian->jns_pasien      = (($request->jenisPembayaran == 'bpjs') ? 'JKN' : 'NON JKN');
+            $antrian->jns_pasien      = ((strtolower($request->jenisPembayaran) == 'bpjs') ? 'JKN' : 'NON JKN');
             $antrian->no_kartu_bpjs   = $request->pasien['noaskes'];
             $antrian->norm            = substr($request->pasien['norekmed'], -6);
             $antrian->no_referensi    = (isset($request->rujukan['noKunjungan'])) ? $request->rujukan['noKunjungan'] : '';
