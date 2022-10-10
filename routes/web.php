@@ -45,9 +45,10 @@ $router->get('master/kelasRuangan', 'Master\MasterController@Kelas');
 $router->get('master/tempatTidurByRuangan/{idRuangan}', 'Master\MasterController@TempatTidurByRuangan');
 
 // Registrasi
-$router->post('registrasi/save', 'Registrasi\RegistrasiController@SaveRegistrasi');
 $router->get('registrasi/dataRegistrasi', 'Registrasi\RegistrasiController@GetDataRegistrasi');
 $router->get('registrasi/registrasiByNoreg/{noreg}', 'Registrasi\RegistrasiController@GetRegistasi');
+$router->post('registrasi/save', 'Registrasi\RegistrasiController@SaveRegistrasi');
+$router->post('registrasi/filtering', 'Registrasi\RegistrasiController@FilterDataRegistrasi');
 
 // Tarif
 $router->get('tarif/byCategory/{categoryId}', 'Billing\TarifController@TarifByCategory');
@@ -120,6 +121,10 @@ $router->get('print/kwitansi/{noKwitansi}', 'Printer\Kwitansi@GoPrint');
 $router->get('print/rincianBilling/{noreg}', 'Printer\RincianBilling@GoPrint');
 
 $router->get('test', 'LoginController@Test');
+
+// App
+$router->get('app/modules/{username}', 'App\AppController@ModuleByUsername');
+$router->get('app/ruanganByUsername/{username}', 'App\AppController@RuanganByUsername');
 
 // Medical Record
 // $router->get('medicalRecord', 'Billing\TarifController@hallo');

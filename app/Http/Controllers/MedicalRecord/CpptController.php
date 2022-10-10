@@ -3,20 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Cppt;
+use App\Models\Emr_cppt;
 
 class CpptController extends Controller
 {
-    public function save(Request $request){
-        $data = $request->input();
-        $insert = array();
-        foreach ($data as $key => $item) {
-            if( is_array($item) ){
-                array_push($insert, ['key'=>$key, 'value'=>$item['name']]);
-            }else{
-                array_push($insert, ['key'=>$key, 'value'=>$item]);
-            }
-        }
-        return $insert;
+    public function save(Request $request)
+    {
+        $cppt = new Emr_cppt();
+
+        $cppt->tanggal = $request->tanggal;
+        $cppt->noreg = $request->noreg;
+        $cppt->s = $request->s;
+        $cppt->o = $request->o;
+        $cppt->a = $request->a;
+        $cppt->p = $request->p;
+        $cppt->i = $request->i;
+        $cppt->id_pelaksana = $request->id_pelaksana;
+        $cppt->dateCreated = $request->username;
+        $cppt->userCreated = date('Y-m-d H:i:s');
+
+        return $cppt->save();
+
     }
 }
