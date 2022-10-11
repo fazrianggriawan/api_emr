@@ -12,7 +12,7 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
-
+use Illuminate\Support\Facades\Storage;
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
@@ -98,6 +98,8 @@ $router->post('emr/saveOrder', 'Emr\TestOrderController@SaveOrder');
 $router->post('emr/deleteOrder', 'Emr\TestOrderController@DeleteOrder');
 $router->get('emr/dataOrder/{noreg}/{unit}', 'Emr\TestOrderController@OrderByNoreg');
 
+$router->get('emr/question', 'Emr\QuestionController@Question');
+
 // Radiologi
 $router->get('radiologi/dataOrder/{tanggal}/{status}', 'Radiologi\RadiologiController@DataOrder');
 
@@ -162,3 +164,8 @@ $router->get('get_image', 'MedicalRecord\AssessmentUmumController@getImage');
 // $router->post('save_test_order', 'TestOrderController@save');
 // $router->post('save_assessment_umum', 'AssessmentUmumController@save');
 // $router->post('save_objective', 'ObjectiveController@save');
+
+
+$router->get('test', function(){
+    Storage::disk('local')->put('example.txt', 'Contents');
+});

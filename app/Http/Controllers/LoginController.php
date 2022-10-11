@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Libraries\LibApp;
 use App\Http\Libraries\LibVclaim;
 use App\Models\Login;
 use App\Models\Mst_kota;
@@ -26,10 +27,10 @@ class LoginController extends BaseController
         if( count($data) == 1 ){
             $jwt = getJWT($data[0]->username,$data[0]->password);
             $array = array('auth'=>true,'username'=> $request->username, 'token'=>$jwt, 'role'=>$data[0]->role, 'id_pelaksana'=>$data[0]->id_pelaksana);
+            return LibApp::response(200, $array);
         }else{
-            $array = array('auth'=>false,'token'=>null, 'role'=>null);
+            return LibApp::response(201, [], 'Username atau Password anda salah.');
         }
-        return $array;
 
         // 98385608754114cbb18a9a3d51b1bb96{"auth":false,"token":null,"role":null}
     }
