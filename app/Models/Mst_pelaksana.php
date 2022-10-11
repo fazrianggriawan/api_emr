@@ -14,4 +14,10 @@ class Mst_pelaksana extends Model
         return $this->hasMany(Registrasi::class, 'dpjp_pelaksana', 'id');
     }
 
+    public function r_pelaksana_poli()
+    {
+        return $this->hasOne(Mst_pelaksana_poli::class, 'id_pelaksana', 'id' );
+    }
+
+
 }

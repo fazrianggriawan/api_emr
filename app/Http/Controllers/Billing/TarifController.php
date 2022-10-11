@@ -61,7 +61,7 @@ class TarifController extends BaseController
                     'value' => '',
                     'options' => $mPelaksana->PelaksanaGroup($value->group_jasa_id),
                     'order' => $i,
-                    'display' => TRUE,
+                    'display' => ($value->group_jasa_id == 'rs')? FALSE : TRUE,
                     'required' => TRUE,
                     'jasa' => $value->jasa
                 );

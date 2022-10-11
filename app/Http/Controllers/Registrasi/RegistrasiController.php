@@ -90,4 +90,16 @@ class RegistrasiController extends BaseController
         }
     }
 
+    public function FilterDataRegistrasi(Request $request)
+    {
+        $data = Registrasi::GetAllData()
+                ->where('tglReg', '>=', $request->from)
+                ->where('tglReg', '<=', $request->to)
+                ->where('id_jns_perawatan' , $request->jnsPerawatan)
+                ->where('ruangan', $request->ruangan)
+                ->where('dpjp_pelaksana', $request->dokter)
+                ->get();
+        return LibApp::response(200, $data, 'Sukses');
+    }
+
 }
