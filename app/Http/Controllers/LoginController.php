@@ -20,9 +20,9 @@ class LoginController extends BaseController
 
         $data = App_user::GetAllData()->where('username', $request->username)->where('password', $password)->first();
 
-        if( count($data) == 1 ){
-            $jwt = getJWT($data[0]->username,$data[0]->password);
-            $array = array('auth'=>true,'username'=> $request->username, 'token'=>$jwt, 'role'=>$data[0]->role, 'id_pelaksana'=>$data[0]->id_pelaksana);
+        if( $data ){
+            $jwt = getJWT($data->username,$data->password);
+            $array = array('auth'=>true,'username'=> $request->username, 'token'=>$jwt, 'role'=>$data->role, 'id_pelaksana'=>$data->id_pelaksana);
             return LibApp::response(200, $array);
         }else{
             return LibApp::response(201, [], 'Username atau Password anda salah.');
