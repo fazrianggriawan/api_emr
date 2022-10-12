@@ -121,6 +121,7 @@ $router->get('print/biodataPasien/{idPasien}', 'Printer\Pasien@BiodataPasien');
 $router->get('print/dataRegistrasi/{noreg}', 'Printer\Registrasi@DataRegistrasi');
 $router->get('print/kwitansi/{noKwitansi}', 'Printer\Kwitansi@GoPrint');
 $router->get('print/rincianBilling/{noreg}', 'Printer\RincianBilling@GoPrint');
+$router->get('print/requestRm/{id_request}', 'Printer\RequestRm@GoPrint');
 
 $router->get('test', 'LoginController@Test');
 

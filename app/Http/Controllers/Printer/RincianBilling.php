@@ -31,9 +31,14 @@ class RincianBilling extends BaseController
         $pdf->ln();
         $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
         $pdf->Cell($setting->widthCell+45, $setting->heightCell, 'Tanggal Perawatan : '.LibApp::dateHuman($registrasi->tglReg).' s/d '.LibApp::dateHuman($registrasi->tglReg), $setting->border);
-        $pdf->SetFont('arial', 'b', 12);
-        $pdf->Cell($setting->widthCell-20, $setting->heightCell, 'B1-01', 'L');
-        $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
+
+        if( isset($registrasi->registrasi_antrian->r_antrian->nomor) && $registrasi->id_jns_perawatan == 'rj' ){
+            $separator = ($registrasi->registrasi_antrian->r_antrian->prefix == '') ? '' : '-' ;
+            $pdf->SetFont('arial', 'b', 12);
+            $pdf->Cell($setting->widthCell-20, $setting->heightCell, $registrasi->registrasi_antrian->r_antrian->prefix.$separator.$registrasi->registrasi_antrian->r_antrian->nomor, 'L');
+            $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
+        }
+
         $pdf->Code128($setting->widthCell+103, 29, $registrasi->noreg, 40, 10); // Barcode
         $pdf->ln(4);
         $pdf->Cell($setting->widthFull, 2, '', 'B'); // Border Only

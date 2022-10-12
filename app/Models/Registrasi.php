@@ -15,6 +15,8 @@ class Registrasi extends Model
     {
         return self::with(['pasien' => function($q){
             return $q->with('r_jns_kelamin', 'r_golpas');
+        },'registrasi_antrian' => function($q){
+            return $q->with('r_antrian');
         },'golpas' => function($q){
             return $q->with('r_grouppas');
         },'rumah_sakit','dokter','ruang_perawatan','jns_perawatan']);
@@ -62,5 +64,10 @@ class Registrasi extends Model
     {
         return $this->hasOne(Mst_jns_perawatan::class, 'id', 'id_jns_perawatan')
                     ->select('id', 'name');;
+    }
+
+    public function registrasi_antrian()
+    {
+        return $this->hasOne(Registrasi_antrian::class, 'noreg', 'noreg');
     }
 }

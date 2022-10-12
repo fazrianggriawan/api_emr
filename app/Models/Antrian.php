@@ -16,46 +16,37 @@ class Antrian extends Model
         return $this->hasOne(Pasien::class, 'id', 'id_pasien');
     }
 
-    public static function SaveAntrian($request)
+    public static function SaveAntrian($data)
     {
         $antrian = new Antrian();
 
-        $kodeBooking    = Antrian::GenerateKodeBooking();
-        $pasien = Pasien::GetAllData()->where('id', $request->id_pasien)->first();
-        $queryNoAntrian = Antrian::QueryNomorAntrian($request->id_ruangan, $request->a);
-        $poliklinik     = Mst_poli::where('id_ruangan', $request->jadwalDokter['kodepoli'])->first();
-        $golpas         = Mst_golpas::where('id', '')->first();
+        // $kodeBooking    = Antrian::GenerateKodeBooking();
+        // $pasien         = Pasien::GetAllData()->where('id', $data->id_pasien)->first();
+        $queryNoAntrian = Antrian::QueryNomorAntrian($data->ruangan, $data->tanggal);
+        $ruangan        = Mst_ruangan::where('id_ruangan', $data->ruangan)->first();
 
-        $antrian->booking_code    = $kodeBooking;
-        $antrian->nama            = $pasien->nama;
-        $antrian->tgl_kunjungan   = $request->tglReg;
-        $antrian->prefix_antrian  = $poliklinik->prefix_antrian;
-        $antrian->no_antrian      = DB::raw($queryNoAntrian);
-        $antrian->poli            = $poliklinik->kode_bpjs;
-        $antrian->jns_pasien      = ((strtolower($request->jenisPembayaran) == 'bpjs') ? 'JKN' : 'NON JKN');
-        $antrian->no_kartu_bpjs   = $request->pasien['noaskes'];
-        $antrian->norm            = substr($request->pasien['norekmed'], -6);
-        $antrian->no_referensi    = (isset($request->rujukan['noKunjungan'])) ? $request->rujukan['noKunjungan'] : '';
-        $antrian->jns_kunjungan   = $request->jenisKunjungan['kode'];
-        $antrian->jam_praktek     = $request->jadwalDokter['jadwal'];
-        $antrian->kodedokter_bpjs = $request->jadwalDokter['kodedokter'];
-        $antrian->hp              = (isset($request->rujukan['peserta']['mr']['noTelepon'])) ? $request->rujukan['peserta']['mr']['noTelepon'] : '';
-        $antrian->nik             = (isset($request->rujukan['peserta']['nik'])) ? $request->rujukan['peserta']['nik'] : '';
+        $antrian->kode_booking  = Self::GenerateKodeBooking();
+        $antrian->id_pasien     = $data->id_pasien;
+        $antrian->id_ruangan    = $data->ruangan;
+        $antrian->tgl_kunjungan = $data->tanggal;
+        $antrian->id_pelaksana  = $data->dokter;
+        $antrian->prefix        = $ruangan->prefix;
+        $antrian->nomor         = DB::raw($queryNoAntrian);
 
         $antrian->save();
 
         return ( $antrian->save() ) ? $antrian : FALSE;
     }
 
-    public function GenerateKodeBooking()
+    public static function GenerateKodeBooking()
     {
         $bytes = random_bytes(3);
         return strtoupper(bin2hex($bytes));
     }
 
-    public static function QueryNomorAntrian($request)
+    public static function QueryNomorAntrian($ruangan, $tanggal)
     {
-        return '(SELECT COALESCE (MAX(aa.no_antrian)+1, 11) AS nomor_antrian FROM antrian AS aa WHERE aa.poli = "'.$request->jadwalDokter['kodepoli'].'" AND aa.tgl_kunjungan = "'.$request->jadwalDokter['tglKunjungan'].'")';
+        return '(SELECT COALESCE (MAX(aa.nomor)+1, 11) AS nomor FROM antrian AS aa WHERE aa.id_ruangan = "'.$ruangan.'" AND aa.tgl_kunjungan = "'.$tanggal.'")';
     }
 
 }

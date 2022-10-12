@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Registrasi;
 
 use App\Http\Libraries\LibApp;
 use App\Models\Antrian;
+use App\Models\Mst_ruangan;
 use App\Models\Registrasi;
+use App\Models\Registrasi_antrian;
+use App\Models\Registrasi_request_rm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -36,7 +39,6 @@ class RegistrasiController extends BaseController
             $message .= 'No. Reg : '.$check->noreg.'<br/>';
             $message .= 'Status : '.ucfirst($check->status).'<br/>';
             return LibApp::response(201, $check, $message);
-            exit;
         }
 
         DB::beginTransaction();
@@ -79,6 +81,35 @@ class RegistrasiController extends BaseController
             $registrasi->save();
 
             $data = Registrasi::GetAllData()->where('session_id', $sessionID)->first();
+
+            // Antrian
+            $antrian = new Antrian();
+            $queryNoAntrian = $antrian->QueryNomorAntrian($request->ruanganPoli, $request->tanggal);
+            $ruangan        = Mst_ruangan::where('id', $request->ruanganPoli)->first();
+
+            $antrian->kode_booking  = $antrian->GenerateKodeBooking();
+            $antrian->id_pasien     = $request->idPasien;
+            $antrian->id_ruangan    = $request->ruanganPoli;
+            $antrian->tgl_kunjungan = $request->tanggal;
+            $antrian->id_pelaksana  = $request->dokter;
+            $antrian->prefix        = $ruangan->prefix_antrian;
+            $antrian->nomor         = DB::raw($queryNoAntrian);
+
+            $antrian->save();
+
+            // Registasi to Antrian
+            $registrasiAntrian = new Registrasi_antrian();
+            $registrasiAntrian->noreg = $data->noreg;
+            $registrasiAntrian->id_antrian = $antrian->id;
+            $registrasiAntrian->save();
+
+            // Registasi to Request RM
+            $regRequest = new Registrasi_request_rm();
+            $regRequest->noreg = $data->noreg;
+            $regRequest->id_pasien = $request->idPasien;
+            $regRequest->id_ruangan = $request->ruanganPoli;
+            $regRequest->dateCreated = date('Y-m-d H:i:s');
+            $regRequest->save();
 
             DB::commit();
 

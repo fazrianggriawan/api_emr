@@ -14,4 +14,9 @@ class Mst_ruangan extends Model
         return $this->hasMany(Registrasi::class, 'ruangan', 'id');
     }
 
+    public function r_jns_perawatan()
+    {
+        return $this->hasOne(Mst_jns_perawatan::class, 'id', 'jns_perawatan');
+    }
+
 }
