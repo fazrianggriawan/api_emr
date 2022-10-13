@@ -45,7 +45,7 @@ class LoginController extends BaseController
             return LibApp::response(201);
         }else{
             $this->url = explode('/',$request->url);
-            if( $this->url[1] == 'home' ) return LibApp::response(200);
+            if( $this->url[1] == 'home' || $this->url[1] == 'login' ) return LibApp::response(200);
 
             $dataLogin = App_user_logged_in::where('token', $request->header('token'))->first();
             if( $dataLogin ){
