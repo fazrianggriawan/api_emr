@@ -148,7 +148,12 @@ class MasterController extends BaseController
 
     public function Ruangan($jnsPerawatan)
     {
-        $data = Mst_ruangan::where('jns_perawatan', $jnsPerawatan)->where('active', 1)->get();
+        $query = Mst_ruangan::where('active', 1);
+        if( $jnsPerawatan != 'all' )   {
+            $query->where('jns_perawatan', $jnsPerawatan);
+        }
+        $data = $query->get();
+
         return LibApp::response(200, $data);
     }
 

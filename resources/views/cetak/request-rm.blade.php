@@ -4,7 +4,7 @@
         width: 270px;
         height: 100%;
         top: 0;
-        left: 0;
+        left: 20px;
         font-family: Arial, Helvetica, sans-serif;
         line-height: 16px;
         font-size: 14px;
@@ -26,7 +26,7 @@
             <td>:</td>
             <td>
                 <?php if($data->r_registrasi->id_jns_perawatan == 'rj'){  ?>
-                <?php echo $data->r_registrasi_antrian->r_antrian->prefix; ?>-<?php echo $data->r_registrasi_antrian->r_antrian->nomor; ?>
+                <?php echo @$data->r_registrasi_antrian->r_antrian->prefix; ?>-<?php echo @$data->r_registrasi_antrian->r_antrian->nomor; ?>
                 <?php } ?>
             </td>
         </tr>
@@ -60,9 +60,10 @@
             <td><?php echo strtoupper($data->dateCreated) ?></td>
         </tr>
     </table>
-    <div style="margin-top: 10px; margin-left: 5px;">
+    <div style="margin-top: 10px; text-align: center; margin-left: 8px;">
         <?php echo $qrcode; ?>
     </div>
+    <div style="margin-top: 30px;">.</div>
 </div>
 
 <script>

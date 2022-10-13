@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Printer;
 
 use App\Http\Libraries\PDFBarcode;
+use App\Models\Pasien;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -10,11 +11,11 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 class Barcode extends BaseController
 {
-    public function StickerBarcode($idPasien)
+    public function GoPrint($idPasien)
     {
-        $data = DB::table('pasien')->where('id', $idPasien)->get();
-        if( count($data) > 0 ){
-            $this->doPrint($data[0]);
+        $data = Pasien::where('id', $idPasien)->first();
+        if( $data ){
+            $this->doPrint($data);
         }
     }
 

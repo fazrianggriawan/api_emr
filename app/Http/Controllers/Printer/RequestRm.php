@@ -18,8 +18,6 @@ class RequestRm extends BaseController
         }
         ])->where('id', $id_request)->first();
 
-        // return $data;
-
         return view('cetak/request-rm', ['data'=>$data,'qrcode'=>QrCode::size(90)->generate($data->noreg.$data->id)]);
 
     }

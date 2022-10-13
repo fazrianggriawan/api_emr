@@ -49,6 +49,7 @@ $router->get('registrasi/dataRegistrasi', 'Registrasi\RegistrasiController@GetDa
 $router->get('registrasi/registrasiByNoreg/{noreg}', 'Registrasi\RegistrasiController@GetRegistasi');
 $router->post('registrasi/save', 'Registrasi\RegistrasiController@SaveRegistrasi');
 $router->post('registrasi/filtering', 'Registrasi\RegistrasiController@FilterDataRegistrasi');
+$router->post('registrasi/request_rm', 'Registrasi\PermintaanRmController@GetData');
 
 // Tarif
 $router->get('tarif/byCategory/{categoryId}', 'Billing\TarifController@TarifByCategory');
@@ -115,8 +116,8 @@ $router->post('do_login', 'LoginController@DoLogin');
 $router->post('role_access', 'LoginController@RoleAccess');
 
 // Print
-$router->get('print/stickerBarcode/{idPasien}', 'Printer\Barcode@StickerBarcode');
-$router->get('print/biodataPasien/{idPasien}', 'Printer\Pasien@BiodataPasien');
+$router->get('print/stickerBarcode/{idPasien}', 'Printer\Barcode@GoPrint');
+$router->get('print/biodataPasien/{idPasien}', 'Printer\BiodataPasien@GoPrint');
 $router->get('print/dataRegistrasi/{noreg}', 'Printer\Registrasi@DataRegistrasi');
 $router->get('print/kwitansi/{noKwitansi}', 'Printer\Kwitansi@GoPrint');
 $router->get('print/rincianBilling/{noreg}', 'Printer\RincianBilling@GoPrint');
