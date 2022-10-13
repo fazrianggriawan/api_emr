@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Billing;
 
 use App\Http\Libraries\LibApp;
 use App\Models\Billing;
+use App\Models\Billing_discount_percent;
 use App\Models\Billing_jasa;
 use App\Models\Billing_pembayaran;
 use App\Models\Mst_ruangan;
@@ -108,6 +109,7 @@ class BillingController extends BaseController
     {
         $data = Billing::with(['r_registrasi',
                                'r_ruangan',
+                               'r_discount_percent',
                                'r_tarif_harga' => function($q){
                                     return $q->with('r_tarif', 'r_tarif_harga_jasa');
                                 },
@@ -119,58 +121,84 @@ class BillingController extends BaseController
                         ->orderBy('dateCreated', 'desc')
                         ->get();
 
-        return LibApp::response(200, $data);
+        $res = array();
+        foreach ($data as $key => $value) {
+            $res[$key] = $value;
+            if( !$value->r_discount_percent ){
+                $res[$key]['discount_percent'] = 0;
+            }else{
+                $res[$key]['discount_percent'] = $value->r_discount_percent->discount;
+            }
+        }
+
+        return LibApp::response(200, $res);
     }
 
     public function AddDiscount(Request $request)
     {
-        $checkIt = DB::table('billing_discount_percent')->where('id_billing',$request->id)->get();
-        if( count($checkIt) == 0 ){
-            $add = DB::table('billing_discount_percent')->insert(['id_billing'=>$request->id, 'discount'=>$request->discount]);
-        }else{
-            $add = DB::table('billing_discount_percent')->where('id_billing', $request->id)->update(['id_billing'=>$request->id, 'discount'=>$request->discount]);
+        $discount = Billing_discount_percent::where('id_billing', $request->id)->first();
+
+        if( !$discount ){
+            $discount = new Billing_discount_percent();
         }
-        if( $add ){
-            return LibApp::response(200, [], 'sukses');
+
+        $discount->id_billing = $request->id;
+        $discount->discount = $request->discount_percent;
+
+        $save = $discount->save();
+
+        if( $save ){
+            return LibApp::response(200);
+        }else{
+            return LibApp::response(201);
         }
     }
 
     public function AddPembayaran(Request $request)
     {
-        $insert = array(
-            'noreg' => $request->noreg,
-            'id_jns_bayar' => $request->jnsPembayaran,
-            'jumlah' => $request->jumlah,
-            'dateCreated' => date('Y-m-d H:i:s'),
-            'userCreated' => 'demo'
-        );
+        $pembayaran = new Billing_pembayaran();
 
-        $insert = DB::table('billing_pembayaran')->insert($insert);
+        $pembayaran->noreg = $request->noreg;
+        $pembayaran->id_cara_bayar = $request->jnsPembayaran;
+        $pembayaran->jumlah = str_replace(',', '', $request->jumlah);
+        $pembayaran->dateCreated = date('Y-m-d H:i:s');
+        $pembayaran->userCreated = 'demo';
 
-        if( $insert ){
-            return LibApp::response(200, [], 'sukses');
+        $save = $pembayaran->save();
+        if( $save ){
+            return LibApp::response(200);
+        }else{
+            return LibApp::response(201);
         }
 
     }
 
     public function DeletePembayaran(Request $request)
     {
-        $update = DB::table('billing_pembayaran')->where('id', $request->id)->update(['deleted'=>1]);
+        $update = Billing_pembayaran::where('id', $request->id)->update(['deleted'=>1]);
 
         if( $update ){
-            return LibApp::response(200, [], 'sukses');
+            return LibApp::response(200);
+        }else{
+            return LibApp::response(201);
         }
 
     }
 
     public function DataPembayaran($noreg)
     {
-        $data = DB::table('billing_pembayaran')
-                ->where('noreg', $noreg)
-                ->where('deleted', 0)
-                ->leftJoin('mst_jns_bayar', 'mst_jns_bayar.id', '=', 'billing_pembayaran.id_jns_bayar')
-                ->get();
-        return LibApp::response(200, $data, 'sukses');
+        $data = Billing_pembayaran::with('r_cara_bayar')->where('deleted', 0)->get();
+        return LibApp::response(200, $data);
+    }
+
+    public function DeleteBilling(Request $request)
+    {
+        $delete = Billing::where('id', $request->id)->update(['deleted' => 1]);
+        if( $delete ){
+            return LibApp::response(200);
+        }else{
+            return LibApp::response(201);
+        }
     }
 
 

@@ -64,6 +64,7 @@ $router->post('billing/updateJumlah', 'Billing\BillingController@UpdateJumlah');
 $router->post('billing/addDiscount', 'Billing\BillingController@AddDiscount');
 $router->post('billing/addPembayaran', 'Billing\BillingController@AddPembayaran');
 $router->post('billing/deletePembayaran', 'Billing\BillingController@DeletePembayaran');
+$router->post('billing/deleteBilling', 'Billing\BillingController@DeleteBilling');
 $router->get('billing/billingByNoreg/{noreg}', 'Billing\BillingController@BillingByNoreg');
 $router->get('billing/dataPembayaran/{noreg}', 'Billing\BillingController@DataPembayaran');
 
@@ -128,6 +129,9 @@ $router->get('test', 'LoginController@Test');
 // App
 $router->get('app/modules/{username}', 'App\AppController@ModuleByUsername');
 $router->get('app/ruanganByUsername/{username}', 'App\AppController@RuanganByUsername');
+
+// Setting
+$router->get('setting/emr/form-ruangan', 'Setting\Emr\FormRuanganController@FormRuangan');
 
 // Medical Record
 // $router->get('medicalRecord', 'Billing\TarifController@hallo');

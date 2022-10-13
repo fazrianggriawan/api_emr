@@ -43,4 +43,9 @@ class Billing extends Model
         return $this->hasMany(Billing_jasa::class, 'id_billing', 'id');
     }
 
+    public function r_discount_percent()
+    {
+        return $this->hasOne(Billing_discount_percent::class, 'id_billing', 'id');
+    }
+
 }

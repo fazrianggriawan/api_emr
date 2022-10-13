@@ -31,6 +31,13 @@ class Emr_form_ruangan extends Model
 
         foreach ($data as $key => $row ) {
             $res[$key] = $row->r_question;
+
+            if($row->r_question->controlType == 'checkbox') {
+                $res[$key]['value_checkbox'] = ($row->value == '0') ? FALSE : TRUE;
+            }else{
+                $res[$key]['value_checkbox'] = $row->value;
+            }
+
             $res[$key]['options'] = $row->r_options;
             foreach ($row->r_options as $key2 => $value2) {
                 $res[$key]['options'][$key2] = array(

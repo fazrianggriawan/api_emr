@@ -22,8 +22,17 @@ class QuestionController extends BaseController
         $i = 0;
         foreach ($data as $key => $row ) {
             $res[$key] = $row->r_question;
+            $res[$key]['id_parent'] = $row->id_parent;
+
+            if($row->r_question->controlType == 'checkbox') {
+                $res[$key]['value_checkbox'] = ($row->value == '0') ? FALSE : TRUE;
+            }else{
+                $res[$key]['value_checkbox'] = $row->value;
+            }
+
             $res[$key]['options'] = $row->r_options;
             $res[$key]['child'] = Emr_form_ruangan::Parsing($row->r_child);
+
             foreach ($row->r_options as $key2 => $value2) {
                  $res[$key]['options'][$key2] = array(
                         'key' => $value2->r_form_question_options->key,
