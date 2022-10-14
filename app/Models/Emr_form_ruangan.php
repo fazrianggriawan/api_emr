@@ -8,6 +8,7 @@ class Emr_form_ruangan extends Model
 {
     protected $table = 'emr_form_ruangan';
     protected $primaryKey = 'id';
+    public $timestamps = false;
 
     public function r_ruangan(){
         return $this->hasOne(Mst_ruangan::class, 'id', 'id_ruangan');
@@ -31,6 +32,7 @@ class Emr_form_ruangan extends Model
 
         foreach ($data as $key => $row ) {
             $res[$key] = $row->r_question;
+            $res[$key]['key'] = $row->r_question->key.'_'.$row->id;
 
             if($row->r_question->controlType == 'checkbox') {
                 $res[$key]['value_checkbox'] = ($row->value == '0') ? FALSE : TRUE;

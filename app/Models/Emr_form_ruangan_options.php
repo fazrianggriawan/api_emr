@@ -8,6 +8,7 @@ class Emr_form_ruangan_options extends Model
 {
     protected $table = 'emr_form_ruangan_options';
     protected $primaryKey = 'id';
+    public $timestamps = false;
 
     public function r_form_ruangan(){
         return $this->hasOne(Emr_form_ruangan::class, 'id', 'id_emr_form_ruangan');

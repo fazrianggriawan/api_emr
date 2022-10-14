@@ -102,6 +102,9 @@ $router->post('emr/deleteOrder', 'Emr\TestOrderController@DeleteOrder');
 $router->get('emr/dataOrder/{noreg}/{unit}', 'Emr\TestOrderController@OrderByNoreg');
 
 $router->get('emr/question', 'Emr\QuestionController@Question');
+$router->get('emr/controltype', 'Emr\QuestionController@ControlType');
+$router->get('emr/parent/{id_form}', 'Emr\QuestionController@ParentByForm');
+$router->post('emr/save/emr-form-ruangan', 'Emr\QuestionController@SaveEmrFormRuangan');
 
 // Radiologi
 $router->get('radiologi/dataOrder/{tanggal}/{status}', 'Radiologi\RadiologiController@DataOrder');
