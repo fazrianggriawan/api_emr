@@ -37,8 +37,14 @@ class PasienController extends BaseController
 
     public function Update(Request $request)
     {
-        $update = $this->SetDataPasien($request);
-        $pasien = DB::table('pasien')->where('id', $request->input('id'))->update($update);
+        $data = $this->SetDataPasien($request);
+        $update = DB::table('pasien')->where('id', $request->input('id'))->update($data);
+        if( $update ){
+            return LibApp::response(200);
+        }else{
+            return LibApp::response(201);
+        }
+
     }
 
     public function IsAlreadyExist($request)

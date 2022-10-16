@@ -8,6 +8,7 @@ class Mst_status_nikah extends Model
 {
     protected $table        = 'mst_status_nikah';
     protected $primaryKey   = 'id';
+    protected $keyType      = 'string';
 
     public function pasien()
     {
