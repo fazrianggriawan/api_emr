@@ -123,13 +123,29 @@ class RegistrasiController extends BaseController
 
     public function FilterDataRegistrasi(Request $request)
     {
-        $data = Registrasi::GetAllData()
-                ->where('tglReg', '>=', $request->from)
-                ->where('tglReg', '<=', $request->to)
-                ->where('id_jns_perawatan' , $request->jnsPerawatan)
-                ->where('ruangan', $request->ruangan)
-                ->where('dpjp_pelaksana', $request->dokter)
-                ->get();
+        $data = Registrasi::GetAllData();
+        $this->request = $request;
+        if( $request->nama ) $data->whereHas('pasien', function($q){
+            return $q->where('nama' , 'like', '%'.$this->request->nama.'%');
+        });
+        if( $request->noreg ) $data->where('noreg', $request->noreg);
+        if( $request->jnsPerawatan ) $data->where('id_jns_perawatan' , $request->jnsPerawatan);
+        if( $request->ruangan ) $data->where('ruangan', $request->ruangan);
+        if( $request->dokter ) $data->where('dpjp_pelaksana', $request->dokter);
+        if( $request->jnsPembayaran ) $data->whereHas('golpas', function($q){
+            return $q->where('group', $this->request->jnsPembayaran);
+        });
+        if( $request->norm ) $data->whereHas('pasien', function($q){
+            return $q->where('norm', $this->request->norm);
+        });
+        if( $request->from ){
+            $data->where('tglReg', '>=', LibApp::dateLocalToSql($request->from) );
+            if( !isset($request->to) ) $data->where('tglReg', '<=', LibApp::dateLocalToSql($request->from) );
+        }
+        if( isset($request->to) ) $data->where('tglReg', '<=', LibApp::dateLocalToSql($request->to) );
+
+        $data = $data->get();
+
         return LibApp::response(200, $data, 'Sukses');
     }
 

@@ -44,13 +44,14 @@ class LoginController extends BaseController
         if( $request->header('token') === null ){
             return LibApp::response(201);
         }else{
+            $this->request = $request;
             $this->url = explode('/',$request->url);
             if( $this->url[1] == 'home' || $this->url[1] == 'login' ) return LibApp::response(200);
 
             $dataLogin = App_user_logged_in::where('token', $request->header('token'))->first();
             if( $dataLogin ){
                 $access = App_module_user::with(['r_module'])->where('id_user', $dataLogin->id_user)->whereHas('r_module', function($q){
-                    return $q->where('router', $this->url[1]);
+                    return $q->where('router', $this->url[1])->orWhere('router', ltrim($this->request->url, '/'));
                 })->first();
                 if($access || $this->url[1] == 'home'){
                     return LibApp::response(200);

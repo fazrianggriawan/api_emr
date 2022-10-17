@@ -15,7 +15,7 @@ class AppController extends BaseController
         $this->username = $username;
         $data = App_module_user::with(['r_module', 'r_user'])->whereHas('r_user', function($q){
             return $q->where('username', $this->username);
-        })->get();
+        })->orderBy('order')->get();
 
         if( $data ){
             $array = array();

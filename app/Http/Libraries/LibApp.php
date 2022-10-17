@@ -33,4 +33,12 @@ class LibApp
         }
     }
 
+    public static function dateLocalToSql($tanggal='')
+    {
+        if( $tanggal != '' ){
+            $aTanggal = explode('/', $tanggal);
+            return $aTanggal[2].'-'.$aTanggal[1].'-'.$aTanggal[0];
+        }
+    }
+
 }
