@@ -57,6 +57,11 @@ $app->singleton(
 |
 */
 
+
+$app->middleware([
+    Fruitcake\Cors\HandleCors::class,
+]);
+
 // $app->middleware([
 //     App\Http\Middleware\ExampleMiddleware::class
 // ]);
@@ -75,7 +80,7 @@ $app->singleton(
 | totally optional, so you are not required to uncomment this line.
 |
 */
-
+$app->register(Fruitcake\Cors\CorsServiceProvider::class);
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
@@ -85,9 +90,11 @@ $app->register(Elibyy\TCPDF\ServiceProvider::class);
 class_alias(Elibyy\TCPDF\Facades\TCPDF::class, 'PDF');
 
 
-$app->configure('cors');
+
+// $app->configure('cors');
 $app->configure('config');
 $app->configure('dompdf');
+$app->configure('cors');
 
 /*
 |--------------------------------------------------------------------------
