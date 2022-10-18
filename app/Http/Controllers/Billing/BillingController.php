@@ -8,6 +8,7 @@ use App\Models\Billing_discount_percent;
 use App\Models\Billing_jasa;
 use App\Models\Billing_pembayaran;
 use App\Models\Mst_ruangan;
+use App\Models\Registrasi;
 use App\Models\Tarif_harga_jasa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -156,18 +157,30 @@ class BillingController extends BaseController
 
     public function AddPembayaran(Request $request)
     {
-        $pembayaran = new Billing_pembayaran();
+        DB::beginTransaction();
 
-        $pembayaran->noreg = $request->noreg;
-        $pembayaran->id_cara_bayar = $request->jnsPembayaran;
-        $pembayaran->jumlah = str_replace(',', '', $request->jumlah);
-        $pembayaran->dateCreated = date('Y-m-d H:i:s');
-        $pembayaran->userCreated = 'demo';
+        try {
+            //code...
+            $pembayaran = new Billing_pembayaran();
 
-        $save = $pembayaran->save();
-        if( $save ){
-            return LibApp::response(200);
-        }else{
+            $pembayaran->noreg = $request->noreg;
+            $pembayaran->id_cara_bayar = $request->jnsPembayaran;
+            $pembayaran->jumlah = str_replace(',', '', $request->jumlah);
+            $pembayaran->dateCreated = date('Y-m-d H:i:s');
+            $pembayaran->userCreated = 'demo';
+            $save = $pembayaran->save();
+
+            Registrasi::where('noreg', $request->noreg)->update(['status'=>'closed']);
+
+            if( $save ){
+                DB::commit();
+                return LibApp::response(200);
+            }else{
+                return LibApp::response(201);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
             return LibApp::response(201);
         }
 
@@ -187,7 +200,7 @@ class BillingController extends BaseController
 
     public function DataPembayaran($noreg)
     {
-        $data = Billing_pembayaran::with('r_cara_bayar')->where('deleted', 0)->get();
+        $data = Billing_pembayaran::with('r_cara_bayar')->where('deleted', 0)->where('noreg', $noreg)->get();
         return LibApp::response(200, $data);
     }
 
