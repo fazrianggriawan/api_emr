@@ -178,6 +178,8 @@ $router->get('get_image', 'MedicalRecord\AssessmentUmumController@getImage');
 // $router->post('save_assessment_umum', 'AssessmentUmumController@save');
 // $router->post('save_objective', 'ObjectiveController@save');
 
+$router->get('eklaim/print', 'Bridging\EklaimController@PrintKlaim');
+
 
 $router->get('test', function(){
     Storage::disk('local')->put('example.txt', 'Contents');

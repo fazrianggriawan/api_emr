@@ -24,4 +24,9 @@ class Mst_ruangan extends Model
         return $this->hasMany(Emr_form::class, 'id_ruangan', 'id');
     }
 
+    public function r_poli()
+    {
+        return $this->hasOne(Mst_poli::class, 'id_ruangan', 'id');
+    }
+
 }
