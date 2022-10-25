@@ -14,6 +14,10 @@ class Emr_form_ruangan extends Model
         return $this->hasOne(Mst_ruangan::class, 'id', 'id_ruangan');
     }
 
+    public function r_form_emr(){
+        return $this->hasOne(Emr_form::class, 'id', 'id_emr_form');
+    }
+
     public function r_question(){
         return $this->hasOne(Emr_form_question::class, 'id', 'id_emr_form_question');
     }
