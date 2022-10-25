@@ -65,7 +65,7 @@ $router->post('billing/addDiscount', 'Billing\BillingController@AddDiscount');
 $router->post('billing/addPembayaran', 'Billing\BillingController@AddPembayaran');
 $router->post('billing/deletePembayaran', 'Billing\BillingController@DeletePembayaran');
 $router->post('billing/deleteBilling', 'Billing\BillingController@DeleteBilling');
-$router->get('billing/billingByNoreg/{noreg}', 'Billing\BillingController@BillingByNoreg');
+$router->get('billing/billingByNoreg/{noreg}/{status}', 'Billing\BillingController@BillingByNoreg');
 $router->get('billing/dataPembayaran/{noreg}', 'Billing\BillingController@DataPembayaran');
 
 // Pasien

@@ -106,7 +106,7 @@ class BillingController extends BaseController
         }
     }
 
-    public function BillingByNoreg($noreg)
+    public function BillingByNoreg($noreg, $status)
     {
         $data = Billing::with(['r_registrasi',
                                'r_ruangan',
@@ -119,8 +119,13 @@ class BillingController extends BaseController
                                 }])
                         ->where('noreg', $noreg)
                         ->where('deleted', 0)
-                        ->orderBy('dateCreated', 'desc')
-                        ->get();
+                        ->orderBy('dateCreated', 'desc');
+
+        if( $status != 'all' ){
+            $data->where('status', $status);
+        }
+
+        $data = $data->get();
 
         $res = array();
         foreach ($data as $key => $value) {
