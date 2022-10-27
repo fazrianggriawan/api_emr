@@ -8,6 +8,7 @@ use App\Models\Mst_angkatan;
 use App\Models\Mst_awalan;
 use App\Models\Mst_golpas;
 use App\Models\Mst_grouppas;
+use App\Models\Mst_jns_bayar;
 use App\Models\Mst_jns_perawatan;
 use App\Models\Mst_kecamatan;
 use App\Models\Mst_kelas;
@@ -173,4 +174,12 @@ class MasterController extends BaseController
 
         return LibApp::response(200, $data);
     }
+
+    public function JnsPembayaran()
+    {
+        $data = Mst_jns_bayar::get();
+        return LibApp::response(200, $data);
+    }
+
+
 }

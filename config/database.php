@@ -14,6 +14,17 @@ return [
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'strict'    => false
+        ],
+        'postgres' => [
+            'driver'   => 'pgsql',
+            'host'     => env('DB_PG_HOST'),
+            'database' => env('DB_PG_DATABASE'), // This seems to be ignored
+            'port'     => env('DB_PG_PGSQL_PORT', 5432),
+            'username' => env('DB_PG_USERNAME'),
+            'password' => env('DB_PG_PASSWORD'),
+            'charset'  => 'utf8',
+            'prefix'   => '',
+            'schema'   => 'public'
         ]
     ]
 ];

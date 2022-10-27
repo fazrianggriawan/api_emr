@@ -43,10 +43,12 @@ $router->get('master/waktuPelayanan', 'Master\MasterController@WaktuPelayanan');
 $router->get('master/ruangan/{jnsPerawatan}', 'Master\MasterController@Ruangan');
 $router->get('master/kelasRuangan', 'Master\MasterController@Kelas');
 $router->get('master/tempatTidurByRuangan/{idRuangan}', 'Master\MasterController@TempatTidurByRuangan');
+$router->get('master/jnsPembayaran', 'Master\MasterController@JnsPembayaran');
 
 // Registrasi
 $router->get('registrasi/dataRegistrasi', 'Registrasi\RegistrasiController@GetDataRegistrasi');
 $router->get('registrasi/registrasiByNoreg/{noreg}', 'Registrasi\RegistrasiController@GetRegistasi');
+$router->get('registrasi/riwayatKunjungan/{idPasien}/{norm}', 'Registrasi\RiwayatController@GetData');
 $router->post('registrasi/save', 'Registrasi\RegistrasiController@SaveRegistrasi');
 $router->post('registrasi/filtering', 'Registrasi\RegistrasiController@FilterDataRegistrasi');
 $router->post('registrasi/request_rm', 'Registrasi\PermintaanRmController@GetData');
@@ -108,6 +110,14 @@ $router->post('emr/save/emr-form-ruangan', 'Emr\QuestionController@SaveEmrFormRu
 
 // Radiologi
 $router->get('radiologi/dataOrder/{tanggal}/{status}', 'Radiologi\RadiologiController@DataOrder');
+
+// Farmasi
+$router->get('farmasi/dataObat', 'Farmasi\ObatController@DataObat');
+$router->get('farmasi/cariObat/{key}', 'Farmasi\ObatController@CariObat');
+$router->get('farmasi/master/depo', 'Farmasi\MasterController@Depo');
+$router->get('farmasi/master/supplier', 'Farmasi\MasterController@Supplier');
+$router->get('farmasi/opname/periode', 'Farmasi\OpnameController@DataPeriode');
+$router->get('farmasi/opname/stok-obat/{idPeriode}', 'Farmasi\OpnameController@DataStokObat');
 
 // Upload File
 $router->get('upload/getFiles/idPeserta/{idPeserta}', 'UploadController@getFileUploaded');
