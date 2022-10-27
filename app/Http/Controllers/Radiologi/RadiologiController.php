@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Radiologi;
 
 use App\Http\Libraries\LibApp;
 use App\Models\Radiologi;
+use App\Models\Registrasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -34,6 +35,14 @@ class RadiologiController extends BaseController
                 ->get();
 
         return LibApp::response(200, $data, '');
+    }
+
+    public function HasilRadiologi($noreg)
+    {
+        $data = Registrasi::where('noreg', $noreg)->get();
+        $img = '/nas-simrs/1-100002/RJ221012000001/RAD/11746_1.jpg';
+        header('Content-Type: image/jpeg');
+        return readfile($img);
     }
 
 

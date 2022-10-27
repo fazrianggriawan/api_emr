@@ -139,10 +139,10 @@ class RegistrasiController extends BaseController
             return $q->where('norm', $this->request->norm);
         });
         if( $request->from ){
-            $data->where('tglReg', '>=', LibApp::dateLocalToSql($request->from) );
-            if( !isset($request->to) ) $data->where('tglReg', '<=', LibApp::dateLocalToSql($request->from) );
+            $data->where('tglReg', '>=', $request->from );
+            if( !isset($request->to) ) $data->where('tglReg', '<=', $request->from );
         }
-        if( isset($request->to) ) $data->where('tglReg', '<=', LibApp::dateLocalToSql($request->to) );
+        if( isset($request->to) ) $data->where('tglReg', '<=', $request->to );
 
         $data = $data->get();
 

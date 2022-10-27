@@ -110,6 +110,7 @@ $router->post('emr/save/emr-form-ruangan', 'Emr\QuestionController@SaveEmrFormRu
 
 // Radiologi
 $router->get('radiologi/dataOrder/{tanggal}/{status}', 'Radiologi\RadiologiController@DataOrder');
+$router->get('radiologi/hasil-photo/{noreg}', 'Radiologi\RadiologiController@HasilPhoto');
 
 // Farmasi
 $router->get('farmasi/dataObat', 'Farmasi\ObatController@DataObat');
