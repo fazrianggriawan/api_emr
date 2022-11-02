@@ -19,7 +19,7 @@ class OpnameController extends BaseController
 
     public function DataStokObat($idPeriode)
     {
-        return $data = Farmasi_opname_nama_obat::with(['r_nama_obat','r_stok_obat'=>function($q){
+        $data = Farmasi_opname_nama_obat::with(['r_nama_obat','r_stok_obat'=>function($q){
             return $q->select(['*',DB::raw('SUM(jumlah_stok) as total')])->groupBy('id_farmasi_opname_nama_obat');
         }])->where('id_farmasi_opname_periode', $idPeriode)->get();
         return LibApp::response(200, $data);

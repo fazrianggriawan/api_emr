@@ -17,7 +17,10 @@ class ObatController extends BaseController
 
     public function CariObat($key)
     {
-        $data = Apotik_salak_obatx::select(['kode as id', 'nama','hrg_jual1 as harga','pak2 as satuan'])->where('nama', 'like', strtoupper($key).'%')->where('sr_deleted', '')->get();
+        $data = Apotik_salak_obatx::select(['kode as id', 'nama','hrg_jual1 as harga','pak2 as satuan','sr_recno as id_tarif_harga'])
+                ->where('nama', 'like', strtoupper($key).'%')
+                ->where('sr_deleted', '')
+                ->get();
         return LibApp::response(200, $data);
     }
 }
