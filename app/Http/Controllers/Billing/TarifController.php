@@ -8,6 +8,7 @@ use App\Models\Master;
 use App\Models\Pelaksana;
 use App\Models\Registrasi;
 use App\Models\Tarif;
+use App\Models\Tarif_harga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -117,6 +118,32 @@ class TarifController extends BaseController
             ->whereIn('id_group_jasa', $request->idGroupJasa)
             ->get();
         return LibApp::response_success($data);
+    }
+
+    public function CariTarif($keyword, $category)
+    {
+        $this->keyword = $keyword;
+        $this->category = $category;
+
+        $data = Tarif_harga::with([
+                    'r_tarif'=>function($q){
+                        return $q->with(['r_tarif_category'=>function($q2){
+                            return $q2->with(['r_cat_tarif']);
+                        }]);
+                    },
+                    'r_tarif_harga_jasa'
+                ])
+                ->whereHas('r_tarif.r_tarif_category', function($q){
+                    if( $this->category != 'all' ){
+                        return $q->where('id_category_tarif', $this->category);
+                    }
+                })
+                ->whereHas('r_tarif', function($q){
+                    return $q->where('name', 'like', '%'.$this->keyword.'%')->where('active', 1)->orderBy('name');
+                })
+                ->get();
+
+        return LibApp::response(200, $data);
     }
 
 }

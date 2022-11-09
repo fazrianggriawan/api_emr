@@ -15,6 +15,11 @@ class Tarif extends Model
         return $this->hasMany(Tarif_harga::class, 'tarif_id', 'id');
     }
 
+    public function r_tarif_category()
+    {
+        return $this->hasOne(Tarif_category::class, 'id_tarif', 'id');
+    }
+
     public function TarifHarga($idTarifHarga)
     {
         return DB::table('tarif_harga_jasa')

@@ -46,4 +46,21 @@ class HeaderPrint extends BaseController
 
         return $pdf;
     }
+
+    public function GetHeaderSmall($pdf)
+    {
+        header("Content-type:application/pdf");
+
+        $setting = self::GetSetting(new stdClass());
+
+        $settingRs = Setting::find(1)->first();
+
+        $pdf->SetY(0);
+        $pdf->SetX(2);
+
+        $pdf->SetFont('arial', 'b', $setting->fontSize);
+        $pdf->MultiCell($setting->widthCell+10, $setting->heightCell-1, $settingRs->rs_name, $setting->border);
+
+        return $pdf;
+    }
 }

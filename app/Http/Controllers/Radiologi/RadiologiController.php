@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Radiologi;
 use App\Http\Libraries\LibApp;
 use App\Models\Radiologi;
 use App\Models\Registrasi;
+use App\Models\Tarif_harga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -45,5 +46,25 @@ class RadiologiController extends BaseController
         return readfile($img);
     }
 
+    public function CariTindakan($keyword)
+    {
+        $this->keyword = $keyword;
+
+        $data = Tarif_harga::with([
+                    'r_tarif'=>function($q){
+                        return $q->with(['r_tarif_category']);
+                    },
+                    'r_tarif_harga_jasa'
+                ])
+                ->whereHas('r_tarif.r_tarif_category', function($q){
+                    return $q->where('id_category_tarif', 'RAD');
+                })
+                ->whereHas('r_tarif', function($q){
+                    return $q->where('name', 'like', '%'.$this->keyword.'%')->where('active', 1);
+                })
+                ->get();
+
+        return LibApp::response(200, $data);
+    }
 
 }

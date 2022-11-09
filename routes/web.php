@@ -57,6 +57,7 @@ $router->post('registrasi/request_rm', 'Registrasi\PermintaanRmController@GetDat
 $router->get('tarif/byCategory/{categoryId}', 'Billing\TarifController@TarifByCategory');
 $router->get('tarif/category', 'Billing\TarifController@Category');
 $router->get('tarif/jasa/{idTarifHarga}/{noreg}/{ruangan}', 'Billing\TarifController@TarifJasa');
+$router->get('tarif/cariTarif/{keyword}/{category}', 'Billing\TarifController@CariTarif');
 $router->post('tarif/defaultPelaksana', 'Billing\TarifController@DefaultPelaksana');
 
 // Billing
@@ -69,6 +70,8 @@ $router->post('billing/deletePembayaran', 'Billing\BillingController@DeletePemba
 $router->post('billing/deleteBilling', 'Billing\BillingController@DeleteBilling');
 $router->get('billing/billingByNoreg/{noreg}/{status}', 'Billing\BillingController@BillingByNoreg');
 $router->get('billing/dataPembayaran/{noreg}', 'Billing\BillingController@DataPembayaran');
+$router->get('billing/billingDetailByUnit/{noreg}/{unit}', 'Billing\BillingController@BillingByUnit');
+$router->get('billing/billingByHead/{idBillingHead}', 'Billing\BillingController@BillingByHead');
 
 // Pasien
 $router->post('pasien/save', 'Pasien\PasienController@Save');
@@ -111,14 +114,26 @@ $router->post('emr/save/emr-form-ruangan', 'Emr\QuestionController@SaveEmrFormRu
 // Radiologi
 $router->get('radiologi/dataOrder/{tanggal}/{status}', 'Radiologi\RadiologiController@DataOrder');
 $router->get('radiologi/hasil-photo/{noreg}', 'Radiologi\RadiologiController@HasilPhoto');
+$router->get('radiologi/cariTindakan/{keyword}', 'Radiologi\RadiologiController@CariTindakan');
+
+// Laboratorium
+$router->get('lab/nilaiRujukan/{group}/{noreg}', 'Lab\HasilLabController@DataNilaiRujukan');
+$router->get('lab/hasil/{idBillingHead}', 'Lab\HasilLabController@DataNilaiRujukan');
+$router->get('lab/cariPemeriksaan/{keyword}', 'Lab\LaboratoriumController@CariPemeriksaan');
+$router->post('lab/saveHasil', 'Lab\HasilLabController@SaveHasil');
+$router->post('lab/savePemeriksaan', 'Lab\LaboratoriumController@SavePemeriksaan');
 
 // Farmasi
 $router->get('farmasi/dataObat', 'Farmasi\ObatController@DataObat');
 $router->get('farmasi/cariObat/{key}', 'Farmasi\ObatController@CariObat');
+$router->get('farmasi/getBilling/{noreg}/{status}', 'Farmasi\BillingController@GetBilling');
+$router->get('farmasi/getDataPembayaran/{noreg}', 'Farmasi\BillingController@GetDataPembayaran');
 $router->get('farmasi/master/depo', 'Farmasi\MasterController@Depo');
 $router->get('farmasi/master/supplier', 'Farmasi\MasterController@Supplier');
 $router->get('farmasi/opname/periode', 'Farmasi\OpnameController@DataPeriode');
 $router->get('farmasi/opname/stok-obat/{idPeriode}', 'Farmasi\OpnameController@DataStokObat');
+$router->post('farmasi/saveBilling', 'Farmasi\BillingController@SaveBilling');
+$router->post('farmasi/savePembayaran', 'Farmasi\BillingController@SavePembayaran');
 
 // Upload File
 $router->get('upload/getFiles/idPeserta/{idPeserta}', 'UploadController@getFileUploaded');
@@ -137,6 +152,8 @@ $router->get('print/dataRegistrasi/{noreg}', 'Printer\Registrasi@DataRegistrasi'
 $router->get('print/kwitansi/{noKwitansi}', 'Printer\Kwitansi@GoPrint');
 $router->get('print/rincianBilling/{noreg}', 'Printer\RincianBilling@GoPrint');
 $router->get('print/requestRm/{id_request}', 'Printer\RequestRm@GoPrint');
+$router->get('print/billingFarmasi/{noreg}', 'Printer\BillingFarmasi@GoPrint');
+$router->get('print/hasilLab/{noreg}', 'Printer\HasilLab@GoPrint');
 
 $router->get('test', 'LoginController@Test');
 

@@ -42,7 +42,9 @@
 namespace App\Http\Libraries;
 
 use Codedge\Fpdf\Fpdf\Fpdf;
+use QRcode;
 
+require_once('qrcode/qrcode.class.php');
 
 //function hex2dec
 //returns an associative array (keys: R,G,B) from
@@ -458,6 +460,12 @@ class PDFBarcode extends FPDF {
         $this->Write(5,$txt,$URL);
         $this->SetStyle('U',false);
         $this->SetTextColor(0);
+    }
+
+    function GetQRCode($pdf, $string, $x, $y, $w){
+        $qr = new QRcode($string, 'H');
+        $qr->disableBorder();
+        return $qr->displayFPDF($pdf, $x, $y, $w);
     }
 }                                                                              // FIN DE CLASSE
 ?>
