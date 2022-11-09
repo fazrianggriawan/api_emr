@@ -15,4 +15,9 @@ class Tarif_category extends Model
         return $this->hasOne(Mst_category_tarif::class, 'id', 'id_category_tarif');
     }
 
+    public function r_group_tarif()
+    {
+        return $this->hasOne(Tarif_category_group::class, 'id_category_tarif', 'id_category_tarif');
+    }
+
 }

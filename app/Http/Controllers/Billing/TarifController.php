@@ -62,8 +62,8 @@ class TarifController extends BaseController
                     'value' => '',
                     'options' => $mPelaksana->PelaksanaGroup($value->group_jasa_id),
                     'order' => $i,
-                    'display' => ($value->group_jasa_id == 'rs')? FALSE : TRUE,
-                    'required' => TRUE,
+                    'display' => ($value->jasa > 0 && $value->group_jasa_id != 'rs' ) ? TRUE : FALSE,
+                    'required' => ($value->jasa > 0 ) ? TRUE : FALSE,
                     'jasa' => $value->jasa
                 );
 
@@ -99,7 +99,7 @@ class TarifController extends BaseController
                     'order' => $i,
                     'display' => FALSE,
                     'required' => FALSE,
-                    'jasa' => ''
+                    'jasa' => 0
                 );
                 array_push($newData, $item);
                 $i++;
@@ -120,28 +120,38 @@ class TarifController extends BaseController
         return LibApp::response_success($data);
     }
 
-    public function CariTarif($keyword, $category)
+    public function CariTarif(Request $request)
     {
-        $this->keyword = $keyword;
-        $this->category = $category;
+        Tarif_harga::$keyword = $request->keyword;
+        Tarif_harga::$category = $request->category;
+        Tarif_harga::$paket = $request->paket;
 
-        $data = Tarif_harga::with([
-                    'r_tarif'=>function($q){
-                        return $q->with(['r_tarif_category'=>function($q2){
-                            return $q2->with(['r_cat_tarif']);
-                        }]);
-                    },
-                    'r_tarif_harga_jasa'
-                ])
-                ->whereHas('r_tarif.r_tarif_category', function($q){
-                    if( $this->category != 'all' ){
-                        return $q->where('id_category_tarif', $this->category);
-                    }
-                })
-                ->whereHas('r_tarif', function($q){
-                    return $q->where('name', 'like', '%'.$this->keyword.'%')->where('active', 1)->orderBy('name');
-                })
-                ->get();
+        $data = Tarif_harga::CariTarif();
+
+
+
+        // $data = Tarif_harga::with([
+        //             'r_tarif'=>function($q){
+        //                 return $q->with(['r_tarif_category'=>function($q2){
+        //                     return $q2->with(['r_cat_tarif', 'r_group_tarif'=>function($q3){
+        //                         return $q3->with('r_group');
+        //                     }]);
+        //                 }]);
+        //             },
+        //             'r_tarif_harga_jasa'
+        //         ]);
+
+        // if( $this->category != 'all' ){
+        //     $data->whereHas('r_tarif.r_tarif_category.r_group_tarif', function($q){
+        //         return $q->where('id_mst_group_tarif', $this->category);
+        //     });
+        // }
+
+        // $data->whereHas('r_tarif', function($q){
+        //             return $q->where('name', 'like', '%'.$this->keyword.'%')->where('active', 1)->orderBy('name');
+        //         });
+
+        // $data = $data->get();
 
         return LibApp::response(200, $data);
     }

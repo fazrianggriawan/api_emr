@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Printer;
 use App\Http\Libraries\LibApp;
 use App\Http\Libraries\PDFBarcode;
 use App\Models\Billing;
+use App\Models\Billing_detail;
 use App\Models\Registrasi;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use stdClass;
@@ -13,7 +14,11 @@ class RincianBilling extends BaseController
 {
     public function GoPrint($noreg)
     {
-        $data = Billing::GetAllData()->where('noreg', $noreg)->get();
+        // $data = Billing::GetAllData()->where('noreg', $noreg)->get();
+        // $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
+
+        Billing_detail::$noreg = $noreg;
+        $data = Billing_detail::GetBilling();
         $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
 
         $pdf = new PDFBarcode();
@@ -99,20 +104,22 @@ class RincianBilling extends BaseController
         foreach ($data as $row ) {
             $pdf->Cell(4, $setting->heightCellData, '', $setting->border);
             $pdf->Cell($widthUraian-4, $setting->heightCellData, strtoupper($row->r_tarif_harga->r_tarif->name), $setting->border);
-            $pdf->Cell($widthTanggal, $setting->heightCellData, LibApp::dateHuman($row->tgl_tindakan), $setting->border);
+            $pdf->Cell($widthTanggal, $setting->heightCellData, LibApp::dateHuman($row->tanggal), $setting->border);
             $pdf->Cell($widthKelas, $setting->heightCellData, '', $setting->border);
             $pdf->Cell($widthHarga, $setting->heightCellData, number_format($row->r_tarif_harga->harga), $setting->border, '', 'R');
             $pdf->Cell($widthQty, $setting->heightCellData, number_format($row->qty), $setting->border, '', 'C');
             $pdf->Cell($widthHarga, $setting->heightCellData, '0', $setting->border, '', 'R');
             $pdf->Cell($widthHarga, $setting->heightCellData, number_format($row->r_tarif_harga->harga * $row->qty), $setting->border, '', 'R');
             $pdf->ln();
-            foreach ($row->r_billing_jasa as $jasa ) {
-                if( $jasa->r_pelaksana->group == 'dokter' ){
-                    $pdf->ln(-1);
-                    $pdf->SetFont('arial', 'b', $setting->fontSize-0.5);
-                    $pdf->Cell($setting->widthFull, $setting->heightCellData, '        '.$jasa->r_pelaksana->name, $setting->border);
-                    $pdf->SetFont('arial', '', $setting->fontSize);
-                    $pdf->ln(5);
+            if( $row->r_billing_detail_jasa ){
+                foreach ($row->r_billing_detail_jasa as $jasa ) {
+                    if( $jasa->group == 'dokter' && $jasa->r_pelaksana ){
+                        $pdf->ln(-1);
+                        $pdf->SetFont('arial', 'b', $setting->fontSize-0.5);
+                        $pdf->Cell($setting->widthFull, $setting->heightCellData, '        '.$jasa->r_pelaksana->name, $setting->border);
+                        $pdf->SetFont('arial', '', $setting->fontSize);
+                        $pdf->ln(5);
+                    }
                 }
             }
 

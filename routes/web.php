@@ -57,7 +57,7 @@ $router->post('registrasi/request_rm', 'Registrasi\PermintaanRmController@GetDat
 $router->get('tarif/byCategory/{categoryId}', 'Billing\TarifController@TarifByCategory');
 $router->get('tarif/category', 'Billing\TarifController@Category');
 $router->get('tarif/jasa/{idTarifHarga}/{noreg}/{ruangan}', 'Billing\TarifController@TarifJasa');
-$router->get('tarif/cariTarif/{keyword}/{category}', 'Billing\TarifController@CariTarif');
+$router->post('tarif/cariTarif', 'Billing\TarifController@CariTarif');
 $router->post('tarif/defaultPelaksana', 'Billing\TarifController@DefaultPelaksana');
 
 // Billing

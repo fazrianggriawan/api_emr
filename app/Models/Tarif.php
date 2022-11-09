@@ -20,6 +20,11 @@ class Tarif extends Model
         return $this->hasOne(Tarif_category::class, 'id_tarif', 'id');
     }
 
+    public function r_tarif_paket()
+    {
+        return $this->hasOne(Tarif_paket::class, 'id_tarif', 'id');
+    }
+
     public function TarifHarga($idTarifHarga)
     {
         return DB::table('tarif_harga_jasa')

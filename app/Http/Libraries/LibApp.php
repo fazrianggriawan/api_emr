@@ -27,9 +27,24 @@ class LibApp
 
     public static function dateHuman($tanggal='')
     {
+        $arrayBulan = array(
+            '01' => 'Jan',
+            '02' => 'Feb',
+            '03' => 'Mar',
+            '04' => 'Apr',
+            '05' => 'Mei',
+            '06' => 'Jun',
+            '07' => 'Jul',
+            '08' => 'Ags',
+            '09' => 'Sep',
+            '10' => 'Okt',
+            '11' => 'Nov',
+            '12' => 'Des',
+        );
+
         if( $tanggal != '' ){
             $aTanggal = explode('-', $tanggal);
-            return $aTanggal[2].'-'.$aTanggal[1].'-'.$aTanggal[0];
+            return $aTanggal[2].'-'.$arrayBulan[$aTanggal[1]].'-'.$aTanggal[0];
         }
     }
 
