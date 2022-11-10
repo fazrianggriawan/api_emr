@@ -83,42 +83,6 @@ class BillingController extends BaseController
         Billing_detail::$noreg = $noreg;
         $data = Billing_detail::GetBilling();
         return LibApp::response(200, $data);
-
-        $data = Billing_detail::with([
-                'r_billing_head',
-                'r_billing_detail_jasa'
-                ])->get();
-
-        $data = Billing::with(['r_registrasi',
-                               'r_ruangan',
-                               'r_discount_percent',
-                               'r_tarif_harga' => function($q){
-                                    return $q->with('r_tarif', 'r_tarif_harga_jasa');
-                                },
-                                'r_billing_jasa' => function($q){
-                                    return $q->with('r_tarif_harga_jasa', 'r_pelaksana');
-                                }])
-                        ->where('noreg', $noreg)
-                        ->where('deleted', 0)
-                        ->orderBy('dateCreated', 'desc');
-
-        if( $status != 'all' ){
-            $data->where('status', $status);
-        }
-
-        $data = $data->get();
-
-        $res = array();
-        foreach ($data as $key => $value) {
-            $res[$key] = $value;
-            if( !$value->r_discount_percent ){
-                $res[$key]['discount_percent'] = 0;
-            }else{
-                $res[$key]['discount_percent'] = $value->r_discount_percent->discount;
-            }
-        }
-
-        return LibApp::response(200, $res);
     }
 
     public function AddDiscount(Request $request)
@@ -202,23 +166,9 @@ class BillingController extends BaseController
 
     public function BillingByUnit($noreg, $unit)
     {
-        $this->noreg = $noreg;
-        $this->unit = $unit;
-        $data = Billing_detail::with([
-                    'r_registrasi',
-                    'r_billing_head'=>function($q){
-                        return $q->with('r_ruangan','r_dokter');
-                    },
-                    'r_tarif_harga'=>function($q){
-                        return $q->with('r_tarif');
-                    }
-                ])
-                ->whereHas('r_billing_head', function($q){
-                    return $q->where('noreg', $this->noreg)->where('unit', $this->unit);
-                })
-                ->where('active', 1)
-                ->get();
-
+        Billing_detail::$noreg = $noreg;
+        Billing_detail::$unit = strtoupper($unit);
+        $data = Billing_detail::GetBilling();
         return LibApp::response(200, $data);
     }
 

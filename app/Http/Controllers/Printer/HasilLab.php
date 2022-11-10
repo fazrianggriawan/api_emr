@@ -13,15 +13,21 @@ use stdClass;
 
 class HasilLab extends BaseController
 {
-    public function GoPrint($noreg)
+    public function GoPrint($noreg, $idBillingHead)
     {
-        $data = Lab_hasil_pemeriksaan::with(['r_lab_nama_hasil_rujukan'=>function($q){
-            return $q->with(['r_nama_hasil', 'r_nilai_rujukan']);
-        }])->where('noreg', $noreg)->where('active', 1)->get();
+
+        $data = Lab_hasil_pemeriksaan::with([
+                'r_lab_nama_hasil_rujukan'=>function($q){
+                    return $q->with(['r_nama_hasil', 'r_nilai_rujukan']);
+                }])
+                ->where('id_billing_head', $idBillingHead)
+                ->where('active', 1)
+                ->get();
+
+        $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
 
         $data = collect($data)->groupBy('r_lab_nama_hasil_rujukan.r_nama_hasil.category');
 
-        $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
 
         $pdf = new PDFBarcode();
 
@@ -94,13 +100,6 @@ class HasilLab extends BaseController
         $pdf->Cell($setting->widthCell-30, $setting->heightCell, 'Penjamin', $setting->border);
         $pdf->Cell(3, $setting->heightCell, ':', $setting->border);
         $pdf->Cell($setting->widthCell+1, $setting->heightCell, strtoupper($registrasi->golpas->r_grouppas->name.' - '.$registrasi->golpas->name), $setting->border);
-        $pdf->ln();
-        $pdf->Cell($setting->widthCell-30, $setting->heightCell, 'Tanggal Masuk', $setting->border);
-        $pdf->Cell(3, $setting->heightCell, ':', $setting->border);
-        $pdf->Cell($setting->widthCell+15, $setting->heightCell, LibApp::dateHuman($registrasi->tglReg), $setting->border);
-        $pdf->Cell($setting->widthCell-30, $setting->heightCell, 'Tanggal Keluar', $setting->border);
-        $pdf->Cell(3, $setting->heightCell, ':', $setting->border);
-        $pdf->Cell($setting->widthCell+1, $setting->heightCell, LibApp::dateHuman($registrasi->tglReg), $setting->border);
         $pdf->ln();
         $pdf->Cell($setting->widthFull, 2, '', 'B'); // Border Only
         $pdf->ln(3);

@@ -11,6 +11,7 @@ class Billing_detail extends Model
     public $timestamps      = false;
     public static $noreg;
     public static $idBillingHead;
+    public static $unit;
 
     public static function SaveBillingDetail($billingHead, $request){
         $data = new Billing_detail();
@@ -30,7 +31,9 @@ class Billing_detail extends Model
     public static function GetBilling()
     {
         $data = Billing_detail::with([
-            'r_billing_head',
+            'r_billing_head' => function($q){
+                return $q->with(['r_ruangan','r_pelaksana','r_jns_perawatan']);
+            },
             'r_tarif_harga' => function($q){
                 return $q->with('r_tarif');
             },
@@ -48,6 +51,12 @@ class Billing_detail extends Model
         if( self::$noreg ){
             $data = $data->whereHas('r_billing_head', function($q){
                 return $q->where('noreg', self::$noreg);
+            });
+        }
+
+        if( self::$unit ){
+            $data = $data->whereHas('r_billing_head', function($q){
+                return $q->where('unit', self::$unit);
             });
         }
 

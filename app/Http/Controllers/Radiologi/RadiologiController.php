@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Radiologi;
 
+use App\Http\Controllers\Master\MasterController;
 use App\Http\Libraries\LibApp;
 use App\Models\Radiologi;
+use App\Models\Radiologi_hasil_pemeriksaan;
 use App\Models\Registrasi;
 use App\Models\Tarif_harga;
 use Illuminate\Http\Request;
@@ -66,5 +68,43 @@ class RadiologiController extends BaseController
 
         return LibApp::response(200, $data);
     }
+
+    public function SaveHasil(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            if( $request->id != '' ){
+                $update = new Radiologi_hasil_pemeriksaan();
+                $update->where('id', $request->id)->update(['active'=>0]);
+            }
+
+            $hasil = new Radiologi_hasil_pemeriksaan();
+            $hasil->tanggal = $request->tanggal;
+            $hasil->noreg = $request->noreg;
+            $hasil->kesimpulan = $request->kesimpulan;
+            $hasil->id_billing_head = $request->idBillingHead;
+            $hasil->id_pelaksana_dokter = $request->dokter;
+            $hasil->dateCreated = date('Y-m-d H:i:s');
+            $hasil->userCreated = 'user';
+
+            $hasil->save();
+
+            DB::commit();
+
+            return LibApp::response(200, [], 'Berhasil menyimpan hasil.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return LibApp::response(201, [], $th->getMessage());
+        }
+    }
+
+    public function GetHasil($idBillingHead)
+    {
+        $data = Radiologi_hasil_pemeriksaan::where('id_billing_head', $idBillingHead)->where('active', 1)->first();
+        return LibApp::response(200, $data);
+    }
+
 
 }

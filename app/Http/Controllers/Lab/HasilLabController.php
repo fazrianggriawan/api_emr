@@ -12,7 +12,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 class HasilLabController extends BaseController
 {
-    public function DataNilaiRujukan($group, $noreg)
+    public function DataNilaiRujukan($group, $idBillingHead)
     {
         $this->arrayGroup = array($group, 'ALL');
         if( strtoupper($group) == 'P' || strtoupper($group) == 'L' ){
@@ -25,7 +25,7 @@ class HasilLabController extends BaseController
 
         $res = array();
         foreach ($data as $row ) {
-            $hasil = Lab_hasil_pemeriksaan::where('noreg', $noreg)->where('id_lab_nama_hasil_rujukan', $row->id)->where('active', 1)->first();
+            $hasil = Lab_hasil_pemeriksaan::where('id_billing_head', $idBillingHead)->where('id_lab_nama_hasil_rujukan', $row->id)->where('active', 1)->first();
             $a = array(
                 'id' => $row->id,
                 'name' => $row->r_nama_hasil->name,
@@ -44,25 +44,18 @@ class HasilLabController extends BaseController
         DB::beginTransaction();
         try {
             //code...
+            Lab_hasil_pemeriksaan::where('id_billing_head', $request->idBillingHead)->update(['active'=>0]);
+
             foreach ($request->data as $row) {
-                $hasil = Lab_hasil_pemeriksaan::where('noreg', $request->noreg)->where('id_lab_nama_hasil_rujukan', $row['id'])->where('active', 1)->first();
-                if( $hasil ){
-                    Lab_hasil_pemeriksaan::where('id', $hasil->id)->update(['active' => 0]);
-                    if( $row['hasil'] ){
-                        $data = new Lab_hasil_pemeriksaan();
-                        $data->id_lab_nama_hasil_rujukan = $row['id'];
-                        $data->hasil = $row['hasil'];
-                        $data->noreg = $request->noreg;
-                        $data->save();
-                    }
-                }else{
-                    if( $row['hasil'] ){
-                        $data = new Lab_hasil_pemeriksaan();
-                        $data->id_lab_nama_hasil_rujukan = $row['id'];
-                        $data->hasil = $row['hasil'];
-                        $data->noreg = $request->noreg;
-                        $data->save();
-                    }
+                if( $row['hasil'] ){
+                    $data = new Lab_hasil_pemeriksaan();
+                    $data->id_lab_nama_hasil_rujukan = $row['id'];
+                    $data->hasil = $row['hasil'];
+                    $data->noreg = $request->noreg;
+                    $data->id_billing_head = $request->idBillingHead;
+                    $data->dateCreated = date('Y-m-d H:i:s');
+                    $data->userCreated = 'user';
+                    $data->save();
                 }
             }
             DB::commit();

@@ -40,9 +40,14 @@ class Billing_head extends Model
         return $this->hasOne(Mst_ruangan::class, 'id', 'id_ruangan');
     }
 
-    public function r_dokter()
+    public function r_pelaksana()
     {
         return $this->hasOne(Mst_pelaksana::class, 'id', 'id_pelaksana_dokter');
+    }
+
+    public function r_jns_perawatan()
+    {
+        return $this->hasOne(Mst_jns_perawatan::class, 'id', 'id_jns_perawatan');
     }
 
 }

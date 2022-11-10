@@ -115,9 +115,11 @@ $router->post('emr/save/emr-form-ruangan', 'Emr\QuestionController@SaveEmrFormRu
 $router->get('radiologi/dataOrder/{tanggal}/{status}', 'Radiologi\RadiologiController@DataOrder');
 $router->get('radiologi/hasil-photo/{noreg}', 'Radiologi\RadiologiController@HasilPhoto');
 $router->get('radiologi/cariTindakan/{keyword}', 'Radiologi\RadiologiController@CariTindakan');
+$router->get('radiologi/getHasil/{idBillingHead}', 'Radiologi\RadiologiController@GetHasil');
+$router->post('radiologi/saveHasil', 'Radiologi\RadiologiController@SaveHasil');
 
 // Laboratorium
-$router->get('lab/nilaiRujukan/{group}/{noreg}', 'Lab\HasilLabController@DataNilaiRujukan');
+$router->get('lab/nilaiRujukan/{group}/{idBillingHead}', 'Lab\HasilLabController@DataNilaiRujukan');
 $router->get('lab/hasil/{idBillingHead}', 'Lab\HasilLabController@DataNilaiRujukan');
 $router->get('lab/cariPemeriksaan/{keyword}', 'Lab\LaboratoriumController@CariPemeriksaan');
 $router->post('lab/saveHasil', 'Lab\HasilLabController@SaveHasil');
@@ -153,7 +155,8 @@ $router->get('print/kwitansi/{noKwitansi}', 'Printer\Kwitansi@GoPrint');
 $router->get('print/rincianBilling/{noreg}', 'Printer\RincianBilling@GoPrint');
 $router->get('print/requestRm/{id_request}', 'Printer\RequestRm@GoPrint');
 $router->get('print/billingFarmasi/{noreg}', 'Printer\BillingFarmasi@GoPrint');
-$router->get('print/hasilLab/{noreg}', 'Printer\HasilLab@GoPrint');
+$router->get('print/hasilLab/{noreg}/{idBillingHead}', 'Printer\HasilLab@GoPrint');
+$router->get('print/hasilRadiologi/{noreg}/{idBillingHead}', 'Printer\HasilRadiologi@GoPrint');
 
 $router->get('test', 'LoginController@Test');
 
