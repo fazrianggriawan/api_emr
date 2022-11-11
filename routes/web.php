@@ -65,11 +65,11 @@ $router->post('billing/save', 'Billing\BillingController@Save');
 $router->post('billing/delete', 'Billing\BillingController@Delete');
 $router->post('billing/updateJumlah', 'Billing\BillingController@UpdateJumlah');
 $router->post('billing/addDiscount', 'Billing\BillingController@AddDiscount');
-$router->post('billing/addPembayaran', 'Billing\BillingController@AddPembayaran');
-$router->post('billing/deletePembayaran', 'Billing\BillingController@DeletePembayaran');
+$router->post('billing/addPembayaran', 'Billing\PembayaranController@AddPembayaran');
+$router->post('billing/deletePembayaran', 'Billing\PembayaranController@DeletePembayaran');
 $router->post('billing/deleteBilling', 'Billing\BillingController@DeleteBilling');
 $router->get('billing/billingByNoreg/{noreg}/{status}', 'Billing\BillingController@BillingByNoreg');
-$router->get('billing/dataPembayaran/{noreg}', 'Billing\BillingController@DataPembayaran');
+$router->get('billing/dataPembayaran/{noreg}', 'Billing\PembayaranController@DataPembayaran');
 $router->get('billing/billingDetailByUnit/{noreg}/{unit}', 'Billing\BillingController@BillingByUnit');
 $router->get('billing/billingByHead/{idBillingHead}', 'Billing\BillingController@BillingByHead');
 

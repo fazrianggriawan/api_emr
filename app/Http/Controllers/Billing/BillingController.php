@@ -4,15 +4,12 @@ namespace App\Http\Controllers\Billing;
 
 use App\Http\Libraries\LibApp;
 use App\Models\Billing;
+use App\Models\Billing_delete;
 use App\Models\Billing_detail;
 use App\Models\Billing_detail_jasa;
 use App\Models\Billing_discount_percent;
 use App\Models\Billing_head;
-use App\Models\Billing_jasa;
-use App\Models\Billing_pembayaran;
-use App\Models\Mst_ruangan;
 use App\Models\Registrasi;
-use App\Models\Tarif_harga_jasa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -22,11 +19,9 @@ class BillingController extends BaseController
     public function Save(Request $request)
     {
 
-        $checkIt = DB::table('billing_pembayaran')->where('noreg', $request->noreg)->where('deleted', 0)->get();
+        $checkIt = Registrasi::StatusRegistrasi($request->billingHead['noreg'], 'closed');
 
-        $checkIt = Billing_pembayaran::where('noreg', $request->noreg)->where('deleted', 0)->get();
-
-        if( count($checkIt) == 0 ){
+        if ( !$checkIt ) {
 
             DB::beginTransaction();
 
@@ -34,7 +29,7 @@ class BillingController extends BaseController
 
                 $billingHead = Billing_head::where('session_id', $request->sessionId)->first();
 
-                if( !$billingHead ){
+                if (!$billingHead) {
                     $billingHead = Billing_head::SaveBillingHead($request);
                 }
 
@@ -44,43 +39,63 @@ class BillingController extends BaseController
 
                 DB::commit();
 
-                return LibApp::response(200, ['idBillingHead'=> $billingHead->id], 'Berhasil Menambah '.$request->tarif['r_tarif']['name']);
-
+                return LibApp::response(200, ['idBillingHead' => $billingHead->id], 'Berhasil Menambah ' . $request->tarif['r_tarif']['name']);
             } catch (\Exception $e) {
                 DB::rollback();
                 // something went wrong
                 return LibApp::response(201, [], $e->getMessage());
             }
-        }else{
-            return LibApp::response(201, [], 'Billing Sudah Dibayar. Tidak dapat input billing');
+        } else {
+            return LibApp::response(201, [], 'Tidak Bisa Menambah Billing. Registrasi Sudah Closed');
         }
     }
 
     public function Delete(Request $request)
     {
-        DB::beginTransaction();
-        $delete = DB::table('billing')->where('id', $request->id)->update(['deleted' => 1]);
 
-        $insert = DB::table('billing_delete')->insert(['id_billing'=>$request->id, 'dateCreated'=>date('Y-m-d H:i:s'), 'userCreated'=>'vclaim']);
+        $checkIt = Registrasi::StatusRegistrasi($request->noreg, 'closed');
+        if($checkIt){
+            return LibApp::response(201, [], 'Gagal Menghapus. Registrasi Sudah Closed');
+        };
 
-        DB::commit();
+        try {
 
-        if( $delete ){
-            return LibApp::response(200, [], 'Sukses');
+            DB::beginTransaction();
+
+            Billing_detail::where('id', $request->id)->update(['active' => 0]);
+            Billing_delete::SaveDelete($request->id);
+
+            DB::commit();
+
+            return LibApp::response(200, ['noreg'=>$request->noreg], 'Berhasil Menghapus Billing.');
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return LibApp::response(201, [], 'Gagal Menghapus. '.$th->getMessage());
         }
     }
 
     public function UpdateJumlah(Request $request)
     {
-        $update = DB::table('billing')->where('id', $request->id)->update(['qty' => $request->qty]);
-        if( $update ){
-            return LibApp::response(200, [], 'Sukses');
+        try {
+            DB::beginTransaction();
+
+            Billing::where('id', $request->id)->update(['qty' => $request->qty]);
+
+            DB::commit();
+
+            return LibApp::response(200, [], 'Berhasil Merubah Jumlah Billing.');
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return LibApp::response(201, [], 'Gagal Merubah. '.$th->getMessage());
         }
     }
 
     public function BillingByNoreg($noreg, $status)
     {
         Billing_detail::$noreg = $noreg;
+        Billing_detail::$status = $status;
         $data = Billing_detail::GetBilling();
         return LibApp::response(200, $data);
     }
@@ -89,7 +104,7 @@ class BillingController extends BaseController
     {
         $discount = Billing_discount_percent::where('id_billing', $request->id)->first();
 
-        if( !$discount ){
+        if (!$discount) {
             $discount = new Billing_discount_percent();
         }
 
@@ -98,68 +113,19 @@ class BillingController extends BaseController
 
         $save = $discount->save();
 
-        if( $save ){
+        if ($save) {
             return LibApp::response(200);
-        }else{
+        } else {
             return LibApp::response(201);
         }
-    }
-
-    public function AddPembayaran(Request $request)
-    {
-        DB::beginTransaction();
-
-        try {
-            //code...
-            $pembayaran = new Billing_pembayaran();
-
-            $pembayaran->noreg = $request->noreg;
-            $pembayaran->id_cara_bayar = $request->jnsPembayaran;
-            $pembayaran->jumlah = str_replace(',', '', $request->jumlah);
-            $pembayaran->dateCreated = date('Y-m-d H:i:s');
-            $pembayaran->userCreated = 'demo';
-            $save = $pembayaran->save();
-
-            Registrasi::where('noreg', $request->noreg)->update(['status'=>'closed']);
-
-            if( $save ){
-                DB::commit();
-                return LibApp::response(200);
-            }else{
-                return LibApp::response(201);
-            }
-        } catch (\Throwable $th) {
-            //throw $th;
-            DB::rollBack();
-            return LibApp::response(201);
-        }
-
-    }
-
-    public function DeletePembayaran(Request $request)
-    {
-        $update = Billing_pembayaran::where('id', $request->id)->update(['deleted'=>1]);
-
-        if( $update ){
-            return LibApp::response(200);
-        }else{
-            return LibApp::response(201);
-        }
-
-    }
-
-    public function DataPembayaran($noreg)
-    {
-        $data = Billing_pembayaran::with('r_cara_bayar')->where('deleted', 0)->where('noreg', $noreg)->get();
-        return LibApp::response(200, $data);
     }
 
     public function DeleteBilling(Request $request)
     {
         $delete = Billing::where('id', $request->id)->update(['deleted' => 1]);
-        if( $delete ){
+        if ($delete) {
             return LibApp::response(200);
-        }else{
+        } else {
             return LibApp::response(201);
         }
     }
@@ -182,19 +148,18 @@ class BillingController extends BaseController
         $this->id = $idBillingHead;
         $data = Billing_detail::with([
             'r_billing_head',
-            'r_tarif_harga' => function($q){
+            'r_tarif_harga' => function ($q) {
                 return $q->with('r_tarif');
             },
-            'r_billing_detail_jasa' => function($q){
+            'r_billing_detail_jasa' => function ($q) {
                 return $q->with('r_pelaksana');
             }
-        ])->whereHas('r_billing_head', function($q){
+        ])->whereHas('r_billing_head', function ($q) {
             return $q->where('id', $this->id);
         })
-        ->where('active', 1)
-        ->get();
+            ->where('active', 1)
+            ->get();
 
         return LibApp::response(200, $data);
     }
-
 }

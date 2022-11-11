@@ -22,8 +22,8 @@ class LoginController extends BaseController
 
         $data = App_user::GetAllData()->where('username', $request->username)->where('password', $password)->first();
 
-        if( $data ){
-            $jwt = getJWT($data->username,$data->password);
+        if ($data) {
+            $jwt = getJWT($data->username, $data->password);
 
             $userLoggedIn = new App_user_logged_in();
 
@@ -32,33 +32,33 @@ class LoginController extends BaseController
             $userLoggedIn->login_datetime = date('Y-m-d H:i:s');
             $userLoggedIn->save();
 
-            $array = array('auth'=>true,'username'=> $request->username, 'token'=>$jwt, 'role'=>$data->role, 'id_pelaksana'=>$data->id_pelaksana);
+            $array = array('auth' => true, 'username' => $request->username, 'token' => $jwt, 'role' => $data->role, 'id_pelaksana' => $data->id_pelaksana);
             return LibApp::response(200, $array);
-        }else{
+        } else {
             return LibApp::response(201, [], 'Username atau Password anda salah.');
         }
     }
 
     public function RoleAccess(Request $request)
     {
-        if( $request->header('token') === null ){
+        if ($request->header('token') === null) {
             return LibApp::response(201);
-        }else{
+        } else {
             $this->request = $request;
-            $this->url = explode('/',$request->url);
-            if( $this->url[1] == 'home' || $this->url[1] == 'login' ) return LibApp::response(200);
+            $this->url = explode('/', $request->url);
+            if ($this->url[1] == 'home' || $this->url[1] == 'login') return LibApp::response(200);
 
             $dataLogin = App_user_logged_in::where('token', $request->header('token'))->first();
-            if( $dataLogin ){
-                $access = App_module_user::with(['r_module'])->where('id_user', $dataLogin->id_user)->whereHas('r_module', function($q){
+            if ($dataLogin) {
+                $access = App_module_user::with(['r_module'])->where('id_user', $dataLogin->id_user)->whereHas('r_module', function ($q) {
                     return $q->where('router', $this->url[1])->orWhere('router', ltrim($this->request->url, '/'));
                 })->first();
-                if($access || $this->url[1] == 'home'){
+                if ($access || $this->url[1] == 'home') {
                     return LibApp::response(200);
-                }else{
+                } else {
                     return LibApp::response(201, [], 'no access');
                 }
-            }else{
+            } else {
                 return LibApp::response(201);
             }
         }

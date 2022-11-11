@@ -15,34 +15,44 @@ class PasienController extends BaseController
     public function Save(Request $request)
     {
         DB::beginTransaction();
-        $isAlreadyExist = $this->IsAlreadyExist($request);
-        if( $isAlreadyExist->code != 200 ){
-            return json_encode($isAlreadyExist);
-        }
+        try {
+            $isAlreadyExist = $this->IsAlreadyExist($request);
+            if( $isAlreadyExist->code != 200 ){
+                return LibApp::response(201, [], 'Data Pasien Sudah Ada');
+            }
 
-        $sessionId = microtime(true);
-        $insert = $this->SetDataPasien($request);
-        $queryNorm = '(SELECT LPAD(COALESCE(MAX(norm)+1, 100001),6,0) as norm FROM pasien as pasien2)';
-        $insert['norm'] = DB::raw($queryNorm);
-        $insert['date_created'] = date('Y-m-d h:i:s');
-        $insert['session_id'] = $sessionId;
-        $save = DB::table('pasien')->insert($insert);
-        DB::commit();
+            $sessionId = microtime(true);
+            $insert = $this->SetDataPasien($request);
+            $queryNorm = '(SELECT LPAD(COALESCE(MAX(norm)+1, 100001),6,0) as norm FROM pasien as pasien2)';
+            $insert['norm'] = DB::raw($queryNorm);
+            $insert['date_created'] = date('Y-m-d h:i:s');
+            $insert['session_id'] = $sessionId;
+            $save = DB::table('pasien')->insert($insert);
 
-        if ($save) {
-            $data = DB::table('pasien')->where('session_id', $sessionId)->get();
-            return LibApp::response(200, $data[0], 'Sukses');
+            $data =  Pasien::GetAllData()->where('session_id', $sessionId)->first();
+
+            DB::commit();
+            return LibApp::response(200, $data, 'Berhasil Menyimpan Pasien Baru '.strtoupper($request->nama));
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return LibApp::response(201, [], 'Gagal Menyimpan Data Pasien Baru. '.$th->getMessage());
         }
     }
 
     public function Update(Request $request)
     {
-        $data = $this->SetDataPasien($request);
-        $update = DB::table('pasien')->where('id', $request->input('id'))->update($data);
-        if( $update ){
-            return LibApp::response(200);
-        }else{
-            return LibApp::response(201);
+        DB::beginTransaction();
+        try {
+            $data = $this->SetDataPasien($request);
+            $update = DB::table('pasien')->where('id', $request->input('id'))->update($data);
+            DB::commit();
+            return LibApp::response(200, [], 'Berhasil Merubah Data Pasien');
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return LibApp::response(201, [], 'Data Gagal Dirubah : '.$th->getMessage());
         }
 
     }

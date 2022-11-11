@@ -10,6 +10,18 @@ class Billing_pembayaran extends Model
     protected $primaryKey   = 'id';
     public $timestamps      = false;
 
+    public static function SavePembayaran($request)
+    {
+        $pembayaran = new Billing_pembayaran();
+        $pembayaran->noreg = $request->noreg;
+        $pembayaran->id_cara_bayar = $request->jnsPembayaran;
+        $pembayaran->jumlah = str_replace(',', '', $request->jumlah);
+        $pembayaran->dateCreated = date('Y-m-d H:i:s');
+        $pembayaran->userCreated = 'user';
+        return $pembayaran->save();
+    }
+
+
     public function r_registrasi()
     {
         return $this->hasOne(Registrasi::class, 'noreg', 'noreg');

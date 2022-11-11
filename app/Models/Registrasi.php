@@ -31,6 +31,11 @@ class Registrasi extends Model
                     ->first();
     }
 
+    public static function StatusRegistrasi($noreg, $status)
+    {
+        return self::where('noreg', $noreg)->where('status', $status)->first();
+    }
+
     public function pasien()
     {
         return $this->hasOne(Pasien::class, 'id', 'id_pasien');

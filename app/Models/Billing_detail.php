@@ -12,6 +12,7 @@ class Billing_detail extends Model
     public static $noreg;
     public static $idBillingHead;
     public static $unit;
+    public static $status;
 
     public static function SaveBillingDetail($billingHead, $request){
         $data = new Billing_detail();
@@ -58,6 +59,10 @@ class Billing_detail extends Model
             $data = $data->whereHas('r_billing_head', function($q){
                 return $q->where('unit', self::$unit);
             });
+        }
+
+        if( self::$status ){
+            $data = $data->where('status', self::$status);
         }
 
         return $data->where('active', 1)->get();
