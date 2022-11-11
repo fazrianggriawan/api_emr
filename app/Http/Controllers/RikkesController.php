@@ -160,8 +160,8 @@ class RikkesController extends BaseController
     {
         header("Content-type:application/pdf");
 
-        $peserta = DB::table('rikkes_peserta')->where('noUrut', $noUrut)->get();
-        $arrPeserta = DB::table('rikkes_peserta')->get();
+        $registrasi = DB::table('registrasi')->where('noreg', $noUrut)->first();
+        $peserta = DB::table('pasien')->where('id', $registrasi->id_pasien)->get();
 
 		$border = 0;
 		$heightCell = 3;
@@ -184,11 +184,11 @@ class RikkesController extends BaseController
 		$pdf->Cell($widthCell, $heightCell+2, strtoupper($peserta[0]->nama), $border);
 		$pdf->ln();
         $heightCell++;
-		$pdf->Cell($widthCell, $heightCell, 'No.Peserta : '.$peserta[0]->noUrut.' - '.$peserta[0]->noPeserta, $border);
+		$pdf->Cell($widthCell, $heightCell, 'NO. RM : '.$peserta[0]->norm, $border);
 		$pdf->ln();
-		$pdf->Cell($widthCell, $heightCell, 'Tgl.Lahir : '.$peserta[0]->tglLahir.' ('.strtoupper($peserta[0]->jnsKelamin).')', $border);
+		$pdf->Cell($widthCell, $heightCell, 'LAHIR / KELAMIN : '.strtoupper(date("d M, Y", strtotime($peserta[0]->tgl_lahir))).' / '.strtoupper($peserta[0]->jns_kelamin), $border);
 		$pdf->SetFont('arial', '', $fontBody);
-		$pdf->Code128( $marginLeft+1.3, 15, $peserta[0]->noPeserta, 40, 9); // Barcode
+		$pdf->Code128( $marginLeft+1.3, 15, $peserta[0]->norm, 40, 9); // Barcode
 		$pdf->SetFont('arial', $fontWeight, $fontBody);
 
 		$pdf->Output();
@@ -199,7 +199,7 @@ class RikkesController extends BaseController
     {
         header("Content-type:application/pdf");
 
-        $arrPeserta = DB::table('rikkes_peserta')->where('noUrut','>=',$noUrutFrom)->where('noUrut','<=',$noUrutTo)->get();
+        $arrPeserta = DB::table('pasien')->where('norm','>=',$noUrutFrom)->where('norm','<=',$noUrutTo)->get();
 
 		$pdf = new PDFBarcode();
 
@@ -223,11 +223,11 @@ class RikkesController extends BaseController
             $pdf->Cell($widthCell, $heightCell+2, strtoupper($value->nama), $border);
             $pdf->ln();
             $heightCell++;
-            $pdf->Cell($widthCell, $heightCell, 'No.Peserta : '.$value->noUrut.' - '.$value->noPeserta, $border);
+            $pdf->Cell($widthCell, $heightCell, 'No.RM : '.$value->norm.' - '.$value->norm, $border);
             $pdf->ln();
-            $pdf->Cell($widthCell, $heightCell, 'Tgl.Lahir : '.$value->tglLahir.' ('.strtoupper($value->jnsKelamin).')', $border);
+            $pdf->Cell($widthCell, $heightCell, 'Tgl.Lahir : '.$value->tgl_lahir.' ('.strtoupper($value->jns_kelamin).')', $border);
             $pdf->SetFont('arial', '', $fontBody);
-            $pdf->Code128( $marginLeft+1.3, 15, $value->noPeserta, 40, 9); // Barcode
+            $pdf->Code128( $marginLeft+1.3, 15, $value->norm, 40, 9); // Barcode
             $pdf->SetFont('arial', $fontWeight, $fontBody);
         }
 
@@ -340,7 +340,9 @@ class RikkesController extends BaseController
 
     public function PrintHasilLab($idPeserta)
     {
-        $peserta = DB::table('rikkes_peserta')->where('id', $idPeserta)->get();
+        $registrasi = DB::table('registrasi')->where('noreg', $idPeserta)->first();
+        $peserta = DB::table('pasien')->where('id', $registrasi->id_pasien)->get();
+
         $hasilLab = DB::table('rikkes_hasil_lab')
                     ->select('name','hasil','nilaiRujukan','group','dateCreated')
                     ->where('id_rikkes_peserta', $idPeserta)
@@ -355,7 +357,7 @@ class RikkesController extends BaseController
                     ->get();
 
         if( count($hasilLab) == 0 ){
-            echo 'Data Belum Terinput';
+            echo 'Data Belum Terinput'.$idPeserta;
             exit;
         }
 
@@ -378,17 +380,17 @@ class RikkesController extends BaseController
         $pdf->SetFont('arial', $fontWeight, $fontBody);
 
         $pdf->setY(5);
-        $pdf->Cell($widthCell+20, $heightCell+2, 'DENKESYAH 030401 BOGOR', $border);
-        $pdf->Cell($widthCell, $heightCell+2, 'PEMERIKSAAN KESEHATAN', $border);
+        $pdf->Cell($widthCell+20, $heightCell+2, 'PELAYANAN KESEHATAN', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'MEDICAL CHECK UP', $border);
         $pdf->ln();
-        $pdf->Cell($widthCell+20, $heightCell+2, 'RUMAH SAKIT TK III 030702 SALAK', $border);
-        $pdf->Cell($widthCell, $heightCell+2, 'JAM/TGL : '.date("h:i:s d-m-Y", strtotime($hasilLab[0]->dateCreated)), $border);
+        $pdf->Cell($widthCell+20, $heightCell+2, 'KLINIK EKSEKUTIF JAKARTA', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'JAM/TGL : '.date("d M Y, h:i:s", strtotime($hasilLab[0]->dateCreated)), $border);
         $pdf->ln();
-        $pdf->Cell($widthCell+20, $heightCell+2, 'JL JENDERAL SUDIRMAN NO 8 - BOGOR', $border);
-        $pdf->Cell($widthCell, $heightCell+2, 'NO. PESERTA : '.$peserta[0]->noPeserta, $border);
+        $pdf->Cell($widthCell+20, $heightCell+2, 'Jl. Minangkabau Barat No.17B,', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'NO. RM : '.$peserta[0]->norm, $border);
         $pdf->ln();
-        $pdf->Cell($widthCell+20, $heightCell+2, '', $border);
-        $pdf->Cell($widthCell, $heightCell+2, 'NO. URUT : '.$peserta[0]->noUrut, $border);
+        $pdf->Cell($widthCell+20, $heightCell+2, 'Setiabudi - Kuningan. DKI Jakarta 12970', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'NO. REGISTRASI : '.$registrasi->noreg, $border);
         $pdf->ln();
 
         $pdf->Cell($widthCell, $heightCell+10, '', $border);
@@ -396,7 +398,7 @@ class RikkesController extends BaseController
 
         $pdf->ln();
         $pdf->Cell($widthCell+60, $heightCell, 'Nama Peserta : '.strtoupper($peserta[0]->nama), $border);
-        $pdf->Cell($widthCell, $heightCell, 'Jenis Kelamin : '.strtoupper($peserta[0]->jnsKelamin), $border);
+        $pdf->Cell($widthCell, $heightCell, 'Jenis Kelamin : '.strtoupper($peserta[0]->jns_kelamin), $border);
         $pdf->ln(7);
 
         $pdf->Cell($widthCell+4, $heightCell+5, 'PEMERIKSAAN', 'T');
@@ -437,7 +439,9 @@ class RikkesController extends BaseController
 
     public function PrintHasilRadiologi($idPeserta)
     {
-        $peserta = DB::table('rikkes_peserta')->where('id', $idPeserta)->get();
+        $registrasi = DB::table('registrasi')->where('noreg', $idPeserta)->first();
+        $peserta = DB::table('pasien')->where('id', $registrasi->id_pasien)->get();
+
         $hasil = DB::table('rikkes_hasil_radiologi')
                     ->where('id_rikkes_peserta', $idPeserta)
                     ->where('active', 1)
@@ -465,17 +469,17 @@ class RikkesController extends BaseController
         $pdf->SetFont('arial', $fontWeight, $fontBody);
 
         $pdf->setY(5);
-        $pdf->Cell($widthCell+20, $heightCell+2, 'DENKESYAH 030401 BOGOR', $border);
-        $pdf->Cell($widthCell, $heightCell+2, 'PEMERIKSAAN KESEHATAN', $border);
+        $pdf->Cell($widthCell+20, $heightCell+2, 'KLINIK EKSEKUTIF JAKARTA', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'MEDICAL CHECK UP', $border);
         $pdf->ln();
-        $pdf->Cell($widthCell+20, $heightCell+2, 'RUMAH SAKIT TK III 030702 SALAK', $border);
+        $pdf->Cell($widthCell+20, $heightCell+2, 'KLINIK EKSEKUTIF JAKARTA', $border);
         $pdf->Cell($widthCell, $heightCell+2, 'JAM/TGL : '.date("h:i:s d-m-Y", strtotime($hasil[0]->dateCreated)), $border);
         $pdf->ln();
-        $pdf->Cell($widthCell+20, $heightCell+2, 'JL JENDERAL SUDIRMAN NO 8 - BOGOR', $border);
-        $pdf->Cell($widthCell, $heightCell+2, 'NO. PESERTA : '.$peserta[0]->noPeserta, $border);
+        $pdf->Cell($widthCell+20, $heightCell+2, 'Jl. Minangkabau Barat No.17B, Setiabudi - Kuningan. DKI Jakarta 12970', $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'NO. RM : '.$peserta[0]->norm, $border);
         $pdf->ln();
         $pdf->Cell($widthCell+20, $heightCell+2, '', $border);
-        $pdf->Cell($widthCell, $heightCell+2, 'NO. URUT : '.$peserta[0]->noUrut, $border);
+        $pdf->Cell($widthCell, $heightCell+2, 'NO. REGISTRASI : '.$registrasi->noreg, $border);
         $pdf->ln();
 
         $pdf->Cell($widthCell, $heightCell+10, '', $border);
@@ -483,7 +487,7 @@ class RikkesController extends BaseController
 
         $pdf->ln();
         $pdf->Cell($widthCell+60, $heightCell+3, 'Nama Peserta : '.strtoupper($peserta[0]->nama), $border);
-        $pdf->Cell($widthCell, $heightCell+3, 'Jenis Kelamin : '.strtoupper($peserta[0]->jnsKelamin), $border);
+        $pdf->Cell($widthCell, $heightCell+3, 'Jenis Kelamin : '.strtoupper($peserta[0]->jns_kelamin), $border);
         $pdf->ln(7);
 
         $pdf->Cell($widthCell, $heightCell+5, 'HASIL PEMERIKSAAN', 'B');
