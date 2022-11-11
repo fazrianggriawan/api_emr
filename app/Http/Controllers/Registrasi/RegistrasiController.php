@@ -117,7 +117,7 @@ class RegistrasiController extends BaseController
 
         } catch (\Throwable $th) {
             DB::rollBack();
-            return LibApp::response(201, $th->getMessage(), 'Gagal');
+            return LibApp::response(201, $th->getMessage(), 'Gagal '.$th->getMessage());
         }
     }
 

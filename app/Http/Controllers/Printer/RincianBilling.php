@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Printer;
 
 use App\Http\Libraries\LibApp;
 use App\Http\Libraries\PDFBarcode;
+use App\Models\App_user;
 use App\Models\Billing;
 use App\Models\Billing_detail;
 use App\Models\Registrasi;
@@ -12,14 +13,13 @@ use stdClass;
 
 class RincianBilling extends BaseController
 {
-    public function GoPrint($noreg)
+    public function GoPrint($noreg, $username)
     {
-        // $data = Billing::GetAllData()->where('noreg', $noreg)->get();
-        // $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
-
         Billing_detail::$noreg = $noreg;
         $data = Billing_detail::GetBilling();
         $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
+        $user = App_user::where('username', $username)->first();
+
 
         $pdf = new PDFBarcode();
 
@@ -164,7 +164,7 @@ class RincianBilling extends BaseController
         $pdf->Cell($setting->widthCell-15, $setting->heightCell, 'Kasir,', $setting->border, '', 'C');
         $pdf->ln(18);
         $pdf->Cell($setting->widthCell+35, $setting->heightCell);
-        $pdf->Cell($setting->widthCell-15, $setting->heightCell, '( HERI WENDI HARTONO )', $setting->border, '', 'C');
+        $pdf->Cell($setting->widthCell-15, $setting->heightCell, '( '.strtoupper($user->name).' )', $setting->border, '', 'C');
         // End of Footer
 
 		$pdf->Output();

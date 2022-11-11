@@ -84,6 +84,8 @@ class TarifController extends BaseController
                     }
                 }
 
+                $item['value'] = ($value->jasa == 0) ? '' : $item['value'];
+
                 array_push($newData, $item);
                 $i++;
             }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Printer;
 
 use App\Http\Libraries\LibApp;
 use App\Http\Libraries\PDFBarcode;
+use App\Models\App_user;
 use App\Models\Radiologi_hasil_pemeriksaan;
 use App\Models\Registrasi;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -12,8 +13,10 @@ use stdClass;
 
 class HasilRadiologi extends BaseController
 {
-    public function GoPrint($noreg, $idBillingHead)
+    public function GoPrint($noreg, $idBillingHead, $username)
     {
+        $user = App_user::where('username', $username)->first();
+
         $data = Radiologi_hasil_pemeriksaan::with([
                 'r_pelaksana',
                 'r_billing_head' => function($q){
@@ -112,7 +115,7 @@ class HasilRadiologi extends BaseController
         $pdf->ln(34);
         $pdf->Cell($setting->widthCell, $setting->heightCell, $data->r_pelaksana->name, $setting->border);
         $pdf->Cell($setting->widthCell+25, $setting->heightCell, '', $setting->border);
-        $pdf->Cell($setting->widthCell, $setting->heightCell, 'HERI WENDI HARTONO', $setting->border);
+        $pdf->Cell($setting->widthCell, $setting->heightCell, strtoupper($user->name), $setting->border);
         $pdf->ln();
 
         $pdf->GetQRCode($pdf, 'http://rssalakbogor.co.id/online/hasilRad/'.$data->id, 20, $pdf->GetY()-32, 25);

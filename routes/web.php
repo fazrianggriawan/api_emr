@@ -152,11 +152,11 @@ $router->get('print/stickerBarcode/{idPasien}', 'Printer\Barcode@GoPrint');
 $router->get('print/biodataPasien/{idPasien}', 'Printer\BiodataPasien@GoPrint');
 $router->get('print/dataRegistrasi/{noreg}', 'Printer\Registrasi@DataRegistrasi');
 $router->get('print/kwitansi/{noKwitansi}', 'Printer\Kwitansi@GoPrint');
-$router->get('print/rincianBilling/{noreg}', 'Printer\RincianBilling@GoPrint');
+$router->get('print/rincianBilling/{noreg}/{username}', 'Printer\RincianBilling@GoPrint');
 $router->get('print/requestRm/{id_request}', 'Printer\RequestRm@GoPrint');
 $router->get('print/billingFarmasi/{noreg}', 'Printer\BillingFarmasi@GoPrint');
-$router->get('print/hasilLab/{noreg}/{idBillingHead}', 'Printer\HasilLab@GoPrint');
-$router->get('print/hasilRadiologi/{noreg}/{idBillingHead}', 'Printer\HasilRadiologi@GoPrint');
+$router->get('print/hasilLab/{noreg}/{idBillingHead}/{username}', 'Printer\HasilLab@GoPrint');
+$router->get('print/hasilRadiologi/{noreg}/{idBillingHead}/{username}', 'Printer\HasilRadiologi@GoPrint');
 
 $router->get('test', 'LoginController@Test');
 

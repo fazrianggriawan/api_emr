@@ -51,7 +51,7 @@ class PembayaranController extends BaseController
 
     public function DataPembayaran($noreg)
     {
-        $data = Billing_pembayaran::with('r_cara_bayar')->where('active', 0)->where('noreg', $noreg)->get();
+        $data = Billing_pembayaran::with('r_cara_bayar')->where('noreg', $noreg)->where('active', 1)->get();
         return LibApp::response(200, $data);
     }
 

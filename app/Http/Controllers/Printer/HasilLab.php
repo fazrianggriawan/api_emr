@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Printer;
 
 use App\Http\Libraries\LibApp;
 use App\Http\Libraries\PDFBarcode;
+use App\Models\App_user;
 use App\Models\Billing;
 use App\Models\Lab_hasil_pemeriksaan;
 use App\Models\Registrasi;
@@ -13,8 +14,9 @@ use stdClass;
 
 class HasilLab extends BaseController
 {
-    public function GoPrint($noreg, $idBillingHead)
+    public function GoPrint($noreg, $idBillingHead, $username)
     {
+        $user = App_user::where('username', $username)->first();
 
         $data = Lab_hasil_pemeriksaan::with([
                 'r_lab_nama_hasil_rujukan'=>function($q){
@@ -145,7 +147,7 @@ class HasilLab extends BaseController
         $pdf->ln(34);
         $pdf->Cell($setting->widthCell, $setting->heightCell, 'dr.Leliawati,M.Kes, SpPK, MH.Kes', $setting->border);
         $pdf->Cell($setting->widthCell+25, $setting->heightCell, '', $setting->border);
-        $pdf->Cell($setting->widthCell, $setting->heightCell, 'HERI WENDI HARTONO', $setting->border);
+        $pdf->Cell($setting->widthCell, $setting->heightCell, strtoupper($user->name), $setting->border);
         $pdf->ln();
 
         $pdf->GetQRCode($pdf, 'http://rssalakbogor.co.id/online/hasilLab/'.$registrasi->noreg, 20, $pdf->GetY()-32, 25);
