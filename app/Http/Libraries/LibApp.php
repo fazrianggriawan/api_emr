@@ -44,7 +44,7 @@ class LibApp
 
         if( $tanggal != '' ){
             $aTanggal = explode('-', $tanggal);
-            return $aTanggal[2].'-'.$arrayBulan[$aTanggal[1]].'-'.$aTanggal[0];
+            return $aTanggal[2].' '.$arrayBulan[$aTanggal[1]].' '.$aTanggal[0];
         }
     }
 

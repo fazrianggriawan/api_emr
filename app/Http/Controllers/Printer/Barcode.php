@@ -23,10 +23,10 @@ class Barcode extends BaseController
     {
         header("Content-type:application/pdf");
 
-        $tglLahir = $date = DateTime::createFromFormat('Y-m-d', $data->tgl_lahir);
+        $tglLahir = DateTime::createFromFormat('Y-m-d', $data->tgl_lahir);
 
-        if(strtoupper($data->jns_kelamin) == 'L'){ $jnsKelamin = 'LAKI-LAKI'; }
-        if(strtoupper($data->jns_kelamin) == 'P'){ $jnsKelamin = 'PEREMPUAN'; }
+        if(strtoupper($data->jns_kelamin) == 'P'){ $jnsKelamin = 'LAKI-LAKI'; }
+        if(strtoupper($data->jns_kelamin) == 'W'){ $jnsKelamin = 'PEREMPUAN'; }
 
 		$border = 0;
 		$heightCell = 3;
