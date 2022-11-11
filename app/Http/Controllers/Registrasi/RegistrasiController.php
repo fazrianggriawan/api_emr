@@ -8,6 +8,7 @@ use App\Models\Mst_ruangan;
 use App\Models\Registrasi;
 use App\Models\Registrasi_antrian;
 use App\Models\Registrasi_request_rm;
+use App\Models\Registrasi_sep;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -81,6 +82,14 @@ class RegistrasiController extends BaseController
             $registrasi->save();
 
             $data = Registrasi::GetAllData()->where('session_id', $sessionID)->first();
+
+            if( $request->noSep != '' ){
+                $registrasiSep = new Registrasi_sep();
+                $registrasiSep->noreg = $data->noreg;
+                $registrasiSep->no_sep = $request->noSep;
+                $registrasiSep->dateCreated = $registrasi->dateCreated;
+                $registrasiSep->save();
+            }
 
             // Antrian
             $antrian = new Antrian();
