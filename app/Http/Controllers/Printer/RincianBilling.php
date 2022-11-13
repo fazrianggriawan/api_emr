@@ -15,10 +15,11 @@ class RincianBilling extends BaseController
 {
     public function GoPrint($noreg, $username)
     {
+
         Billing_detail::$noreg = $noreg;
         $data = Billing_detail::GetBilling();
         $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
-        $user = App_user::where('username', $username)->first();
+        return $user = App_user::where('username', $username)->first();
 
 
         $pdf = new PDFBarcode();
