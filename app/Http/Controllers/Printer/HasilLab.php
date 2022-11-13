@@ -65,7 +65,7 @@ class HasilLab extends BaseController
         $pdf->Cell($setting->widthCell, $setting->heightCell, 'TGL. PERIKSA : '.$registrasi->tglReg, $setting->border);
         $pdf->ln(8);
 
-        $pdf->Image('images/logo_salak.PNG', 85, 10, 30);
+        $pdf->Image('images/logo_salak.png', 85, 10, 30);
 
         $pdf->Cell($setting->widthFull, 2, '', 'B'); // Border Only
         $pdf->ln(4);
