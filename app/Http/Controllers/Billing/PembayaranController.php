@@ -19,13 +19,15 @@ class PembayaranController extends BaseController
 
         try {
             //code...
-            Billing_pembayaran::SavePembayaran($request);
+            $status = ($request->jnsPembayaran == 'bpjs' || $request->jnsPembayaran == 'asu') ? 'credit' : 'closed';
 
-            $status = ($request->jnsPembayaran = 'bpjs' || $request->jnsPembayaran = 'asu') ? 'credit' : 'closed';
+            $checkIt = Billing_pembayaran::where('noreg', $request->noreg)->where('active', 1)->get();
 
-            if (!Billing_pembayaran::where('noreg', $request->noreg)->where('active', 1)->first()) {
+            if (count($checkIt) == 0) {
                 Registrasi::where('noreg', $request->noreg)->update(['status' => $status]);
             }
+
+           Billing_pembayaran::SavePembayaran($request);
 
             Billing_detail::where('noreg', $request->noreg)->where('status', 'open')->update(['status' => $status]);
 
