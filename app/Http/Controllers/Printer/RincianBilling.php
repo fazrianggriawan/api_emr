@@ -151,19 +151,18 @@ class RincianBilling extends BaseController
             $pdf->ln();
             // End Total Tagihan
 
+            $pdf->SetY($pdf->GetY() - 31);
+            $pdf->SetX(0);
+
             // Footer
             $pdf->ln();
             $setting->widthCell = $setting->widthCell + 28;
-            $pdf->Cell($setting->widthCell+35, $setting->heightCell);
-            $pdf->Cell($setting->widthCell-15, $setting->heightCell, $setting->kota.', '.date('d-m-Y'), $setting->border, '', 'C');
+            $pdf->Cell($setting->widthCell-15, $setting->heightCell, $setting->kota.', '.LibApp::dateHuman(date('Y-m-d')), $setting->border, '', 'C');
             $pdf->ln();
-            $pdf->Cell($setting->widthCell+35, $setting->heightCell);
             $pdf->Cell($setting->widthCell-15, $setting->heightCell, 'an. Kepala Rumah Sakit', $setting->border, '', 'C');
             $pdf->ln();
-            $pdf->Cell($setting->widthCell+35, $setting->heightCell);
             $pdf->Cell($setting->widthCell-15, $setting->heightCell, 'Kasir,', $setting->border, '', 'C');
-            $pdf->ln(18);
-            $pdf->Cell($setting->widthCell+35, $setting->heightCell);
+            $pdf->ln(15);
             $pdf->Cell($setting->widthCell-15, $setting->heightCell, '( '.strtoupper($user->name).' )', $setting->border, '', 'C');
             // End of Footer
 
