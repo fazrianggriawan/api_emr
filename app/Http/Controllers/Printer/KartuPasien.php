@@ -36,7 +36,7 @@ class KartuPasien extends BaseController
 		$pdf = new PDFBarcode();
         $pdf->SetAutoPageBreak(false);
         $pdf->AddPage('P', [110,110], 0);
-        $pdf->SetXY(13, 20);
+        $pdf->SetXY(13, 23);
         $pdf->SetMargins(13,0);
 
         $header = new HeaderPrint();
