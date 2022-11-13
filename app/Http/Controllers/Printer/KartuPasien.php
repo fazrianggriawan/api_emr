@@ -55,7 +55,7 @@ class KartuPasien extends BaseController
 		$pdf->ln();
         $pdf->Cell($widthCell-27, $heightCell+2, 'Tgl. Lahir', $border);
         $pdf->Cell(3, $heightCell+2, ':', $border);
-		$pdf->Cell($widthCell, $heightCell+2, LibApp::dateHuman($data->tgl_lahir), $border);
+		$pdf->Cell($widthCell, $heightCell+2, strtoupper(LibApp::dateHuman($data->tgl_lahir)), $border);
 		$pdf->ln();
         $pdf->Cell($widthCell-27, $heightCell+2, 'Alamat', $border);
         $pdf->Cell(3, $heightCell+2, ':', $border);
