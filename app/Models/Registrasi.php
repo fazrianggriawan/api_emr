@@ -31,6 +31,21 @@ class Registrasi extends Model
                     ->first();
     }
 
+    public static function CancelRegistrasi($request)
+    {
+        return self::where('noreg', $request->noreg)->update(['status'=>'canceled']);
+    }
+
+    public static function UpdateRegistrasi($request)
+    {
+        $update = array(
+            'tglReg' => $request->tanggal,
+            'ruangan' => $request->ruangan,
+            'dpjp_pelaksana' => $request->dokter
+        );
+        return self::where('noreg', $request->noreg)->update($update);
+    }
+
     public static function StatusRegistrasi($noreg, $status)
     {
         return self::where('noreg', $noreg)->where('status', $status)->first();

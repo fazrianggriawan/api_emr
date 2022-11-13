@@ -9,10 +9,11 @@ use App\Models\Registrasi;
 use App\Models\Registrasi_antrian;
 use App\Models\Registrasi_request_rm;
 use App\Models\Registrasi_sep;
+use App\Models\Registrasi_update_status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
-
+use stdClass;
 
 class RegistrasiController extends BaseController
 {
@@ -157,5 +158,52 @@ class RegistrasiController extends BaseController
 
         return LibApp::response(200, $data, 'Sukses');
     }
+
+    public function CancelRegistrasi(Request $request)
+    {
+        try {
+            //code...
+            DB::beginTransaction();
+
+            Registrasi::CancelRegistrasi($request);
+
+            $data = new stdClass();
+            $data->noreg = $request->noreg;
+            $data->status = 'canceled';
+            $data->username = $request->username;
+
+            Registrasi_update_status::SaveUpdateStatus($data);
+
+            DB::commit();
+            return LibApp::response(200, [], 'Berhasil Membatalkan Registrasi.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return LibApp::response(201, [], 'Gagal Membatalkan Registrasi. '.$th->getMessage());
+            //throw $th;
+        }
+    }
+
+    public function UpdateRegistrasi(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            Registrasi::UpdateRegistrasi($request);
+
+            $data = new stdClass();
+            $data->noreg = $request->noreg;
+            $data->status = 'update';
+            $data->username = $request->username;
+
+            Registrasi_update_status::SaveUpdateStatus($data);
+
+            DB::commit();
+            return LibApp::response(200, [], 'Berhasil Merubah Registrasi.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return LibApp::response(201, [], 'Gagal Merubah Registrasi. '.$th->getMessage());
+            //throw $th;
+        }
+    }
+
 
 }

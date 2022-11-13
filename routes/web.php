@@ -52,6 +52,8 @@ $router->get('registrasi/riwayatKunjungan/{idPasien}/{norm}', 'Registrasi\Riwaya
 $router->post('registrasi/save', 'Registrasi\RegistrasiController@SaveRegistrasi');
 $router->post('registrasi/filtering', 'Registrasi\RegistrasiController@FilterDataRegistrasi');
 $router->post('registrasi/request_rm', 'Registrasi\PermintaanRmController@GetData');
+$router->post('registrasi/update', 'Registrasi\RegistrasiController@UpdateRegistrasi');
+$router->post('registrasi/cancel', 'Registrasi\RegistrasiController@CancelRegistrasi');
 
 // Tarif
 $router->get('tarif/byCategory/{categoryId}', 'Billing\TarifController@TarifByCategory');
