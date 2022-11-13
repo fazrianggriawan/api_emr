@@ -89,14 +89,14 @@ class HasilLab extends BaseController
         $pdf->Cell($setting->widthCell+15, $setting->heightCell, strtoupper($registrasi->pasien->nama), $setting->border);
         $pdf->Cell($setting->widthCell-30, $setting->heightCell, 'Usia/Jns. Kelamin', $setting->border);
         $pdf->Cell(3, $setting->heightCell, ':', $setting->border);
-        $pdf->Cell($setting->widthCell+1, $setting->heightCell, LibApp::getAge($registrasi->pasien->tgl_lahir).' TAHUN / '.strtoupper($registrasi->pasien->r_jns_kelamin->name), $setting->border);
+        $pdf->Cell($setting->widthCell+1, $setting->heightCell, LibApp::getAge($registrasi->pasien->tgl_lahir).' TAHUN / '.strtoupper(@$registrasi->pasien->r_jns_kelamin->name), $setting->border);
         $pdf->ln();
         $pdf->Cell($setting->widthCell-30, $setting->heightCell, 'Dokter', $setting->border);
         $pdf->Cell(3, $setting->heightCell, ':', $setting->border);
         $pdf->Cell($setting->widthCell+15, $setting->heightCell, $registrasi->dokter->name, $setting->border);
         $pdf->Cell($setting->widthCell-30, $setting->heightCell, 'Penjamin', $setting->border);
         $pdf->Cell(3, $setting->heightCell, ':', $setting->border);
-        $pdf->Cell($setting->widthCell+1, $setting->heightCell, strtoupper($registrasi->golpas->r_grouppas->name.' - '.$registrasi->golpas->name), $setting->border);
+        $pdf->Cell($setting->widthCell+1, $setting->heightCell, strtoupper(@$registrasi->golpas->r_grouppas->name.' - '.@$registrasi->golpas->name), $setting->border);
         $pdf->ln();
         $pdf->Cell($setting->widthFull, 2, '', 'B'); // Border Only
         $pdf->ln(3);
@@ -147,13 +147,13 @@ class HasilLab extends BaseController
 
         $pdf->GetQRCode($pdf, 'http://rssalakbogor.co.id/online/hasilLab/'.$registrasi->noreg, 20, $pdf->GetY()-32, 25);
 
-        $pdf->SetY(-45);
-        $pdf->Image('images/paripurna.png', 15, null, 50);
-        $pdf->SetY(-47);
-        $pdf->Image('images/blu.png', 170, null, 20);
-        $pdf->SetMargins(10, 0);
-        $pdf->SetY(-25);
-        $pdf->Cell($setting->widthFull, 2, '', 'B'); // Border Only
+        // $pdf->SetY(-45);
+        // $pdf->Image('images/paripurna.png', 15, null, 50);
+        // $pdf->SetY(-47);
+        // $pdf->Image('images/blu.png', 170, null, 20);
+        // $pdf->SetMargins(10, 0);
+        // $pdf->SetY(-25);
+        // $pdf->Cell($setting->widthFull, 2, '', 'B'); // Border Only
 
         // End of Footer
 

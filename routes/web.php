@@ -135,6 +135,7 @@ $router->get('farmasi/master/supplier', 'Farmasi\MasterController@Supplier');
 $router->get('farmasi/opname/periode', 'Farmasi\OpnameController@DataPeriode');
 $router->get('farmasi/opname/stok-obat/{idPeriode}', 'Farmasi\OpnameController@DataStokObat');
 $router->post('farmasi/saveBilling', 'Farmasi\BillingController@SaveBilling');
+$router->post('farmasi/deleteBilling', 'Farmasi\BillingController@DeleteBilling');
 $router->post('farmasi/savePembayaran', 'Farmasi\BillingController@SavePembayaran');
 
 // Upload File
@@ -152,7 +153,9 @@ $router->get('print/stickerBarcode/{idPasien}', 'Printer\Barcode@GoPrint');
 $router->get('print/biodataPasien/{idPasien}', 'Printer\BiodataPasien@GoPrint');
 $router->get('print/dataRegistrasi/{noreg}', 'Printer\Registrasi@DataRegistrasi');
 $router->get('print/kwitansi/{noKwitansi}', 'Printer\Kwitansi@GoPrint');
-$router->get('print/rincianBilling/{noreg}/{username}', 'Printer\RincianBilling@GoPrint');
+$router->get('print/rincianBilling/{noreg}/{username}', 'Printer\RincianBilling@ByNoreg');
+$router->get('print/rincianBillingPembayaran/{noreg}/{username}/{idBillingPembayaran}', 'Printer\RincianBilling@ByPembayaran');
+$router->get('print/rincianBillingHead/{noreg}/{username}/{idBillingHead}', 'Printer\RincianBilling@ByBillingHead');
 $router->get('print/requestRm/{id_request}', 'Printer\RequestRm@GoPrint');
 $router->get('print/billingFarmasi/{noreg}', 'Printer\BillingFarmasi@GoPrint');
 $router->get('print/hasilLab/{noreg}/{idBillingHead}/{username}', 'Printer\HasilLab@GoPrint');

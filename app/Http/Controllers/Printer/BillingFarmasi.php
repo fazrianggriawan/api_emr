@@ -13,7 +13,7 @@ class BillingFarmasi extends BaseController
 {
     public function GoPrint($noreg)
     {
-        $data = Farmasi_billing::where('noreg', $noreg)->get();
+        $data = Farmasi_billing::where('noreg', $noreg)->where('active', 1)->get();
         $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
 
         $pdf = new PDFBarcode();

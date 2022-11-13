@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Billing;
 use App\Http\Libraries\LibApp;
 use App\Models\Billing_detail;
 use App\Models\Billing_pembayaran;
+use App\Models\Billing_pembayaran_detail;
 use App\Models\Registrasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,8 @@ class PembayaranController extends BaseController
 
         try {
             //code...
+            $sessionId = microtime(TRUE);
+
             $status = ($request->jnsPembayaran == 'bpjs' || $request->jnsPembayaran == 'asu') ? 'credit' : 'closed';
 
             $checkIt = Billing_pembayaran::where('noreg', $request->noreg)->where('active', 1)->get();
@@ -27,9 +30,15 @@ class PembayaranController extends BaseController
                 Registrasi::where('noreg', $request->noreg)->update(['status' => $status]);
             }
 
-           Billing_pembayaran::SavePembayaran($request);
+            $registrasi = Registrasi::GetAllData($request->noreg);
 
-            Billing_detail::where('noreg', $request->noreg)->where('status', 'open')->update(['status' => $status]);
+            Billing_pembayaran::SavePembayaran($request, $registrasi, $sessionId);
+
+            $dataPembayaran = Billing_pembayaran::where('session_id', $sessionId)->first();
+
+            Billing_pembayaran_detail::SaveBilling($request->billing, $dataPembayaran);
+
+            Billing_detail::UpdateStatus($request->billing, $status);
 
             DB::commit();
             return LibApp::response(200, ['noreg' => $request->noreg], 'Berhasil Menyimpan Pembayaran.');

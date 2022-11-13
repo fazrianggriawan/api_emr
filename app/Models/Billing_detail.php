@@ -13,6 +13,7 @@ class Billing_detail extends Model
     public static $idBillingHead;
     public static $unit;
     public static $status;
+    public static $idBillingPembayaran;
 
     public static function SaveBillingDetail($billingHead, $request){
         $data = new Billing_detail();
@@ -61,11 +62,25 @@ class Billing_detail extends Model
             });
         }
 
+        if( self::$idBillingPembayaran ){
+            $data = $data->whereHas('r_billing_pembayaran_detail', function($q){
+                return $q->where('id_billing_pembayaran', self::$idBillingPembayaran);
+            });
+        }
+
         if( self::$status ){
             $data = $data->where('status', self::$status);
         }
 
         return $data->where('active', 1)->get();
+    }
+
+    public static function UpdateStatus($billing, $status)
+    {
+        foreach ($billing as $row ) {
+            $data = new Billing_detail();
+            $data->where('id', $row['id'])->update(['status' => $status]);
+        }
     }
 
     public function r_billing_head()
@@ -81,6 +96,11 @@ class Billing_detail extends Model
     public function r_registrasi()
     {
         return $this->hasOne(Registrasi::class, 'noreg', 'noreg');
+    }
+
+    public function r_billing_pembayaran_detail()
+    {
+        return $this->hasOne(Billing_pembayaran_detail::class, 'id_billing_detail', 'id');
     }
 
     public function r_billing_detail_jasa()

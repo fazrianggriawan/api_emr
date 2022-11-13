@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Billing_pembayaran extends Model
 {
@@ -10,15 +11,34 @@ class Billing_pembayaran extends Model
     protected $primaryKey   = 'id';
     public $timestamps      = false;
 
-    public static function SavePembayaran($request)
+    public static function SavePembayaran($request, $registrasi, $sessionId)
     {
         $pembayaran = new Billing_pembayaran();
         $pembayaran->noreg = $request->noreg;
         $pembayaran->id_cara_bayar = $request->jnsPembayaran;
+        $pembayaran->no_pembayaran = DB::raw(self::GenerataNomorNota($registrasi));
         $pembayaran->jumlah = str_replace(',', '', $request->jumlah);
         $pembayaran->dateCreated = date('Y-m-d H:i:s');
         $pembayaran->userCreated = 'user';
-        return $pembayaran->save();
+        $pembayaran->session_id = $sessionId;
+        $pembayaran->save();
+    }
+
+    public function GenerataNomorNota($registrasi)
+    {
+        return '(SELECT DISTINCTROW
+                    concat(
+                        DATE_FORMAT(now(), \''.strtoupper('TR').'%y%m%d\'),
+                        lpad(
+                            COALESCE (max(RIGHT(aa.no_pembayaran, 5)) + 1, 1),
+                            5,
+                            \'0\'
+                        )
+                    ) as a
+                    FROM
+                        billing_pembayaran as aa
+                    WHERE
+                        LEFT (aa.no_pembayaran, 8) = DATE_FORMAT(now(), \''.strtoupper('TR').'%y%m%d\'))';
     }
 
 

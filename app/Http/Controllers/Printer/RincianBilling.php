@@ -13,11 +13,32 @@ use stdClass;
 
 class RincianBilling extends BaseController
 {
-    public function GoPrint($noreg, $username)
+    public function ByBillingHead($noreg, $username, $idBillingHead)
+    {
+        Billing_detail::$noreg = $noreg;
+        Billing_detail::$idBillingHead = $idBillingHead;
+        $data = Billing_detail::GetBilling();
+        $this->GoPrint($data, $noreg, $username);
+    }
+
+    public function ByPembayaran($noreg, $username, $idBillingPembayaran)
+    {
+        Billing_detail::$noreg = $noreg;
+        Billing_detail::$idBillingPembayaran = $idBillingPembayaran;
+        $data = Billing_detail::GetBilling();
+        $this->GoPrint($data, $noreg, $username);
+    }
+
+    public function ByNoreg($noreg, $username)
+    {
+        Billing_detail::$noreg = $noreg;
+        $data = Billing_detail::GetBilling();
+        $this->GoPrint($data, $noreg, $username);
+    }
+
+    public function GoPrint($data, $noreg, $username)
     {
         try {
-            Billing_detail::$noreg = $noreg;
-            $data = Billing_detail::GetBilling();
             $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
             $user = App_user::where('username', $username)->first();
 

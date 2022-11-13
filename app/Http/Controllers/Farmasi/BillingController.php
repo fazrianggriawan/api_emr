@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Farmasi;
 use App\Http\Libraries\LibApp;
 use App\Models\Farmasi_billing;
 use App\Models\Farmasi_billing_pembayaran;
+use App\Models\Farmasi_billing_pembayaran_detail;
 use App\Models\Farmasi_opname_nama_obat;
 use App\Models\Farmasi_opname_periode;
 use Illuminate\Http\Request;
@@ -29,6 +30,18 @@ class BillingController extends BaseController
         }
     }
 
+    public function DeleteBilling(Request $request)
+    {
+        try {
+            //code...
+            Farmasi_billing::where('id', $request->id)->update(['active'=>0]);
+            return LibApp::response(200, ['noreg'=>$request->noreg], 'Berhasil menghapus billing');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return LibApp::response(201, [], 'Gagal Menghapus. '.$th->getMessage());
+        }
+    }
+
     public function SavePembayaran(Request $request)
     {
         DB::beginTransaction();
@@ -38,6 +51,18 @@ class BillingController extends BaseController
             Farmasi_billing::where('noreg', $request->noreg)
                 ->where('status', 'open')
                 ->update(['status'=>'closed']);
+
+            $billingOpen = Farmasi_billing::where('noreg', $request->noreg)->where('status', 'open')->get();
+
+            foreach ($billingOpen as $row ) {
+                $detailBilling = new Farmasi_billing_pembayaran_detail();
+                $detailBilling->id_farmasi_billing = $row->id;
+                $detailBilling->id_farmasi_billing_pembayaran = '';
+                $detailBilling->dateCreated = '';
+
+
+            }
+
             $pembayaran = new Farmasi_billing_pembayaran();
             $pembayaran->no_pembayaran = DB::raw('(SELECT CONCAT(\'FAR\',LPAD(COALESCE(MAX(no_pembayaran)+1, 000001),6,0)) as nomor FROM farmasi_billing_pembayaran as no_pembayaran)');
             $pembayaran->noreg = $request->noreg;
@@ -65,6 +90,7 @@ class BillingController extends BaseController
     {
         $data = Farmasi_billing::where('noreg', $noreg)
                 ->where('status', $status)
+                ->where('active', 1)
                 ->get();
 
         return LibApp::response(200, $data);
