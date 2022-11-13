@@ -33,14 +33,9 @@ class HasilLab extends BaseController
 
         $pdf = new PDFBarcode();
 
-        // $qrcode = new QRcode('test aja', 'H');
-
-        // $qrcode->displayHTML();
-
 		$pdf->AddPage('P', 'A4', 0);
 
         $header = new HeaderPrint();
-        // $pdf = $header->GetHeader($pdf);
         $setting = $header->GetSetting( new stdClass() );
         $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
 
