@@ -11,6 +11,8 @@ use App\Models\Billing_pembayaran_detail;
 use App\Models\Lab_hasil_pemeriksaan;
 use App\Models\Lab_nama_hasil_rujukan;
 use App\Models\Lab_nilai_rujukan_options;
+use App\Models\Mst_cara_bayar;
+use App\Models\Mst_jns_perawatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -18,49 +20,74 @@ use stdClass;
 
 class LaporanKasirController extends BaseController
 {
-    public function TransaksiKasir($from, $to, $caraBayar, $jnsPerawatan)
+    public function TransaksiKasir($base64)
     {
-        $this->from = $from;
-        $this->to = $to;
-        $this->caraBayar = $caraBayar;
-        $this->jnsPerawatan = $jnsPerawatan;
+        $encode = base64_decode($base64);
+        $json = json_decode($encode);
 
-        $data =  Billing_pembayaran::with(
+        $this->from = $json->from.' '.$json->timeFrom;
+        $this->to = $json->to.' '.$json->timeTo;
+        $this->caraBayar = $json->jnsPembayaran;
+        $this->jnsPerawatan = $json->jnsPerawatan;
+
+        $dataRaw =  Billing_pembayaran::with(
                     [
                         'r_registrasi' => function($q){
-                            return $q->with(['pasien','ruang_perawatan']);
+                            return $q->with(['pasien','ruang_perawatan','jns_perawatan']);
                         },
                         'r_cara_bayar'
                     ])
                     ->whereHas('r_registrasi', function($q){
                         return $q->where('id_jns_perawatan', $this->jnsPerawatan);
                     })
-                    ->where('dateCreated', '>=', $this->from)
-                    ->where('dateCreated', '<=', $this->to)
+                    ->where(DB::raw('dateCreated'), '>=', $this->from)
+                    ->where(DB::raw('dateCreated'), '<=', $this->to)
                     ->where('id_cara_bayar', $this->caraBayar)
                     ->where('active', 1)
                     ->get();
 
-        $data = collect($data)->groupBy('r_registrasi.ruang_perawatan.name');
+        if( count($dataRaw) > 0 ){
+            $dataFirst = @$dataRaw[0];
+            $data = collect($dataRaw)->groupBy('r_registrasi.ruang_perawatan.name');
 
-        return $this->GoPrint($data, 'kasir');
+            return $this->GoPrint($data, $json);
+        }
+
     }
 
-    public static function GoPrint($data, $username)
+    public static function GoPrint($data, $json)
     {
+
         try {
-            $user = App_user::where('username', $username)->first();
+            $jnsPembayaran = Mst_cara_bayar::where('id', $json->jnsPembayaran)->first();
+            $jnsPerawatan = Mst_jns_perawatan::where('id', $json->jnsPerawatan)->first();
+            $user = App_user::where('username', $json->username)->first();
 
             $pdf = new PDFBarcode();
 
             $pdf->AddPage('P', 'A4', 0);
 
             $header = new HeaderPrint();
+            $pdf = $header->GetHeader($pdf);
             $setting = $header->GetSetting( new stdClass() );
             $setting->border = 0;
 
-            $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
-            $pdf->Cell($setting->widthFull, $setting->heightCell, 'LAPORAN BILLING - RAWAT JALAN', 'B');
+            $pdf->SetFont('arial', 'B', $setting->fontSize+1);
+            $pdf->Cell($setting->widthFull, $setting->heightCell, 'LAPORAN TRANSAKSI BILLING', $setting->border);
+            $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize-1);
+            $pdf->ln();
+            $setting->heightCell -= 1;
+            $pdf->Cell($setting->widthCell-32, $setting->heightCell, 'Jenis Perawatan', $setting->border);
+            $pdf->Cell(3, $setting->heightCell, ':', $setting->border, '', 'C');
+            $pdf->Cell($setting->widthCell, $setting->heightCell, $jnsPembayaran->name, $setting->border);
+            $pdf->ln();
+            $pdf->Cell($setting->widthCell-32, $setting->heightCell, 'Pembayaran', $setting->border);
+            $pdf->Cell(3, $setting->heightCell, ':', $setting->border, '', 'C');
+            $pdf->Cell($setting->widthCell, $setting->heightCell, $jnsPerawatan->name, $setting->border);
+            $pdf->ln();
+            $pdf->Cell($setting->widthCell-32, $setting->heightCell, 'Periode Tanggal', $setting->border);
+            $pdf->Cell(3, $setting->heightCell, ':', $setting->border, '', 'C');
+            $pdf->Cell($setting->widthCell, $setting->heightCell, LibApp::dateHuman($json->from).' '.$json->timeFrom.' s.d. '.LibApp::dateHuman($json->to).' '.$json->timeTo, $setting->border);
             $pdf->ln();
             $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
 
@@ -72,6 +99,10 @@ class LaporanKasirController extends BaseController
             $widthName = 50;
             $widthJumlah = 20;
 
+            $setting->heightCell += 1;
+
+            $pdf->Cell($setting->widthFull, 1, '', 'B');
+            $pdf->ln();
             $pdf->Cell($widthNota, $setting->heightCell, 'No. Nota', $setting->border);
             $pdf->Cell($widthTanggal, $setting->heightCell, 'Tanggal', $setting->border);
             $pdf->Cell($widthJam, $setting->heightCell, 'Jam', $setting->border);
@@ -81,12 +112,12 @@ class LaporanKasirController extends BaseController
             $pdf->Cell($widthJumlah, $setting->heightCell, 'Jumlah', $setting->border);
             $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
             $pdf->ln();
-            $pdf->Cell($setting->widthFull, 2, '', 'B'); // Border Only
+            $pdf->Cell($setting->widthFull, 1, '', 'T'); // Border Only
             $pdf->ln();
 
             $setting->heightCellData = $setting->heightCell;
 
-            $total = 0 ;
+            $total = $discount = 0 ;
             foreach ($data as $key => $value ) {
                 $pdf->SetFont('arial', 'B', $setting->fontSize);
                 $pdf->Cell($setting->widthFull, $setting->heightCell+1, strtoupper($key), 'B');
@@ -108,7 +139,7 @@ class LaporanKasirController extends BaseController
                 }
                 $pdf->SetFont('arial', 'B', $setting->fontSize);
                 $pdf->Cell($setting->widthFull-52, $setting->heightCell+1, '', 'T');
-                $pdf->Cell(32, $setting->heightCell+1, 'SUB-TOTAL', 'T');
+                $pdf->Cell(32, $setting->heightCell+1, 'TOTAL', 'T');
                 $pdf->Cell(20, $setting->heightCell+1, number_format($subtotal), 'T');
                 $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
                 $pdf->ln();
@@ -119,21 +150,39 @@ class LaporanKasirController extends BaseController
             $pdf->ln(4);
 
             // Total Tagihan
-            $pdf->Cell($setting->widthFull-25, $setting->heightCellData, 'TOTAL', $setting->border, '', 'R');
-            $pdf->Cell(25, $setting->heightCellData, number_format($total), $setting->border, '', 'R');
+            $pdf->Cell($setting->widthFull-52, $setting->heightCellData, '', $setting->border);
+            $pdf->Cell($setting->widthCell-25, $setting->heightCellData, 'SUB-TOTAL', $setting->border);
+            $pdf->Cell(25, $setting->heightCellData, number_format($total), $setting->border);
+            $pdf->ln();
+            $pdf->Cell($setting->widthFull-52, $setting->heightCellData, '', $setting->border);
+            $pdf->Cell($setting->widthCell-25, $setting->heightCellData, 'DISKON', $setting->border);
+            $pdf->Cell(25, $setting->heightCellData, number_format($discount), $setting->border);
+            $pdf->ln();
+            $pdf->Cell($setting->widthFull-52, $setting->heightCellData, '', $setting->border);
+            $pdf->Cell($setting->widthCell-25, $setting->heightCellData, 'TOTAL', $setting->border);
+            $pdf->Cell(25, $setting->heightCellData, number_format($total - $discount), $setting->border);
             $pdf->ln();
             // End Total Tagihan
 
             // Footer
-            $pdf->ln();
+            $setting->heightCell -= 1;
             $setting->widthCell = $setting->widthCell + 28;
-            $pdf->Cell($setting->widthCell-15, $setting->heightCell, $setting->kota.', '.LibApp::dateHuman(date('Y-m-d')), $setting->border);
+            $pdf->Cell($setting->widthCell-15, $setting->heightCell, 'Mengetahui', $setting->border);
+            $pdf->ln();
+            $pdf->Cell($setting->widthCell-15, $setting->heightCell, 'Bendahara Rumah Sakit', $setting->border);
+            $pdf->ln(20);
+            $pdf->Cell($setting->widthCell-30, $setting->heightCell, '', 'B');
+            $pdf->ln(10);
+
+            $pdf->SetLeftMargin($pdf->GetX()+100);
+            $pdf->SetY($pdf->GetY()-32);
+            $pdf->Cell($setting->widthCell-15, $setting->heightCell, $setting->kota.', '.date('d M Y'), $setting->border);
             $pdf->ln();
             $pdf->Cell($setting->widthCell-15, $setting->heightCell, 'Dilaporkan Oleh', $setting->border);
             $pdf->ln();
             $pdf->Cell($setting->widthCell-15, $setting->heightCell, 'Kasir,', $setting->border);
-            $pdf->ln(15);
-            $pdf->Cell($setting->widthCell-15, $setting->heightCell, '( '.strtoupper($user->name).' )', $setting->border);
+            $pdf->ln(18);
+            $pdf->Cell($setting->widthCell-15, $setting->heightCell, '( '.strtoupper($user->name).' )', 'T');
             // End of Footer
 
             $pdf->Output();

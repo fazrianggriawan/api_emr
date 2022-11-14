@@ -19,7 +19,8 @@ class BillingController extends BaseController
     public function Save(Request $request)
     {
 
-        $checkIt = Registrasi::StatusRegistrasi($request->billingHead['noreg'], 'closed');
+        // $checkIt = Registrasi::StatusRegistrasi($request->billingHead['noreg'], 'closed');
+        $checkIt = FALSE;
 
         if ( !$checkIt ) {
 

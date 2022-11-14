@@ -175,6 +175,7 @@ $router->get('setting/emr/form-ruangan', 'Setting\Emr\FormRuanganController@Form
 
 // Laporan
 $router->get('laporan/transaksiKasir/{from}/{to}/{caraBayar}/{jnsPerawatan}', 'Laporan\LaporanKasirController@TransaksiKasir');
+$router->get('laporan/transaksiBilling/{base64}', 'Laporan\LaporanKasirController@TransaksiKasir');
 
 // Medical Record
 // $router->get('medicalRecord', 'Billing\TarifController@hallo');
