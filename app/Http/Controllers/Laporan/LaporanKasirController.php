@@ -24,21 +24,18 @@ class LaporanKasirController extends BaseController
         $this->caraBayar = $caraBayar;
         $this->jnsPerawatan = $jnsPerawatan;
 
-        $data =  Billing_pembayaran_detail::with(
+        $data =  Billing_pembayaran::with(
                     [
-                        'r_billing_detail',
-                        'r_billing_pembayaran' => function($q){
-                            return $q->with(['r_registrasi' => function($q){
-                                return $q->with(['pasien', 'ruang_perawatan']);
-                            }]);
-                        }
+                        'r_registrasi' => function($q){
+                            return $q->with(['pasien']);
+                        },
+                        'r_cara_bayar'
                     ])
-                    ->whereHas('r_billing_pembayaran.r_registrasi', function($q){
+                    ->whereHas('r_registrasi', function($q){
                         return $q->where('id_jns_perawatan', $this->jnsPerawatan);
                     })
-                    ->whereHas('r_billing_pembayaran', function($q){
-                        return $q->where('dateCreated', '<=', $this->tanggal)->where('id_cara_bayar', $this->caraBayar);
-                    })->get();
+                    ->where('dateCreated', '<=', $this->tanggal)->where('id_cara_bayar', $this->caraBayar)
+                    ->get();
 
         return $this->GoPrint($data, 'kasir');
     }
@@ -85,16 +82,16 @@ class LaporanKasirController extends BaseController
 
             $total = 0 ;
             foreach ($data as $row ) {
-                $pdf->Cell($widthNota, $setting->heightCellData, $row->r_billing_pembayaran->no_pembayaran, $setting->border);
-                $pdf->Cell($widthTanggal, $setting->heightCellData, Libapp::dateHuman(substr($row->r_billing_pembayaran->dateCreated, 0, 10)), $setting->border);
-                $pdf->Cell($widthJam, $setting->heightCellData, substr($row->r_billing_pembayaran->dateCreated, 11, 8), $setting->border);
-                $pdf->Cell($widthNorm, $setting->heightCellData, $row->r_billing_pembayaran->r_registrasi->pasien->norm, $setting->border);
-                $pdf->Cell($widthName, $setting->heightCellData, strtoupper($row->r_billing_pembayaran->r_registrasi->pasien->nama), $setting->border);
-                $pdf->Cell($widthPembayaran, $setting->heightCellData, strtoupper($row->r_billing_pembayaran->r_cara_bayar->name), $setting->border);
-                $pdf->Cell($widthJumlah, $setting->heightCellData, number_format($row->r_billing_pembayaran->jumlah), $setting->border);
+                $pdf->Cell($widthNota, $setting->heightCellData, $row->no_pembayaran, $setting->border);
+                $pdf->Cell($widthTanggal, $setting->heightCellData, Libapp::dateHuman(substr($row->dateCreated, 0, 10)), $setting->border);
+                $pdf->Cell($widthJam, $setting->heightCellData, substr($row->dateCreated, 11, 8), $setting->border);
+                $pdf->Cell($widthNorm, $setting->heightCellData, $row->r_registrasi->pasien->norm, $setting->border);
+                $pdf->Cell($widthName, $setting->heightCellData, strtoupper($row->r_registrasi->pasien->nama), $setting->border);
+                $pdf->Cell($widthPembayaran, $setting->heightCellData, strtoupper($row->r_cara_bayar->name), $setting->border);
+                $pdf->Cell($widthJumlah, $setting->heightCellData, number_format($row->jumlah), $setting->border);
                 $pdf->ln();
 
-                $total += $row->r_billing_pembayaran->jumlah;
+                $total += $row->jumlah;
             }
 
             $pdf->ln(1);
