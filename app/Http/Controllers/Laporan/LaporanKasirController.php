@@ -18,9 +18,10 @@ use stdClass;
 
 class LaporanKasirController extends BaseController
 {
-    public function TransaksiKasir($tanggal, $caraBayar, $jnsPerawatan)
+    public function TransaksiKasir($from, $to, $caraBayar, $jnsPerawatan)
     {
-        $this->tanggal = $tanggal.' 12:00:00';
+        $this->from = $from;
+        $this->to = $to;
         $this->caraBayar = $caraBayar;
         $this->jnsPerawatan = $jnsPerawatan;
 
@@ -34,7 +35,8 @@ class LaporanKasirController extends BaseController
                     ->whereHas('r_registrasi', function($q){
                         return $q->where('id_jns_perawatan', $this->jnsPerawatan);
                     })
-                    ->where('dateCreated', '<=', $this->tanggal)
+                    ->where('dateCreated', '>=', $this->from)
+                    ->where('dateCreated', '<=', $this->to)
                     ->where('id_cara_bayar', $this->caraBayar)
                     ->where('active', 1)
                     ->get();
@@ -86,7 +88,9 @@ class LaporanKasirController extends BaseController
 
             $total = 0 ;
             foreach ($data as $key => $value ) {
+                $pdf->SetFont('arial', 'B', $setting->fontSize);
                 $pdf->Cell($setting->widthFull, $setting->heightCell+1, strtoupper($key), 'B');
+                $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
                 $pdf->ln();
                 $subtotal = 0;
                 foreach ($value as $row) {
@@ -123,13 +127,13 @@ class LaporanKasirController extends BaseController
             // Footer
             $pdf->ln();
             $setting->widthCell = $setting->widthCell + 28;
-            $pdf->Cell($setting->widthCell-15, $setting->heightCell, $setting->kota.', '.LibApp::dateHuman(date('Y-m-d')), $setting->border, '', 'C');
+            $pdf->Cell($setting->widthCell-15, $setting->heightCell, $setting->kota.', '.LibApp::dateHuman(date('Y-m-d')), $setting->border);
             $pdf->ln();
-            $pdf->Cell($setting->widthCell-15, $setting->heightCell, 'an. Kepala Rumah Sakit', $setting->border, '', 'C');
+            $pdf->Cell($setting->widthCell-15, $setting->heightCell, 'Dilaporkan Oleh', $setting->border);
             $pdf->ln();
-            $pdf->Cell($setting->widthCell-15, $setting->heightCell, 'Kasir,', $setting->border, '', 'C');
+            $pdf->Cell($setting->widthCell-15, $setting->heightCell, 'Kasir,', $setting->border);
             $pdf->ln(15);
-            $pdf->Cell($setting->widthCell-15, $setting->heightCell, '( '.strtoupper($user->name).' )', $setting->border, '', 'C');
+            $pdf->Cell($setting->widthCell-15, $setting->heightCell, '( '.strtoupper($user->name).' )', $setting->border);
             // End of Footer
 
             $pdf->Output();
