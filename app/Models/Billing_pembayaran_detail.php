@@ -22,4 +22,14 @@ class Billing_pembayaran_detail extends Model
         }
     }
 
+    public function r_billing_detail()
+    {
+        return $this->hasOne(Billing_detail::class, 'id', 'id_billing_detail');
+    }
+
+    public function r_billing_pembayaran()
+    {
+        return $this->hasOne(Billing_pembayaran::class, 'id', 'id_billing_pembayaran');
+    }
+
 }
