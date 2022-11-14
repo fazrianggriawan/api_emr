@@ -154,7 +154,7 @@ $router->post('role_access', 'LoginController@RoleAccess');
 $router->get('print/stickerBarcode/{idPasien}', 'Printer\Barcode@GoPrint');
 $router->get('print/biodataPasien/{idPasien}', 'Printer\BiodataPasien@GoPrint');
 $router->get('print/dataRegistrasi/{noreg}', 'Printer\Registrasi@DataRegistrasi');
-$router->get('print/kwitansi/{noKwitansi}', 'Printer\Kwitansi@GoPrint');
+$router->get('print/kwitansiWithRincian/{noreg}/{username}', 'Printer\Kwitansi@WithRincian');
 $router->get('print/rincianBilling/{noreg}/{username}', 'Printer\RincianBilling@ByNoreg');
 $router->get('print/rincianBillingPembayaran/{noreg}/{username}/{idBillingPembayaran}', 'Printer\RincianBilling@ByPembayaran');
 $router->get('print/rincianBillingHead/{noreg}/{username}/{idBillingHead}', 'Printer\RincianBilling@ByBillingHead');
