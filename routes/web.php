@@ -174,7 +174,7 @@ $router->get('app/ruanganByUsername/{username}', 'App\AppController@RuanganByUse
 $router->get('setting/emr/form-ruangan', 'Setting\Emr\FormRuanganController@FormRuangan');
 
 // Laporan
-$router->get('laporan/transaksiKasir/{tanggal}/{caraBayar}/{jnsPerawatan}', 'Laporan\LaporanKasirController@TransaksiKasir');
+$router->get('laporan/transaksiKasir/{from}/{to}/{caraBayar}/{jnsPerawatan}', 'Laporan\LaporanKasirController@TransaksiKasir');
 
 // Medical Record
 // $router->get('medicalRecord', 'Billing\TarifController@hallo');
