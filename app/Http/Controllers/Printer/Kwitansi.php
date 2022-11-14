@@ -32,10 +32,13 @@ class Kwitansi extends BaseController
 
             $header = new HeaderPrint();
             $setting = $header->GetSetting( new stdClass() );
+            $setting->fontSize = $setting->fontSize+1;
 
-            $pdf->ln(15);
+            $startPos = 123;
+
+            $pdf->ln(25);
             $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
-            $pdf->SetLeftMargin($pdf->GetX()+123);
+            $pdf->SetLeftMargin($pdf->GetX()+$startPos);
             $pdf->Cell($setting->widthCell-30, $setting->heightCell, 'JAM/TANGGAL', $setting->border);
             $pdf->Cell(5, $setting->heightCell, ':', $setting->border, '', 'C');
             $pdf->Cell($setting->widthCell-20, $setting->heightCell, date('d M Y, H:i:s'), $setting->border);
@@ -48,7 +51,7 @@ class Kwitansi extends BaseController
             $pdf->Cell(5, $setting->heightCell, ':', $setting->border, '', 'C');
             $pdf->Cell($setting->widthCell-20, $setting->heightCell, $registrasi->pasien->norm, $setting->border);
             $pdf->ln();
-            $pdf->SetLeftMargin($pdf->GetX()-123);
+            $pdf->SetLeftMargin($pdf->GetX()-$startPos);
             $pdf->ln();
             // $pdf->Cell($setting->widthCell-25, $setting->heightCell, 'Terima Dari', $setting->border);
             // $pdf->Cell(5, $setting->heightCell, ':', $setting->border, '', 'C');
@@ -81,7 +84,7 @@ class Kwitansi extends BaseController
             $widthKelas = 15;
             $widthHarga = 19;
             $widthQty = 10;
-            $pdf->SetFont('arial', 'b', 8.5);
+            $pdf->SetFont('arial', 'b', $setting->fontSize);
             $pdf->Cell($widthUraian, $setting->heightCell, 'Uraian Pelayanan', $setting->border);
             $pdf->Cell($widthHarga, $setting->heightCell, 'Harga', $setting->border, '', 'R');
             $pdf->Cell($widthQty, $setting->heightCell, 'Qty', $setting->border, '', 'C');
