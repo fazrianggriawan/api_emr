@@ -36,7 +36,7 @@ class Kwitansi extends BaseController
 
             $startPos = 123;
 
-            $pdf->ln(25);
+            $pdf->ln(35);
             $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
             $pdf->SetLeftMargin($pdf->GetX()+$startPos);
             $pdf->Cell($setting->widthCell-30, $setting->heightCell, 'JAM/TANGGAL', $setting->border);
@@ -50,7 +50,7 @@ class Kwitansi extends BaseController
             $pdf->Cell($setting->widthCell-30, $setting->heightCell, 'NO. RM', $setting->border);
             $pdf->Cell(5, $setting->heightCell, ':', $setting->border, '', 'C');
             $pdf->Cell($setting->widthCell-20, $setting->heightCell, $registrasi->pasien->norm, $setting->border);
-            $pdf->ln();
+            $pdf->ln(2);
             $pdf->SetLeftMargin($pdf->GetX()-$startPos);
             $pdf->ln();
             // $pdf->Cell($setting->widthCell-25, $setting->heightCell, 'Terima Dari', $setting->border);
@@ -110,7 +110,7 @@ class Kwitansi extends BaseController
                     foreach ($row->r_billing_detail_jasa as $jasa ) {
                         if( $jasa->group == 'dokter' && $jasa->r_pelaksana ){
                             $pdf->SetFont('arial', 'b', $setting->fontSize-0.5);
-                            $pdf->Cell($setting->widthFull, $setting->heightCellData+2, '     '.$jasa->r_pelaksana->name, $setting->border);
+                            $pdf->Cell($setting->widthFull, $setting->heightCellData+3, '     '.$jasa->r_pelaksana->name, $setting->border);
                             $pdf->SetFont('arial', '', $setting->fontSize);
                             $pdf->ln(3);
                         }
