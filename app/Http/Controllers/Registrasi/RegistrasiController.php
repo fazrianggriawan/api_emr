@@ -32,16 +32,16 @@ class RegistrasiController extends BaseController
 
     public function SaveRegistrasi(Request $request)
     {
-        if( $check = Registrasi::IsRegistrasiOpen($request->idPasien, $request->tanggal) ){
-            $message  = 'Pasien Telah Terdaftar <br/>';
-            $message .= $check->jns_perawatan->name.'<br/>';
-            $message .= ( strtolower($check->jns_perawatan->id) == 'rj' ) ? 'POLIKLINIK ' : 'RUANGAN ';
-            $message .= $check->ruang_perawatan->name.' <br/>';
-            $message .= 'Tanggal : '.LibApp::dateHuman($check->tglReg).'<br/>';
-            $message .= 'No. Reg : '.$check->noreg.'<br/>';
-            $message .= 'Status : '.ucfirst($check->status).'<br/>';
-            return LibApp::response(201, $check, $message);
-        }
+        // if( $check = Registrasi::IsRegistrasiOpen($request->idPasien, $request->tanggal) ){
+        //     $message  = 'Pasien Telah Terdaftar <br/>';
+        //     $message .= $check->jns_perawatan->name.'<br/>';
+        //     $message .= ( strtolower($check->jns_perawatan->id) == 'rj' ) ? 'POLIKLINIK ' : 'RUANGAN ';
+        //     $message .= $check->ruang_perawatan->name.' <br/>';
+        //     $message .= 'Tanggal : '.LibApp::dateHuman($check->tglReg).'<br/>';
+        //     $message .= 'No. Reg : '.$check->noreg.'<br/>';
+        //     $message .= 'Status : '.ucfirst($check->status).'<br/>';
+        //     return LibApp::response(201, $check, $message);
+        // }
 
         DB::beginTransaction();
 
