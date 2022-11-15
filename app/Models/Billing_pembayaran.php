@@ -52,4 +52,9 @@ class Billing_pembayaran extends Model
         return $this->hasOne(Mst_cara_bayar::class, 'id', 'id_cara_bayar');
     }
 
+    public function r_pembayaran_detail()
+    {
+        return $this->hasMany(Billing_pembayaran_detail::class, 'id_billing_pembayaran', 'id');
+    }
+
 }

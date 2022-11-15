@@ -35,7 +35,12 @@ class LaporanKasirController extends BaseController
                         'r_registrasi' => function($q){
                             return $q->with(['pasien','ruang_perawatan','jns_perawatan']);
                         },
-                        'r_cara_bayar'
+                        'r_cara_bayar',
+                        'r_pembayaran_detail' => function($q){
+                            return $q->with(['r_billing_detail'=>function($q){
+                                return $q->with('r_tarif_harga');
+                            }]);
+                        }
                     ])
                     ->whereHas('r_registrasi', function($q){
                         return $q->where('id_jns_perawatan', $this->jnsPerawatan);
@@ -125,18 +130,25 @@ class LaporanKasirController extends BaseController
                 $pdf->ln();
                 $subtotal = 0;
                 foreach ($value as $row) {
+
+                    $jumlah = 0;
+                    foreach ($row->r_pembayaran_detail as $row2) {
+                        $jumlah   += $row2->r_billing_detail->qty * $row2->r_billing_detail->r_tarif_harga->harga;
+                    }
+
                     $pdf->Cell($widthNota, $setting->heightCellData, $row->no_pembayaran, $setting->border);
                     $pdf->Cell($widthTanggal, $setting->heightCellData, Libapp::dateHuman(substr($row->dateCreated, 0, 10)), $setting->border);
                     $pdf->Cell($widthJam, $setting->heightCellData, substr($row->dateCreated, 11, 8), $setting->border);
                     $pdf->Cell($widthNorm, $setting->heightCellData, $row->r_registrasi->pasien->norm, $setting->border);
                     $pdf->Cell($widthName, $setting->heightCellData, strtoupper($row->r_registrasi->pasien->nama), $setting->border);
                     $pdf->Cell($widthPembayaran, $setting->heightCellData, strtoupper($row->r_cara_bayar->name), $setting->border);
-                    $pdf->Cell($widthJumlah, $setting->heightCellData, number_format($row->jumlah), $setting->border);
+                    $pdf->Cell($widthJumlah, $setting->heightCellData, number_format($jumlah), $setting->border);
                     $pdf->ln();
 
-                    $total += $row->jumlah;
-                    $subtotal += $row->jumlah;
+                    $total    += $jumlah;
+                    $subtotal += $jumlah;
                 }
+
                 $pdf->SetFont('arial', 'B', $setting->fontSize);
                 $pdf->Cell($setting->widthFull-52, $setting->heightCell+1, '', 'T');
                 $pdf->Cell(32, $setting->heightCell+1, 'TOTAL', 'T');
