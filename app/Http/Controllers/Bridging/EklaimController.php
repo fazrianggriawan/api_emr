@@ -317,14 +317,14 @@ class EklaimController extends BaseController
         return LibEklaim::exec(json_encode($data));
     }
 
-    public function PrintKlaim(Request $request)
+    public function PrintKlaim($noSep)
     {
         $data = array(
             'metadata' => array(
                 'method' => 'claim_print'
             ),
             'data' => array(
-                'nomor_sep' => '1003R0021022V001438'
+                'nomor_sep' => $noSep
             )
         );
         return LibEklaim::exec(json_encode($data));
