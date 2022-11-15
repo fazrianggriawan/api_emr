@@ -221,10 +221,10 @@ class KlaimController extends BaseController
         $pdf = base64_decode($res->data);
         // hasilnya adalah berupa binary string $pdf, untuk disimpan:
         $filename = "EKlaim-".$noSep.".pdf";
-        file_put_contents($filename, $pdf);
+        // file_put_contents($filename, $pdf);
         // atau untuk ditampilkan dengan perintah:
         header("Content-type:application/pdf");
-        // header("Content-Disposition:attachment;filename=".$filename);
+        header("Content-Disposition:attachment;filename=".$filename);
         echo $pdf;
         exit;
     }
