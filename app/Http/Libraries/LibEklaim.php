@@ -142,7 +142,7 @@ class LibEklaim
             // variable data adalah base64 dari file pdf
             $pdf = base64_decode($msg["response"]["data"]);
             // hasilnya adalah berupa binary string $pdf, untuk disimpan:
-            file_put_contents("klaim.pdf", $pdf);
+            // file_put_contents("klaim.pdf", $pdf);
             // atau untuk ditampilkan dengan perintah:
             header("Content-type:application/pdf");
             header("Content-Disposition:attachment;filename=klaim-.pdf");
