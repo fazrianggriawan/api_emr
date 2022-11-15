@@ -45,6 +45,9 @@ class LaporanKasirController extends BaseController
                     ->whereHas('r_registrasi', function($q){
                         return $q->where('id_jns_perawatan', $this->jnsPerawatan);
                     })
+                    ->whereHas('r_pembayaran_detail.r_billing_detail', function($q){
+                        return $q->where('active', 1);
+                    })
                     ->where(DB::raw('dateCreated'), '>=', $this->from)
                     ->where(DB::raw('dateCreated'), '<=', $this->to)
                     ->where('id_cara_bayar', $this->caraBayar)
