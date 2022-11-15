@@ -18,7 +18,7 @@ class RincianBilling extends BaseController
         Billing_detail::$noreg = $noreg;
         Billing_detail::$idBillingHead = $idBillingHead;
         $data = Billing_detail::GetBilling();
-        $this->GoPrint($data, $noreg, $username);
+        return $this->GoPrint($data, $noreg, $username);
     }
 
     public function ByPembayaran($noreg, $username, $idBillingPembayaran)
@@ -26,17 +26,17 @@ class RincianBilling extends BaseController
         Billing_detail::$noreg = $noreg;
         Billing_detail::$idBillingPembayaran = $idBillingPembayaran;
         $data = Billing_detail::GetBilling();
-        $this->GoPrint($data, $noreg, $username);
+        return $this->GoPrint($data, $noreg, $username);
     }
 
     public function ByNoreg($noreg, $username)
     {
         Billing_detail::$noreg = $noreg;
         $data = Billing_detail::GetBilling();
-        $this->GoPrint($data, $noreg, $username);
+        return $this->GoPrint($data, $noreg, $username);
     }
 
-    public function GoPrint($data, $noreg, $username)
+    public static function GoPrint($data, $noreg, $username)
     {
         try {
             $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
@@ -51,18 +51,32 @@ class RincianBilling extends BaseController
             $setting = $header->GetSetting( new stdClass() );
 
             $pdf->SetFont('arial', 'b', $setting->fontSize+2);
-            $pdf->Cell($setting->widthCell+45, $setting->heightCell, 'RINCIAN BIAYA PERAWATAN', $setting->border);
+            $pdf->Cell($setting->widthCell+50, $setting->heightCell, 'RINCIAN BIAYA PERAWATAN', $setting->border);
             $pdf->SetFont('arial', $setting->fontWeight, 8.5);
             $pdf->Cell($setting->widthCell-20, $setting->heightCell, 'NO. ANTRIAN', 'L');
             $pdf->ln();
             $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
-            $pdf->Cell($setting->widthCell+45, $setting->heightCell, 'Tanggal Perawatan : '.LibApp::dateHuman($registrasi->tglReg).' s/d '.LibApp::dateHuman($registrasi->tglReg), $setting->border);
+            $pdf->Cell($setting->widthCell+50, $setting->heightCell, 'Tanggal Perawatan : '.LibApp::dateHuman($registrasi->tglReg).' s/d '.LibApp::dateHuman($registrasi->tglReg), $setting->border);
 
             if( isset($registrasi->registrasi_antrian->r_antrian->nomor) && $registrasi->id_jns_perawatan == 'rj' ){
                 $separator = ($registrasi->registrasi_antrian->r_antrian->prefix == '') ? '' : '-' ;
                 $pdf->SetFont('arial', 'b', 12);
                 $pdf->Cell($setting->widthCell-20, $setting->heightCell, $registrasi->registrasi_antrian->r_antrian->prefix.$separator.$registrasi->registrasi_antrian->r_antrian->nomor, 'L');
                 $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
+            }
+
+            if( Billing_detail::$idBillingHead ){
+                $pos = 78;
+                $pdf->SetY($pdf->GetY()-10);
+                $pdf->SetLeftMargin($pdf->GetX()+$pos);
+                $pdf->ln();
+                $pdf->Cell($setting->widthCell-20, $setting->heightCell, 'NO. NOTA', 'L');
+                $pdf->ln();
+                $pdf->SetFont('arial', 'b', 11);
+                $pdf->Cell($setting->widthCell-20, $setting->heightCell, Billing_detail::$idBillingHead, 'L');
+                $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
+                $pdf->ln(0);
+                $pdf->SetLeftMargin($pdf->GetX()-$pos);
             }
 
             $pdf->Code128($setting->widthCell+103, 29, $registrasi->noreg, 40, 10); // Barcode

@@ -107,4 +107,9 @@ class Billing_detail extends Model
     {
         return $this->hasMany(Billing_detail_jasa::class, 'id_billing_detail', 'id');
     }
+
+    public static function GetBillingHead()
+    {
+        return self::$idBillingHead;
+    }
 }
