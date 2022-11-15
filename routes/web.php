@@ -164,7 +164,19 @@ $router->get('print/hasilLab/{noreg}/{idBillingHead}/{username}', 'Printer\Hasil
 $router->get('print/hasilRadiologi/{noreg}/{idBillingHead}/{username}', 'Printer\HasilRadiologi@GoPrint');
 $router->get('print/kartuPasien/{idPasien}', 'Printer\KartuPasien@GoPrint');
 
-$router->get('test', 'LoginController@Test');
+
+// Eklaim
+$router->get('eklaim/print/{noSep}', 'Eklaim\KlaimController@PrintKlaim');
+$router->get('eklaim/sepByNoreg/{noreg}', 'Eklaim\SepController@SepByNoreg');
+$router->get('eklaim/billingGroupEklaim/{noreg}', 'Eklaim\KlaimController@BillingGroupByEklaim');
+$router->post('eklaim/cari/icd10', 'Eklaim\Icd10Controller@Cari');
+$router->post('eklaim/cari/icd9', 'Eklaim\Icd9Controller@Cari');
+$router->post('eklaim/newKlaim', 'Eklaim\KlaimController@NewKlaim');
+$router->post('eklaim/save', 'Eklaim\KlaimController@SaveKlaim');
+$router->post('eklaim/grouping/1', 'Eklaim\GroupingController@Stage1');
+$router->post('eklaim/grouping/2', 'Eklaim\GroupingController@Stage2');
+$router->post('eklaim/finalisasi', 'Eklaim\FinalisasiController@FinalisasiKlaim');
+$router->post('eklaim/edit', 'Eklaim\KlaimController@EditUlang');
 
 // App
 $router->get('app/modules/{username}', 'App\AppController@ModuleByUsername');
@@ -218,8 +230,6 @@ $router->get('get_image', 'MedicalRecord\AssessmentUmumController@getImage');
 // $router->post('save_test_order', 'TestOrderController@save');
 // $router->post('save_assessment_umum', 'AssessmentUmumController@save');
 // $router->post('save_objective', 'ObjectiveController@save');
-
-$router->get('eklaim/print', 'Bridging\EklaimController@PrintKlaim');
 
 
 $router->get('test', function(){

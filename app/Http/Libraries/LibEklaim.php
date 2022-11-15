@@ -123,19 +123,24 @@ class LibEklaim
             strlen($response) - $first - $last
         );
         // decrypt dengan fungsi inacbg_decrypt
-        $response = self::inacbg_decrypt($response, $setting->userkey);
+        return $response = self::inacbg_decrypt($response, $setting->userkey);
 
-        return self::response($response);
+        // return self::response($response);
     }
 
     public static function response($data)
     {
-        $res = json_decode($data);
+        return json_decode($data);
+    }
+
+    public static function print($res, $data)
+    {
         if( $res->metadata->code == 200 ){
             // hasil decrypt adalah format json, ditranslate kedalam array
             $msg = json_decode($data, true);
+
             // variable data adalah base64 dari file pdf
-            $pdf = base64_decode($msg["data"]);
+            $pdf = base64_decode($msg["response"]["data"]);
             // hasilnya adalah berupa binary string $pdf, untuk disimpan:
             file_put_contents("klaim.pdf", $pdf);
             // atau untuk ditampilkan dengan perintah:
