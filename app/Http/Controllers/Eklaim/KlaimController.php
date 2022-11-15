@@ -29,7 +29,7 @@ class KlaimController extends BaseController
                 )
             );
 
-            return LibEklaim::exec(json_encode($data));
+            return $this->HandleResponse(LibEklaim::exec(json_encode($data)));
 
         } catch (\Throwable $th) {
             //throw $th;

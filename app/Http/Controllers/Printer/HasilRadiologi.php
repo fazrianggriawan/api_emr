@@ -26,6 +26,10 @@ class HasilRadiologi extends BaseController
                 ->where('active', 1)
                 ->first();
 
+        if(!$data){
+            return 'Belum ada hasil';
+        }
+
         $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
 
         $pdf = new PDFBarcode();
