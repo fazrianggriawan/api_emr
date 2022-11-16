@@ -14,7 +14,7 @@ use stdClass;
 
 class HasilLab extends BaseController
 {
-    public function GoPrint($noreg, $idBillingHead, $username)
+    public static function GoPrint($noreg, $idBillingHead, $username, $return=FALSE)
     {
         $user = App_user::where('username', $username)->first();
 
@@ -30,10 +30,13 @@ class HasilLab extends BaseController
 
         $data = collect($data)->groupBy('r_lab_nama_hasil_rujukan.r_nama_hasil.category');
 
+        if( !$return ){
+            $pdf = new PDFBarcode();
+        }else{
+            $pdf = $return;
+        }
 
-        $pdf = new PDFBarcode();
-
-		$pdf->AddPage('P', 'A4', 0);
+        $pdf->AddPage('P', 'A4', 0);
 
         $header = new HeaderPrint();
         $setting = $header->GetSetting( new stdClass() );
@@ -156,6 +159,11 @@ class HasilLab extends BaseController
         // $pdf->Cell($setting->widthFull, 2, '', 'B'); // Border Only
 
         // End of Footer
+
+        if( $return ){
+            $pdf->SetMargins(10, 10);
+            return $pdf;
+        }
 
 		$pdf->Output();
         exit;
