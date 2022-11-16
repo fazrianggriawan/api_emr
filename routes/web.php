@@ -201,6 +201,7 @@ $router->get('master/tarifGroupJasa', 'Master\TarifController@GroupJasa');
 
 $router->post('master/tarif/save', 'Master\TarifController@Save');
 $router->post('master/tarif/delete', 'Master\TarifController@DeleteTarif');
+$router->post('master/tarif/activate', 'Master\TarifController@ActivateTarif');
 
 // Medical Record
 // $router->get('medicalRecord', 'Billing\TarifController@hallo');
