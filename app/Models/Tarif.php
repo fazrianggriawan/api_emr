@@ -9,6 +9,7 @@ class Tarif extends Model
 {
     protected $table = 'tarif';
     protected $primaryKey = 'id';
+    public $timestamps = false;
 
     public function r_tarif_harga()
     {
@@ -31,6 +32,7 @@ class Tarif extends Model
                 ->select('tarif_harga_jasa.id', 'tarif_harga_jasa.id_tarif_harga', 'tarif_harga_jasa.jasa', 'mst_group_jasa.name AS group_jasa_name', 'mst_group_jasa.id AS group_jasa_id')
                 ->leftJoin('mst_group_jasa', 'tarif_harga_jasa.id_group_jasa', '=', 'mst_group_jasa.id')
                 ->where('tarif_harga_jasa.id_tarif_harga', $idTarifHarga)
+                ->where('active', 1)
                 ->get();
     }
 
@@ -48,6 +50,21 @@ class Tarif extends Model
             ->where('noreg', $noreg)
             ->where('unit', $unit)
             ->get();
+    }
+
+    public static function SaveData($nama, $sessionId)
+    {
+        $insert = new Tarif();
+        $insert->name = $nama;
+        $insert->session_id = $sessionId;
+        $insert->save();
+
+        return self::where('session_id', $sessionId)->first();
+    }
+
+    public static function UpdateData($nama, $id)
+    {
+        return self::where('id', $id)->update(['name'=>$nama]);
     }
 
 }

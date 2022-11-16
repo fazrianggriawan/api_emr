@@ -189,6 +189,17 @@ $router->get('setting/emr/form-ruangan', 'Setting\Emr\FormRuanganController@Form
 $router->get('laporan/transaksiKasir/{from}/{to}/{caraBayar}/{jnsPerawatan}', 'Laporan\LaporanKasirController@TransaksiKasir');
 $router->get('laporan/transaksiBilling/{base64}', 'Laporan\LaporanKasirController@TransaksiKasir');
 
+
+// Master
+$router->get('master/tarif', 'Master\TarifController@Tarif');
+$router->get('master/tarifHarga/{idTarif}', 'Master\TarifController@TarifHarga');
+$router->get('master/groupTarif', 'Master\TarifController@GroupTarif');
+$router->get('master/detailTarif/{id}', 'Master\TarifController@DetailTarif');
+$router->get('master/categoryByGroup/{idGroup}', 'Master\TarifController@CategoryByGroup');
+$router->get('master/tarifGroupJasa', 'Master\TarifController@GroupJasa');
+
+$router->post('master/tarif/save', 'Master\TarifController@Save');
+
 // Medical Record
 // $router->get('medicalRecord', 'Billing\TarifController@hallo');
 
