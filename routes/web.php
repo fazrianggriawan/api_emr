@@ -200,6 +200,7 @@ $router->get('master/categoryByGroup/{idGroup}', 'Master\TarifController@Categor
 $router->get('master/tarifGroupJasa', 'Master\TarifController@GroupJasa');
 
 $router->post('master/tarif/save', 'Master\TarifController@Save');
+$router->post('master/tarif/delete', 'Master\TarifController@DeleteTarif');
 
 // Medical Record
 // $router->get('medicalRecord', 'Billing\TarifController@hallo');
