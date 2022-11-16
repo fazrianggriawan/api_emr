@@ -30,7 +30,7 @@ class LampiranKlaim extends BaseController
         try {
             $hasil = Lab_hasil_pemeriksaan::where('noreg', $noreg)->where('active', 1)->get();
             if( count($hasil) > 0 ){
-                $billingHead = Billing_head::where('noreg', $noreg)->get();
+                $billingHead = Billing_head::where('noreg', $noreg)->where('unit', 'LAB')->get();
                 foreach ($billingHead as $row) {
                     if( $hasil ){
                         $pdf = HasilLab::GoPrint($noreg, $row->id, $username, $pdf);
@@ -50,7 +50,7 @@ class LampiranKlaim extends BaseController
         try {
             $hasil = Radiologi_hasil_pemeriksaan::where('noreg', $noreg)->where('active', 1)->first();
             if( $hasil ){
-                $billingHead = Billing_head::where('noreg', $noreg)->get();
+                $billingHead = Billing_head::where('noreg', $noreg)->where('unit', 'RAD')->get();
                 foreach ($billingHead as $row) {
                     if( $hasil ){
                         $pdf = HasilRadiologi::GoPrint($noreg, $row->id, $username, $pdf);
