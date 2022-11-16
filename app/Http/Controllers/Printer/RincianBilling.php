@@ -50,7 +50,6 @@ class RincianBilling extends BaseController
 
             if( !$return ){
                 $pdf = new PDFBarcode();
-                $pdf->AddPage('P', 'A4', 0);
             }else{
                 $pdf = $return;
             }
