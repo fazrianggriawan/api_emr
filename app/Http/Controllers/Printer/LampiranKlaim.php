@@ -28,13 +28,11 @@ class LampiranKlaim extends BaseController
     public static function HasilLab($noreg, $username, $pdf)
     {
         try {
-            $hasil = Lab_hasil_pemeriksaan::where('noreg', $noreg)->where('active', 1)->get();
-            if( count($hasil) > 0 ){
+            $hasil = Lab_hasil_pemeriksaan::where('noreg', $noreg)->where('active', 1)->groupBy('noreg')->first();
+            if( $hasil ){
                 $billingHead = Billing_head::where('noreg', $noreg)->where('unit', 'LAB')->get();
                 foreach ($billingHead as $row) {
-                    if( $hasil ){
-                        $pdf = HasilLab::GoPrint($noreg, $row->id, $username, $pdf);
-                    }
+                    $pdf = HasilLab::GoPrint($noreg, $row->id, $username, $pdf);
                 }
             }
             return $pdf;
