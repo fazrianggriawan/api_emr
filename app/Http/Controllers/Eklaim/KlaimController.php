@@ -6,9 +6,10 @@ use App\Http\Libraries\LibApp;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Http\Libraries\LibEklaim;
 use App\Models\Billing_detail;
+use App\Models\Farmasi_billing;
 use App\Models\Registrasi;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 
 class KlaimController extends BaseController
 {
@@ -53,6 +54,8 @@ class KlaimController extends BaseController
 
             $data = collect($billing)->groupBy('r_tarif_harga.r_tarif.r_tarif_category.r_eklaim_group_tarif.id_eklaim_group_tarif');
 
+            $farmasi = Farmasi_billing::select(DB::raw('COALESCE(SUM(harga * qty), 0) AS total'))->where('active', 1)->where('noreg', $noreg)->first();
+
             $total = 0;
             $array = array();
             foreach ($data as $key => $value) {
@@ -62,8 +65,11 @@ class KlaimController extends BaseController
                 foreach($value as $row){
                     $total += $row->r_tarif_harga->harga * $row->qty;
                 }
-
                 $array[$key] = $total;
+            }
+
+            if( $farmasi->total > 0 ){
+                $array['obat'] = $farmasi->total;
             }
 
             return LibApp::response(200, $array);
