@@ -163,6 +163,7 @@ $router->get('print/billingFarmasi/{noreg}', 'Printer\BillingFarmasi@GoPrint');
 $router->get('print/hasilLab/{noreg}/{idBillingHead}/{username}', 'Printer\HasilLab@GoPrint');
 $router->get('print/hasilRadiologi/{noreg}/{idBillingHead}/{username}', 'Printer\HasilRadiologi@GoPrint');
 $router->get('print/kartuPasien/{idPasien}', 'Printer\KartuPasien@GoPrint');
+$router->get('print/lampiranKlaim/{noreg}/{username}', 'Printer\LampiranKlaim@Lampiran');
 
 
 // Eklaim

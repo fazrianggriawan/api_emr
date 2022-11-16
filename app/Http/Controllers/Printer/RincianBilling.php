@@ -30,11 +30,11 @@ class RincianBilling extends BaseController
         return $this->GoPrint($data, $noreg, $username);
     }
 
-    public function ByNoreg($noreg, $username)
+    public static function ByNoreg($noreg, $username, $return=FALSE)
     {
         Billing_detail::$noreg = $noreg;
         $data = Billing_detail::GetBilling();
-        return $this->GoPrint($data, $noreg, $username);
+        return self::GoPrint($data, $noreg, $username, $return);
     }
 
     public static function BillingFarmasi($noreg)
@@ -42,13 +42,18 @@ class RincianBilling extends BaseController
         return Farmasi_billing::where('active', 1)->where('noreg', $noreg)->get();
     }
 
-    public static function GoPrint($data, $noreg, $username)
+    public static function GoPrint($data, $noreg, $username, $return=FALSE)
     {
         try {
             $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
             $user = App_user::where('username', $username)->first();
 
-            $pdf = new PDFBarcode();
+            if( !$return ){
+                $pdf = new PDFBarcode();
+                $pdf->AddPage('P', 'A4', 0);
+            }else{
+                $pdf = $return;
+            }
 
             $pdf->AddPage('P', 'A4', 0);
 
@@ -228,6 +233,10 @@ class RincianBilling extends BaseController
             $pdf->ln(15);
             $pdf->Cell($setting->widthCell-15, $setting->heightCell, '( '.strtoupper($user->name).' )', $setting->border, '', 'C');
             // End of Footer
+
+            if( $return ){
+                return $pdf;
+            }
 
             $pdf->Output();
             exit;
