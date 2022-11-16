@@ -28,11 +28,13 @@ class LampiranKlaim extends BaseController
     public static function HasilLab($noreg, $username, $pdf)
     {
         try {
-            $billingHead = Billing_head::where('noreg', $noreg)->get();
-            foreach ($billingHead as $row) {
-                $hasil = Lab_hasil_pemeriksaan::where('noreg', $noreg)->where('active', 1)->first();
-                if( $hasil ){
-                    $pdf = HasilLab::GoPrint($noreg, $row->id, $username, $pdf);
+            $hasil = Lab_hasil_pemeriksaan::where('noreg', $noreg)->where('active', 1)->get();
+            if( count($hasil) > 0 ){
+                $billingHead = Billing_head::where('noreg', $noreg)->get();
+                foreach ($billingHead as $row) {
+                    if( $hasil ){
+                        $pdf = HasilLab::GoPrint($noreg, $row->id, $username, $pdf);
+                    }
                 }
             }
             return $pdf;
@@ -46,11 +48,13 @@ class LampiranKlaim extends BaseController
     public static function HasilRadiologi($noreg, $username, $pdf)
     {
         try {
-            $billingHead = Billing_head::where('noreg', $noreg)->get();
-            foreach ($billingHead as $row) {
-                $hasil = Radiologi_hasil_pemeriksaan::where('noreg', $noreg)->where('active', 1)->first();
-                if( $hasil ){
-                    $pdf = HasilRadiologi::GoPrint($noreg, $row->id, $username, $pdf);
+            $hasil = Radiologi_hasil_pemeriksaan::where('noreg', $noreg)->where('active', 1)->first();
+            if( $hasil ){
+                $billingHead = Billing_head::where('noreg', $noreg)->get();
+                foreach ($billingHead as $row) {
+                    if( $hasil ){
+                        $pdf = HasilRadiologi::GoPrint($noreg, $row->id, $username, $pdf);
+                    }
                 }
             }
             return $pdf;
