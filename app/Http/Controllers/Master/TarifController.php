@@ -149,4 +149,16 @@ class TarifController extends BaseController
         return LibApp::response(200, $data);
     }
 
+    public function DeleteTarif(Request $request)
+    {
+        try {
+            //code...
+            Tarif::where('id', $request->id)->update(['active'=>0]);
+            return LibApp::response(200, [], 'Berhasil Menonaktifkan Tarif.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return LibApp::response(201, [], $th->getMessage());
+        }
+    }
+
 }
