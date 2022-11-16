@@ -54,10 +54,11 @@ class BillingController extends BaseController
     public function Delete(Request $request)
     {
 
-        // $checkIt = Registrasi::StatusRegistrasi($request->noreg, 'closed');
-        // if($checkIt){
-        //     return LibApp::response(201, [], 'Gagal Menghapus. Registrasi Sudah Closed');
-        // };
+        $checkIt = Billing_detail::where('id', $request->id)->get();
+
+        if($checkIt){
+            return LibApp::response(201, [], 'Gagal Menghapus. Billing Sudah Closed');
+        };
 
         try {
 
