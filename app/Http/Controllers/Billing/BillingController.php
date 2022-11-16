@@ -79,6 +79,12 @@ class BillingController extends BaseController
 
     public function UpdateJumlah(Request $request)
     {
+        $checkIt = Billing_detail::where('id', $request->id)->get();
+
+        if($checkIt){
+            return LibApp::response(201, [], 'Gagal Merubah. Billing Sudah Closed');
+        };
+
         try {
             DB::beginTransaction();
 
