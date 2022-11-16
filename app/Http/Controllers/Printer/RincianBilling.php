@@ -7,6 +7,7 @@ use App\Http\Libraries\PDFBarcode;
 use App\Models\App_user;
 use App\Models\Billing;
 use App\Models\Billing_detail;
+use App\Models\Farmasi_billing;
 use App\Models\Registrasi;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use stdClass;
@@ -34,6 +35,11 @@ class RincianBilling extends BaseController
         Billing_detail::$noreg = $noreg;
         $data = Billing_detail::GetBilling();
         return $this->GoPrint($data, $noreg, $username);
+    }
+
+    public static function BillingFarmasi($noreg)
+    {
+        return Farmasi_billing::where('active', 1)->where('noreg', $noreg)->get();
     }
 
     public static function GoPrint($data, $noreg, $username)
@@ -160,6 +166,28 @@ class RincianBilling extends BaseController
 
                 $total += ($row->r_tarif_harga->harga * $row->qty);
 
+            }
+
+            $farmasi = self::BillingFarmasi($noreg);
+            if( count($farmasi) > 0 ){
+                $pdf->SetFont('arial', 'B', $setting->fontSize);
+                $pdf->Cell($setting->widthFull, $setting->heightCellData, 'FARMASI', 'T');
+                $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
+                $pdf->ln();
+            }
+
+            foreach ($farmasi as $row ) {
+                $pdf->Cell(4, $setting->heightCellData, '', $setting->border);
+                $pdf->Cell($widthUraian-4, $setting->heightCellData, strtoupper($row->nama_obat), $setting->border);
+                $pdf->Cell($widthTanggal, $setting->heightCellData, '', $setting->border);
+                $pdf->Cell($widthKelas, $setting->heightCellData, '', $setting->border);
+                $pdf->Cell($widthHarga, $setting->heightCellData, number_format($row->harga), $setting->border, '', 'R');
+                $pdf->Cell($widthQty, $setting->heightCellData, number_format($row->qty), $setting->border, '', 'C');
+                $pdf->Cell($widthHarga, $setting->heightCellData, '0', $setting->border, '', 'R');
+                $pdf->Cell($widthHarga, $setting->heightCellData, number_format($row->harga * $row->qty), $setting->border, '', 'R');
+                $pdf->ln();
+
+                $total += ($row->harga * $row->qty);
             }
 
             $pdf->ln(1);
