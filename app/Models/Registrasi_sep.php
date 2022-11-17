@@ -15,4 +15,12 @@ class Registrasi_sep extends Model
         return $this->hasOne(Registrasi::class, 'noreg', 'noreg');
     }
 
+    public static function SaveData($noreg, $sep)
+    {
+        $insert = new Registrasi_sep();
+        $insert->noreg = $noreg;
+        $insert->no_sep = $sep;
+        $insert->save();
+    }
+
 }

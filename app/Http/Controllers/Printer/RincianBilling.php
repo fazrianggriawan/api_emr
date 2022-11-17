@@ -66,7 +66,7 @@ class RincianBilling extends BaseController
             $pdf->Cell($setting->widthCell-20, $setting->heightCell, 'NO. ANTRIAN', 'L');
             $pdf->ln();
             $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
-            $pdf->Cell($setting->widthCell+50, $setting->heightCell, 'Tanggal Perawatan : '.LibApp::dateHuman($registrasi->tglReg).' s/d '.LibApp::dateHuman($registrasi->tglReg), $setting->border);
+            $pdf->Cell($setting->widthCell+50, $setting->heightCell, 'Tanggal Kunjungan : '.LibApp::dateHuman($registrasi->tglReg).' '.substr($registrasi->dateCreated, 10, 18), $setting->border);
 
             if( isset($registrasi->registrasi_antrian->r_antrian->nomor) && $registrasi->id_jns_perawatan == 'rj' ){
                 $separator = ($registrasi->registrasi_antrian->r_antrian->prefix == '') ? '' : '-' ;

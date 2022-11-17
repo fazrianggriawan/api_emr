@@ -178,6 +178,7 @@ $router->post('eklaim/grouping/1', 'Eklaim\GroupingController@Stage1');
 $router->post('eklaim/grouping/2', 'Eklaim\GroupingController@Stage2');
 $router->post('eklaim/finalisasi', 'Eklaim\FinalisasiController@FinalisasiKlaim');
 $router->post('eklaim/edit', 'Eklaim\KlaimController@EditUlang');
+$router->post('eklaim/updateSep', 'Eklaim\KlaimController@UpdateSep');
 
 // App
 $router->get('app/modules/{username}', 'App\AppController@ModuleByUsername');

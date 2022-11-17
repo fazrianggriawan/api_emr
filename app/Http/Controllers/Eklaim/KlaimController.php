@@ -8,6 +8,7 @@ use App\Http\Libraries\LibEklaim;
 use App\Models\Billing_detail;
 use App\Models\Farmasi_billing;
 use App\Models\Registrasi;
+use App\Models\Registrasi_sep;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -252,6 +253,27 @@ class KlaimController extends BaseController
             return LibApp::response(200, $json, 'Proses Berhasil : '.$json->metadata->message);
         }else{
             return LibApp::response(201, [], 'Gagal Menyimpan : '.$json->metadata->message);
+        }
+    }
+
+    public function UpdateSep(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $checkIt = Registrasi_sep::where('noreg', $request->noreg)->first();
+            if( isset($checkIt->id) ){
+                Registrasi_sep::where('noreg', $request->noreg)->update(['no_sep'=>$request->sep]);
+            }else{
+                Registrasi_sep::SaveData($request->noreg, $request->sep);
+            }
+
+            DB::commit();
+
+            return LibApp::response(200, ['noreg'=>$request->noreg], 'SEP Berhasil Disimpan');
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return LibApp::response(201, [], 'Gagal Disimpan. '.$th->getMessage());
         }
     }
 
