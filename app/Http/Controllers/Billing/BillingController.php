@@ -54,11 +54,11 @@ class BillingController extends BaseController
     public function Delete(Request $request)
     {
 
-        $checkIt = Billing_detail::where('id', $request->id)->get();
+        $checkIt = Billing_detail::where('id', $request->id)->where('status', 'closed')->get();
 
-        if($checkIt){
-            return LibApp::response(201, [], 'Gagal Menghapus. Billing Sudah Closed');
-        };
+        // if($checkIt){
+        //     return LibApp::response(201, [], 'Gagal Menghapus. Billing Sudah Closed');
+        // };
 
         try {
 
@@ -79,6 +79,12 @@ class BillingController extends BaseController
 
     public function UpdateJumlah(Request $request)
     {
+        $checkIt = Billing_detail::where('id', $request->id)->get();
+
+        if($checkIt){
+            //return LibApp::response(201, [], 'Gagal Merubah. Billing Sudah Closed');
+        };
+
         try {
             DB::beginTransaction();
 

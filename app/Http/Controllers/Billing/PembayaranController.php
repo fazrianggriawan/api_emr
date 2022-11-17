@@ -6,6 +6,7 @@ use App\Http\Libraries\LibApp;
 use App\Models\Billing_detail;
 use App\Models\Billing_pembayaran;
 use App\Models\Billing_pembayaran_detail;
+use App\Models\Billing_pembayaran_rincian;
 use App\Models\Registrasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -35,6 +36,8 @@ class PembayaranController extends BaseController
             Billing_pembayaran::SavePembayaran($request, $registrasi, $sessionId);
 
             $dataPembayaran = Billing_pembayaran::where('session_id', $sessionId)->first();
+
+            Billing_pembayaran_rincian::SaveRincian($request->rincian, $request->noreg, $dataPembayaran->id);
 
             Billing_pembayaran_detail::SaveBilling($request->billing, $dataPembayaran);
 

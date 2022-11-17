@@ -8,12 +8,31 @@ use App\Models\Farmasi_billing_pembayaran;
 use App\Models\Farmasi_billing_pembayaran_detail;
 use App\Models\Farmasi_opname_nama_obat;
 use App\Models\Farmasi_opname_periode;
+use App\Models\Registrasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class BillingController extends BaseController
 {
+
+    public function Save(Request $request)
+    {
+        $checkIt = Registrasi::StatusRegistrasi($request->billingHead['noreg'], 'closed');
+        if ( $checkIt ) {
+            return LibApp::response(201, [], 'Tidak Bisa Menambah Billing. Registrasi Sudah Closed');
+        }
+
+
+        try {
+            // $billingHead = Billing_head::where('session_id', $request->sessionId)->first();
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
+    }
+
     public function SaveBilling(Request $request)
     {
         $billing = new Farmasi_billing();
@@ -59,8 +78,6 @@ class BillingController extends BaseController
                 $detailBilling->id_farmasi_billing = $row->id;
                 $detailBilling->id_farmasi_billing_pembayaran = '';
                 $detailBilling->dateCreated = '';
-
-
             }
 
             $pembayaran = new Farmasi_billing_pembayaran();

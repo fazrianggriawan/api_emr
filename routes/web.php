@@ -179,6 +179,7 @@ $router->post('eklaim/grouping/1', 'Eklaim\GroupingController@Stage1');
 $router->post('eklaim/grouping/2', 'Eklaim\GroupingController@Stage2');
 $router->post('eklaim/finalisasi', 'Eklaim\FinalisasiController@FinalisasiKlaim');
 $router->post('eklaim/edit', 'Eklaim\KlaimController@EditUlang');
+$router->post('eklaim/updateSep', 'Eklaim\KlaimController@UpdateSep');
 
 // App
 $router->get('app/modules/{username}', 'App\AppController@ModuleByUsername');
@@ -201,6 +202,8 @@ $router->get('master/categoryByGroup/{idGroup}', 'Master\TarifController@Categor
 $router->get('master/tarifGroupJasa', 'Master\TarifController@GroupJasa');
 
 $router->post('master/tarif/save', 'Master\TarifController@Save');
+$router->post('master/tarif/delete', 'Master\TarifController@DeleteTarif');
+$router->post('master/tarif/activate', 'Master\TarifController@ActivateTarif');
 
 // Medical Record
 // $router->get('medicalRecord', 'Billing\TarifController@hallo');
