@@ -82,7 +82,7 @@ class BillingController extends BaseController
         $checkIt = Billing_detail::where('id', $request->id)->get();
 
         if($checkIt){
-            return LibApp::response(201, [], 'Gagal Merubah. Billing Sudah Closed');
+            //return LibApp::response(201, [], 'Gagal Merubah. Billing Sudah Closed');
         };
 
         try {
