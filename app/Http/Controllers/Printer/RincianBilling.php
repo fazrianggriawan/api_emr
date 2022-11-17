@@ -175,13 +175,14 @@ class RincianBilling extends BaseController
             }
 
             $farmasi = self::BillingFarmasi($noreg);
+
+            $totalFarmasi = 0;
+
             if( count($farmasi) > 0 ){
                 $pdf->SetFont('arial', 'B', $setting->fontSize);
                 $pdf->Cell($setting->widthFull, $setting->heightCellData, 'FARMASI', 'T');
                 $pdf->SetFont('arial', $setting->fontWeight, $setting->fontSize);
                 $pdf->ln();
-
-                $totalFarmasi = 0;
             }
 
             foreach ($farmasi as $row ) {
