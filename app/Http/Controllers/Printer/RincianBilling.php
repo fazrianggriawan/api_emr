@@ -208,7 +208,7 @@ class RincianBilling extends BaseController
 
             // Total Tagihan
             $pdf->Cell($setting->widthFull-25, $setting->heightCellData, 'TOTAL', $setting->border, '', 'R');
-            $pdf->Cell(25, $setting->heightCellData, number_format($total), $setting->border, '', 'R');
+            $pdf->Cell(25, $setting->heightCellData, number_format($total + $totalFarmasi), $setting->border, '', 'R');
             $pdf->ln();
 
             if( count($rincianPembayaran) > 0 ){
