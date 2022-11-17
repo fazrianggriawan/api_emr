@@ -130,30 +130,17 @@ class TarifController extends BaseController
 
         $data = Tarif_harga::CariTarif();
 
+        return LibApp::response(200, $data);
+    }
 
+    public function TarifByGroup($group)
+    {
+        $this->group = $group;
 
-        // $data = Tarif_harga::with([
-        //             'r_tarif'=>function($q){
-        //                 return $q->with(['r_tarif_category'=>function($q2){
-        //                     return $q2->with(['r_cat_tarif', 'r_group_tarif'=>function($q3){
-        //                         return $q3->with('r_group');
-        //                     }]);
-        //                 }]);
-        //             },
-        //             'r_tarif_harga_jasa'
-        //         ]);
-
-        // if( $this->category != 'all' ){
-        //     $data->whereHas('r_tarif.r_tarif_category.r_group_tarif', function($q){
-        //         return $q->where('id_mst_group_tarif', $this->category);
-        //     });
-        // }
-
-        // $data->whereHas('r_tarif', function($q){
-        //             return $q->where('name', 'like', '%'.$this->keyword.'%')->where('active', 1)->orderBy('name');
-        //         });
-
-        // $data = $data->get();
+        $data = Tarif::AllData()
+                ->whereHas('r_tarif_category.r_group_tarif.r_group', function($q){
+                    return $q->where('id', $this->group);
+                })->get();
 
         return LibApp::response(200, $data);
     }

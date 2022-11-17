@@ -11,6 +11,24 @@ class Tarif extends Model
     protected $primaryKey = 'id';
     public $timestamps = false;
 
+    public static function AllData()
+    {
+        $data = Tarif::with([
+                'r_tarif_category'=>function($q){
+                    return $q->with(['r_cat_tarif','r_group_tarif'=>function($q){
+                        return $q->with(['r_group']);
+                    }]);
+                },
+                'r_tarif_harga'=>function($q){
+                    return $q->with(['r_tarif_harga_jasa'])->where('active', 1);
+                }])->whereHas('r_tarif_harga.r_tarif_harga_jasa', function($q){
+                    return $q->where('active',1);
+                })->orderBy('name');
+
+        return $data;
+
+    }
+
     public function r_tarif_harga()
     {
         return $this->hasMany(Tarif_harga::class, 'tarif_id', 'id');
