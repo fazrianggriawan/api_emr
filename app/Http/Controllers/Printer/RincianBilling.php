@@ -195,8 +195,6 @@ class RincianBilling extends BaseController
                 $pdf->Cell($widthHarga, $setting->heightCellData, number_format($row->harga * $row->qty), $setting->border, '', 'R');
                 $pdf->ln();
 
-                $totalFarmasi += ($row->harga * $row->qty);
-
                 $total += ($row->harga * $row->qty);
             }
 
@@ -211,16 +209,15 @@ class RincianBilling extends BaseController
             $pdf->Cell(25, $setting->heightCellData, number_format($total + $totalFarmasi), $setting->border, '', 'R');
             $pdf->ln();
 
-            if( count($rincianPembayaran) > 0 ){
-                $total = 0 + $totalFarmasi;
+            foreach ($rincianPembayaran as $row) {
+                if( $row->kode != 'total' ){
+                    $pdf->Cell($setting->widthFull-25, $setting->heightCellData, strtoupper($row->keterangan), $setting->border, '', 'R');
+                    $pdf->Cell(25, $setting->heightCellData, number_format($row->jumlah), $setting->border, '', 'R');
+                    $pdf->ln();
+                    $total += $row->jumlah;
+                }
             }
 
-            foreach ($rincianPembayaran as $row) {
-                $pdf->Cell($setting->widthFull-25, $setting->heightCellData, strtoupper($row->keterangan), $setting->border, '', 'R');
-                $pdf->Cell(25, $setting->heightCellData, number_format($row->jumlah), $setting->border, '', 'R');
-                $pdf->ln();
-                $total += $row->jumlah;
-            }
             $pdf->SetFont('arial', 'b', $setting->fontSize+1);
             $pdf->Cell($setting->widthFull-25, $setting->heightCellData+2, 'TOTAL TAGIHAN', $setting->border, '', 'R');
             $pdf->Cell(25, $setting->heightCellData+2, number_format($total), 'T', '', 'R');
