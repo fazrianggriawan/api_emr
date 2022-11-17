@@ -7,6 +7,7 @@ use App\Http\Libraries\PDFBarcode;
 use App\Models\App_user;
 use App\Models\Billing;
 use App\Models\Billing_detail;
+use App\Models\Billing_pembayaran_rincian;
 use App\Models\Farmasi_billing;
 use App\Models\Registrasi;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -47,6 +48,7 @@ class RincianBilling extends BaseController
         try {
             $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
             $user = App_user::where('username', $username)->first();
+            $rincianPembayaran = Billing_pembayaran_rincian::where('noreg', $noreg)->where('active', 1)->get();
 
             if( !$return ){
                 $pdf = new PDFBarcode();
@@ -194,6 +196,8 @@ class RincianBilling extends BaseController
                 $total += ($row->harga * $row->qty);
             }
 
+            $currentY = $pdf->GetY();
+
             $pdf->ln(1);
             $pdf->Cell($setting->widthFull, 2, '', 'B'); // Border Only
             $pdf->ln(4);
@@ -202,15 +206,17 @@ class RincianBilling extends BaseController
             $pdf->Cell($setting->widthFull-25, $setting->heightCellData, 'TOTAL', $setting->border, '', 'R');
             $pdf->Cell(25, $setting->heightCellData, number_format($total), $setting->border, '', 'R');
             $pdf->ln();
-            $pdf->Cell($setting->widthFull-25, $setting->heightCellData, 'BIAYA ADMINISTRASI', $setting->border, '', 'R');
-            $pdf->Cell(25, $setting->heightCellData, '0', $setting->border, '', 'R');
-            $pdf->ln();
-            $pdf->Cell($setting->widthFull-25, $setting->heightCellData, 'UANG MUKA', $setting->border, '', 'R');
-            $pdf->Cell(25, $setting->heightCellData, '0', $setting->border, '', 'R');
-            $pdf->ln();
-            $pdf->Cell($setting->widthFull-25, $setting->heightCellData, 'PENGEMBALIAN UANG', $setting->border, '', 'R');
-            $pdf->Cell(25, $setting->heightCellData, '0', $setting->border, '', 'R');
-            $pdf->ln(5);
+
+            if( count($rincianPembayaran) > 0 ){
+                $total = 0;
+            }
+
+            foreach ($rincianPembayaran as $row) {
+                $pdf->Cell($setting->widthFull-25, $setting->heightCellData, strtoupper($row->keterangan), $setting->border, '', 'R');
+                $pdf->Cell(25, $setting->heightCellData, number_format($row->jumlah), $setting->border, '', 'R');
+                $pdf->ln();
+                $total += $row->jumlah;
+            }
             $pdf->SetFont('arial', 'b', $setting->fontSize+1);
             $pdf->Cell($setting->widthFull-25, $setting->heightCellData+2, 'TOTAL TAGIHAN', $setting->border, '', 'R');
             $pdf->Cell(25, $setting->heightCellData+2, number_format($total), 'T', '', 'R');
@@ -218,8 +224,8 @@ class RincianBilling extends BaseController
             $pdf->ln();
             // End Total Tagihan
 
-            $pdf->SetY($pdf->GetY() - 31);
             $pdf->SetX(0);
+            $pdf->SetY($currentY);
 
             // Footer
             $pdf->ln();
