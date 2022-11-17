@@ -56,9 +56,9 @@ class BillingController extends BaseController
 
         $checkIt = Billing_detail::where('id', $request->id)->where('status', 'closed')->get();
 
-        if($checkIt){
-            return LibApp::response(201, [], 'Gagal Menghapus. Billing Sudah Closed');
-        };
+        // if($checkIt){
+        //     return LibApp::response(201, [], 'Gagal Menghapus. Billing Sudah Closed');
+        // };
 
         try {
 
