@@ -73,14 +73,6 @@ class PembayaranController extends BaseController
             DB::rollBack();
             return LibApp::response(201, [], $th->getMessage());
         }
-
-
-
-        if ($update) {
-            return LibApp::response(200);
-        } else {
-            return LibApp::response(201);
-        }
     }
 
     public function DataPembayaran($noreg)
