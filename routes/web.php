@@ -49,6 +49,7 @@ $router->get('master/jnsPembayaran', 'Master\MasterController@JnsPembayaran');
 $router->get('registrasi/dataRegistrasi', 'Registrasi\RegistrasiController@GetDataRegistrasi');
 $router->get('registrasi/registrasiByNoreg/{noreg}', 'Registrasi\RegistrasiController@GetRegistasi');
 $router->get('registrasi/riwayatKunjungan/{idPasien}/{norm}', 'Registrasi\RiwayatController@GetData');
+$router->get('registrasi/tanggalPulang/{noreg}', 'Registrasi\RegistrasiController@TanggalPulang');
 $router->post('registrasi/save', 'Registrasi\RegistrasiController@SaveRegistrasi');
 $router->post('registrasi/filtering', 'Registrasi\RegistrasiController@FilterDataRegistrasi');
 $router->post('registrasi/request_rm', 'Registrasi\PermintaanRmController@GetData');

@@ -210,9 +210,25 @@ class RegistrasiController extends BaseController
     {
         try {
             DB::beginTransaction();
-            Registrasi_pulang_perawatan::SaveData($request);
+            if( $request->id == null ){
+                Registrasi_pulang_perawatan::SaveData($request);
+            }else{
+                Registrasi_pulang_perawatan::UpdateData($request);
+            }
+
             DB::commit();
             return LibApp::response(200, [], 'Berhasil Menyimpan Data Pulang Perawatan.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return LibApp::response(201, [], $th->getMessage());
+        }
+    }
+
+    public function TanggalPulang($noreg)
+    {
+        try {
+            $data = Registrasi_pulang_perawatan::where('noreg', $noreg)->first();
+            return LibApp::response(200, $data);
         } catch (\Throwable $th) {
             DB::rollBack();
             return LibApp::response(201, [], $th->getMessage());

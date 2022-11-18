@@ -23,6 +23,18 @@ class Registrasi_pulang_perawatan extends Model
         $insert->save();
     }
 
+    public static function UpdateData($request)
+    {
+        $data = array(
+            'noreg' => $request->noreg,
+            'tanggal' => $request->tanggal,
+            'id_keterangan_pulang' => $request->keteranganPulang,
+            'catatan' => $request->catatan
+        );
+
+        return DB::table('registrasi_pulang_perawatan')->where('id', $request->id)->update($data);
+    }
+
     public static function GetDataByNoreg($noreg)
     {
         return self::where('noreg', $noreg)->first();
