@@ -10,6 +10,7 @@ use App\Models\Billing_detail;
 use App\Models\Billing_pembayaran_rincian;
 use App\Models\Farmasi_billing;
 use App\Models\Registrasi;
+use App\Models\Registrasi_pulang_perawatan;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use stdClass;
 
@@ -49,6 +50,7 @@ class RincianBilling extends BaseController
             $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
             $user = App_user::where('username', $username)->first();
             $rincianPembayaran = Billing_pembayaran_rincian::where('noreg', $noreg)->where('active', 1)->get();
+            $pulangPerawatan = Registrasi_pulang_perawatan::GetDataByNoreg($noreg);
 
             if( !$return ){
                 $pdf = new PDFBarcode();
@@ -122,7 +124,15 @@ class RincianBilling extends BaseController
             $pdf->Cell($setting->widthCell+15, $setting->heightCell, LibApp::dateHuman($registrasi->tglReg), $setting->border);
             $pdf->Cell($setting->widthCell-30, $setting->heightCell, 'Tanggal Keluar', $setting->border);
             $pdf->Cell(3, $setting->heightCell, ':', $setting->border);
-            $pdf->Cell($setting->widthCell+1, $setting->heightCell, LibApp::dateHuman($registrasi->tglReg), $setting->border);
+
+            if( $registrasi->id_jns_perawatan = 'ri' ){
+                if( isset($pulangPerawatan->tanggal) ){
+                    $pdf->Cell($setting->widthCell+1, $setting->heightCell, LibApp::dateHuman($pulangPerawatan->tanggal), $setting->border);
+                }
+            }else{
+                $pdf->Cell($setting->widthCell+1, $setting->heightCell, LibApp::dateHuman($registrasi->tglReg), $setting->border);
+            }
+
             $pdf->ln();
             $pdf->Cell($setting->widthFull, 2, '', 'B'); // Border Only
             $pdf->ln(3);

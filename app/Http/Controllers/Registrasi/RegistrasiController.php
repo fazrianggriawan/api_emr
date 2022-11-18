@@ -7,6 +7,7 @@ use App\Models\Antrian;
 use App\Models\Mst_ruangan;
 use App\Models\Registrasi;
 use App\Models\Registrasi_antrian;
+use App\Models\Registrasi_pulang_perawatan;
 use App\Models\Registrasi_request_rm;
 use App\Models\Registrasi_sep;
 use App\Models\Registrasi_update_status;
@@ -202,6 +203,19 @@ class RegistrasiController extends BaseController
             DB::rollBack();
             return LibApp::response(201, [], 'Gagal Merubah Registrasi. '.$th->getMessage());
             //throw $th;
+        }
+    }
+
+    public function PulangPerawatan(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            Registrasi_pulang_perawatan::SaveData($request);
+            DB::commit();
+            return LibApp::response(200, [], 'Berhasil Menyimpan Data Pulang Perawatan.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return LibApp::response(201, [], $th->getMessage());
         }
     }
 

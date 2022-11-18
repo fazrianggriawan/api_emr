@@ -54,6 +54,7 @@ $router->post('registrasi/filtering', 'Registrasi\RegistrasiController@FilterDat
 $router->post('registrasi/request_rm', 'Registrasi\PermintaanRmController@GetData');
 $router->post('registrasi/update', 'Registrasi\RegistrasiController@UpdateRegistrasi');
 $router->post('registrasi/cancel', 'Registrasi\RegistrasiController@CancelRegistrasi');
+$router->post('registrasi/pulangPerawatan', 'Registrasi\RegistrasiController@PulangPerawatan');
 
 // Tarif
 $router->get('tarif/byCategory/{categoryId}', 'Billing\TarifController@TarifByCategory');
@@ -246,6 +247,8 @@ $router->get('get_image', 'MedicalRecord\AssessmentUmumController@getImage');
 // $router->post('save_test_order', 'TestOrderController@save');
 // $router->post('save_assessment_umum', 'AssessmentUmumController@save');
 // $router->post('save_objective', 'ObjectiveController@save');
+
+$router->get('hitungFarmasi', 'MedicalRecord\FarmasiController@HitungFarmasi');
 
 
 $router->get('test', function(){
