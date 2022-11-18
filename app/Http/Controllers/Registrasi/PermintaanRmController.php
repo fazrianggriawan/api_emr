@@ -9,6 +9,7 @@ use App\Models\Mst_poli;
 use App\Models\Pasien;
 use App\Models\Registrasi_request_rm;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 
@@ -23,7 +24,10 @@ class PermintaanRmController extends BaseController
             }
             return Registrasi_request_rm::with(['r_registrasi','r_pasien','r_ruangan','r_registrasi_antrian' => function($q){
                 return $q->with('r_antrian');
-            }])->whereIn('id_ruangan', $whereInValue)->where('status', 0)->get();
+            }])->whereIn('id_ruangan', $whereInValue)
+            ->where('status', 0)
+            ->where(DB::raw('DATE(dateCreated)'), $request->tanggal)
+            ->get();
         }
     }
 }
