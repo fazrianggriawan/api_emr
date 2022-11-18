@@ -240,7 +240,7 @@ class KlaimController extends BaseController
     {
         $string = '';
         foreach ($icd as $row) {
-            $string .= '#'.$row['kode'];
+            $string .= '#'.$row['id'];
         }
         return ltrim($string, '#');
     }

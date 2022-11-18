@@ -37,6 +37,8 @@ class PembayaranController extends BaseController
 
             $dataPembayaran = Billing_pembayaran::where('session_id', $sessionId)->first();
 
+            Billing_pembayaran_rincian::InactiveRincian($request->noreg);
+
             Billing_pembayaran_rincian::SaveRincian($request->rincian, $request->noreg, $dataPembayaran->id);
 
             Billing_pembayaran_detail::SaveBilling($request->billing, $dataPembayaran);

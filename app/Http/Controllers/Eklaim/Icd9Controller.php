@@ -14,12 +14,13 @@ class Icd9Controller extends BaseController
     {
         $data = array(
             'metadata' => array(
-                'method' => 'search_diagnosis'
+                'method' => 'search_procedures'
             ),
             'data' => array(
                 'keyword' => $request->keyword
             )
         );
+
         $res = LibEklaim::exec(json_encode($data));
 
         return LibApp::response(200, $this->ParsingData($res));

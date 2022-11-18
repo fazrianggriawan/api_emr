@@ -125,7 +125,7 @@ class RincianBilling extends BaseController
             $pdf->Cell($setting->widthCell-30, $setting->heightCell, 'Tanggal Keluar', $setting->border);
             $pdf->Cell(3, $setting->heightCell, ':', $setting->border);
 
-            if( $registrasi->id_jns_perawatan = 'ri' ){
+            if( strtolower($registrasi->jns_perawatan->id) == 'ri' ){
                 if( isset($pulangPerawatan->tanggal) ){
                     $pdf->Cell($setting->widthCell+1, $setting->heightCell, LibApp::dateHuman($pulangPerawatan->tanggal), $setting->border);
                 }

@@ -23,6 +23,11 @@ class Billing_pembayaran_rincian extends Model
         }
     }
 
+    public static function InactiveRincian($noreg)
+    {
+        return self::where('noreg', $noreg)->update(['active', 0]);
+    }
+
     public function r_registrasi()
     {
         return $this->hasOne(Registrasi::class, 'noreg', 'noreg');
