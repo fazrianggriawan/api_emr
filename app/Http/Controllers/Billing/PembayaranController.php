@@ -56,7 +56,25 @@ class PembayaranController extends BaseController
 
     public function DeletePembayaran(Request $request)
     {
-        $update = Billing_pembayaran::where('id', $request->id)->update(['active' => 1]);
+
+        try {
+            DB::beginTransaction();
+
+            $dataBillingDetail = Billing_pembayaran_detail::select('id_billing_detail')->where('id_billing_pembayaran', $request->id)->get();
+
+            Billing_pembayaran::UpdateStatusBillingDetail($dataBillingDetail, 'open');
+
+            Billing_pembayaran::where('id', $request->id)->update(['active' => 0]);
+
+            DB::commit();
+            return LibApp::response(200, ['noreg'=>$request->noreg], 'Data Pembayaran Berhasil Dibatalkan');
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return LibApp::response(201, [], $th->getMessage());
+        }
+
+
 
         if ($update) {
             return LibApp::response(200);

@@ -132,13 +132,13 @@ $router->post('lab/savePemeriksaan', 'Lab\LaboratoriumController@SavePemeriksaan
 
 // Farmasi
 $router->get('farmasi/dataObat', 'Farmasi\ObatController@DataObat');
-$router->get('farmasi/cariObat/{key}', 'Farmasi\ObatController@CariObat');
 $router->get('farmasi/getBilling/{noreg}/{status}', 'Farmasi\BillingController@GetBilling');
 $router->get('farmasi/getDataPembayaran/{noreg}', 'Farmasi\BillingController@GetDataPembayaran');
 $router->get('farmasi/master/depo', 'Farmasi\MasterController@Depo');
 $router->get('farmasi/master/supplier', 'Farmasi\MasterController@Supplier');
 $router->get('farmasi/opname/periode', 'Farmasi\OpnameController@DataPeriode');
 $router->get('farmasi/opname/stok-obat/{idPeriode}', 'Farmasi\OpnameController@DataStokObat');
+$router->post('farmasi/cariObat', 'Farmasi\ObatController@CariObat');
 $router->post('farmasi/saveBilling', 'Farmasi\BillingController@SaveBilling');
 $router->post('farmasi/deleteBilling', 'Farmasi\BillingController@DeleteBilling');
 $router->post('farmasi/savePembayaran', 'Farmasi\BillingController@SavePembayaran');

@@ -24,6 +24,13 @@ class Billing_pembayaran extends Model
         $pembayaran->save();
     }
 
+    public static function UpdateStatusBillingDetail($dataBillingDetail, $status)
+    {
+        foreach ($dataBillingDetail as $row ) {
+            Billing_detail::where('id', $row->id_billing_detail)->update(['status' => $status]);
+        }
+    }
+
     public function GenerataNomorNota($registrasi)
     {
         return '(SELECT DISTINCTROW
