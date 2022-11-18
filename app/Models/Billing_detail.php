@@ -51,9 +51,7 @@ class Billing_detail extends Model
         }
 
         if( self::$noreg ){
-            $data = $data->whereHas('r_billing_head', function($q){
-                return $q->where('noreg', self::$noreg);
-            });
+            $data = $data->where('noreg', self::$noreg);
         }
 
         if( self::$unit ){

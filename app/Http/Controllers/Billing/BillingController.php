@@ -103,7 +103,9 @@ class BillingController extends BaseController
     public function BillingByNoreg($noreg, $status)
     {
         Billing_detail::$noreg = $noreg;
-        Billing_detail::$status = $status;
+        if( $status != 'all' ){
+            Billing_detail::$status = $status;
+        }
         $data = Billing_detail::GetBilling();
         return LibApp::response(200, $data);
     }
