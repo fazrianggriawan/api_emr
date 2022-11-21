@@ -11,6 +11,7 @@ use App\Models\Registrasi_pulang_perawatan;
 use App\Models\Registrasi_request_rm;
 use App\Models\Registrasi_sep;
 use App\Models\Registrasi_update_status;
+use App\Models\Registrasi_waktu_pelayanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -95,7 +96,7 @@ class RegistrasiController extends BaseController
 
             // Antrian
             $antrian = new Antrian();
-            $queryNoAntrian = $antrian->QueryNomorAntrian($request->ruanganPoli, $request->tanggal);
+            $queryNoAntrian = $antrian->QueryNomorAntrian($request->ruanganPoli, $request->tanggal, $request->dokter);
             $ruangan        = Mst_ruangan::where('id', $request->ruanganPoli)->first();
 
             $antrian->kode_booking  = $antrian->GenerateKodeBooking();
@@ -113,6 +114,9 @@ class RegistrasiController extends BaseController
             $registrasiAntrian->noreg = $data->noreg;
             $registrasiAntrian->id_antrian = $antrian->id;
             $registrasiAntrian->save();
+
+            // Registrasi Waktu Pelayanan
+            Registrasi_waktu_pelayanan::SaveData($registrasiAntrian->noreg, $request);
 
             // Registasi to Request RM
             $regRequest = new Registrasi_request_rm();

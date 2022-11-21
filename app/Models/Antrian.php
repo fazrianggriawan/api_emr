@@ -22,7 +22,7 @@ class Antrian extends Model
 
         // $kodeBooking    = Antrian::GenerateKodeBooking();
         // $pasien         = Pasien::GetAllData()->where('id', $data->id_pasien)->first();
-        $queryNoAntrian = Antrian::QueryNomorAntrian($data->ruangan, $data->tanggal);
+        $queryNoAntrian = Antrian::QueryNomorAntrian($data->ruangan, $data->tanggal, $data->dokter);
         $ruangan        = Mst_ruangan::where('id_ruangan', $data->ruangan)->first();
 
         $antrian->kode_booking  = Self::GenerateKodeBooking();
@@ -44,9 +44,9 @@ class Antrian extends Model
         return strtoupper(bin2hex($bytes));
     }
 
-    public static function QueryNomorAntrian($ruangan, $tanggal)
+    public static function QueryNomorAntrian($ruangan, $tanggal, $dokter)
     {
-        return '(SELECT COALESCE (MAX(aa.nomor)+1, 11) AS nomor FROM antrian AS aa WHERE aa.id_ruangan = "'.$ruangan.'" AND aa.tgl_kunjungan = "'.$tanggal.'")';
+        return '(SELECT COALESCE (MAX(aa.nomor)+1, 11) AS nomor FROM antrian AS aa WHERE aa.id_ruangan = "'.$ruangan.'" AND id_pelaksana = "'.$dokter.'" AND aa.tgl_kunjungan = "'.$tanggal.'")';
     }
 
 }
