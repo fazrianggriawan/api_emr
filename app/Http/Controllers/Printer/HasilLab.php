@@ -6,6 +6,7 @@ use App\Http\Libraries\LibApp;
 use App\Http\Libraries\PDFBarcode;
 use App\Models\App_user;
 use App\Models\Billing;
+use App\Models\Billing_head;
 use App\Models\Lab_hasil_pemeriksaan;
 use App\Models\Registrasi;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -25,6 +26,8 @@ class HasilLab extends BaseController
                 ->where('id_billing_head', $idBillingHead)
                 ->where('active', 1)
                 ->get();
+
+        $billingHead = Billing_head::where('id', $idBillingHead)->first();
 
         $registrasi = Registrasi::GetAllData()->where('noreg', $noreg)->first();
 
@@ -60,7 +63,7 @@ class HasilLab extends BaseController
         $pdf->ln(4);
         $pdf->Cell($setting->widthCell, $setting->heightCell, 'Email : rs_salak@yahoo.co.id', $setting->border);
         $pdf->Cell($setting->widthCell+15, $setting->heightCell, '', $setting->border);
-        $pdf->Cell($setting->widthCell, $setting->heightCell, 'TGL. PERIKSA : '.$registrasi->tglReg, $setting->border);
+        $pdf->Cell($setting->widthCell, $setting->heightCell, 'TGL. PERIKSA : '.@$billingHead->tanggal, $setting->border);
         $pdf->ln(8);
 
         $pdf->Image('images/logo_salak.png', 85, 10, 30);
