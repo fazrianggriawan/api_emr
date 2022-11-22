@@ -6,6 +6,7 @@ use App\Http\Libraries\LibApp;
 use App\Http\Libraries\PDFBarcode;
 use App\Models\App_user;
 use App\Models\Billing_detail;
+use App\Models\Billing_pembayaran_rincian;
 use App\Models\Registrasi;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use stdClass;
@@ -123,6 +124,17 @@ class Kwitansi extends BaseController
 
             }
 
+            $rincianPembayaran = Billing_pembayaran_rincian::where('noreg', $noreg)->where('active', 1)->get();
+
+            foreach ($rincianPembayaran as $row) {
+                if( $row->kode != 'total' ){
+                    $pdf->Cell($setting->widthFull-25, $setting->heightCellData, strtoupper($row->keterangan), $setting->border, '', 'R');
+                    $pdf->Cell(25, $setting->heightCellData, number_format($row->jumlah), $setting->border, '', 'R');
+                    $pdf->ln();
+                    $total += $row->jumlah;
+                }
+            }
+
             $pdf->ln();
             // Total Tagihan
             $pdf->SetFont('arial', 'b', $setting->fontSize);
@@ -142,6 +154,7 @@ class Kwitansi extends BaseController
             $pdf->MultiCell($setting->widthFull-50, $setting->heightCell, strtoupper(LibApp::terbilang($total).'Rupiah'), $setting->border);
 
             // Footer
+            $pdf->SetLeftMargin($pdf->GetX()+$startPos);
             $pdf->ln(1);
             $setting->widthCell = $setting->widthCell + 28;
             $pdf->Cell($setting->widthCell-15, $setting->heightCell-1, $setting->kota.', '.LibApp::dateHuman(date('Y-m-d')), $setting->border, '', 'C');
