@@ -9,6 +9,7 @@ use App\Models\Billing;
 use App\Models\Billing_detail;
 use App\Models\Billing_pembayaran_rincian;
 use App\Models\Farmasi_billing;
+use App\Models\Farmasi_billing_pembayaran;
 use App\Models\Registrasi;
 use App\Models\Registrasi_pulang_perawatan;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -41,7 +42,12 @@ class RincianBilling extends BaseController
 
     public static function BillingFarmasi($noreg)
     {
-        return Farmasi_billing::where('active', 1)->where('noreg', $noreg)->get();
+        return Farmasi_billing::with(['r_farmasi_billing_pembayaran'])
+                ->where('active', 1)
+                ->where('noreg', $noreg)
+                ->whereHas('r_farmasi_billing_pembayaran', function($q){
+                    return $q->where('id_cara_bayar', '<>', 'CASH');
+                })->get();
     }
 
     public static function GoPrint($data, $noreg, $username, $return=FALSE)
