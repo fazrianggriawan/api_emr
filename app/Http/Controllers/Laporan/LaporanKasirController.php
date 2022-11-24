@@ -25,8 +25,8 @@ class LaporanKasirController extends BaseController
         $encode = base64_decode($base64);
         $json = json_decode($encode);
 
-        $this->from = $json->from.' '.$json->timeFrom;
-        $this->to = $json->to.' '.$json->timeTo;
+        $this->from = $json->from;
+        $this->to = $json->to;
         $this->caraBayar = $json->jnsPembayaran;
         $this->jnsPerawatan = $json->jnsPerawatan;
 
@@ -48,8 +48,8 @@ class LaporanKasirController extends BaseController
                     ->whereHas('r_pembayaran_detail.r_billing_detail', function($q){
                         return $q->where('active', 1);
                     })
-                    ->where(DB::raw('dateCreated'), '>=', $this->from)
-                    ->where(DB::raw('dateCreated'), '<=', $this->to)
+                    ->where(DB::raw('DATE(dateCreated)'), '>=', $this->from)
+                    ->where(DB::raw('DATE(dateCreated)'), '<=', $this->to)
                     ->where('id_cara_bayar', $this->caraBayar)
                     ->where('active', 1)
                     ->get();
