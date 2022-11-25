@@ -26,6 +26,20 @@ class Icd9Controller extends BaseController
         return LibApp::response(200, $this->ParsingData($res));
     }
 
+    public static function CariByKeyword($key)
+    {
+        $data = array(
+            'metadata' => array(
+                'method' => 'search_procedures'
+            ),
+            'data' => array(
+                'keyword' => $key
+            )
+        );
+        $res = LibEklaim::exec(json_encode($data));
+        return self::ParsingData($res);
+    }
+
     public static function ParsingData($data)
     {
         $res = json_decode($data);
@@ -41,4 +55,22 @@ class Icd9Controller extends BaseController
             return $array;
         }
     }
+
+    public function ValueProcedure(Request $request)
+    {
+        try {
+            $data = array();
+            $array = explode('#', $request->procedure);
+            if( count($array) > 0 ){
+                foreach ($array as $key => $value) {
+                    $data[] = self::CariByKeyword($value)[0];
+                }
+            }
+            return LibApp::response(200, $data);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return LibApp::response(201, [], $th->getMessage());
+        }
+    }
+
 }

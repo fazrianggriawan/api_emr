@@ -183,6 +183,8 @@ $router->post('eklaim/finalisasi', 'Eklaim\FinalisasiController@FinalisasiKlaim'
 $router->post('eklaim/edit', 'Eklaim\KlaimController@EditUlang');
 $router->post('eklaim/updateSep', 'Eklaim\KlaimController@UpdateSep');
 $router->post('eklaim/detailKlaim', 'Eklaim\KlaimController@DetailKlaim');
+$router->post('eklaim/valueDiagnosa', 'Eklaim\Icd10Controller@ValueDiagnosa');
+$router->post('eklaim/valueProcedure', 'Eklaim\Icd9Controller@ValueProcedure');
 
 // App
 $router->get('app/modules/{username}', 'App\AppController@ModuleByUsername');

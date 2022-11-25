@@ -36,7 +36,7 @@ class Icd10Controller extends BaseController
             )
         );
         $res = LibEklaim::exec(json_encode($data));
-        return LibApp::response(200, self::ParsingData($res));
+        return self::ParsingData($res);
     }
 
     public static function ParsingData($data)
@@ -54,4 +54,22 @@ class Icd10Controller extends BaseController
             return $array;
         }
     }
+
+    public function ValueDiagnosa(Request $request)
+    {
+        try {
+            $data = array();
+            $array = explode('#', $request->diagnosa);
+            if( count($array) > 0 ){
+                foreach ($array as $key => $value) {
+                    $data[] = self::CariByKeyword($value)[0];
+                }
+            }
+            return LibApp::response(200, $data);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return LibApp::response(201, [], $th->getMessage());
+        }
+    }
+
 }

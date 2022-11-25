@@ -13,6 +13,7 @@ class SepController extends BaseController
     public function SepByNoreg($noreg)
     {
         $data = Registrasi_sep::where('noreg', $noreg)->first();
+
         return LibApp::response(200, $data);
     }
 }

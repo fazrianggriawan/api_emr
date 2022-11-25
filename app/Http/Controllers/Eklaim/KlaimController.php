@@ -53,9 +53,7 @@ class KlaimController extends BaseController
                 )
             );
 
-            return $data = $this->HandleResponse(LibEklaim::exec(json_encode($data)));
-
-            return self::ParsingDataKlaim($data);
+            return $this->HandleResponse(LibEklaim::exec(json_encode($data)));
 
         } catch (\Throwable $th) {
             //throw $th;
@@ -317,7 +315,7 @@ class KlaimController extends BaseController
         }
     }
 
-    public static function ParsingDataKlaim($data)
+    public static function GetValueDiagnosa($data)
     {
         $res = json_decode($data);
 
@@ -329,7 +327,6 @@ class KlaimController extends BaseController
             }
         }
         return $resDiagnosa;
-        # code...
     }
 
 }
