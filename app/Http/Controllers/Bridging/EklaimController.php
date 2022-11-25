@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Bridging;
 
 use App\Http\Libraries\LibEklaim;
 use App\Models\Registrasi;
+use App\Models\Registrasi_pulang_perawatan;
 use Illuminate\Http\Client\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
@@ -71,6 +72,8 @@ class EklaimController extends BaseController
     public function SetDataKlaim(Request $request)
     {
         $registrasi = Registrasi::GetAllData()->where('noreg', $request->noreg);
+
+        return $tglPulang = self::GetTanggalPUlang($registrasi);
 
         $data = array(
             'metadata' => array(
@@ -427,6 +430,20 @@ class EklaimController extends BaseController
     public static function Coder()
     {
         return '3201150710820010';
+    }
+
+    public static function GetTanggalPulang($registrasi)
+    {
+        if( $registrasi->id_jns_perawatan == 'ri' ){
+            $registrasiPulang = Registrasi_pulang_perawatan::with(['r_registrasi'])->where('noreg', $registrasi->noreg)->get();
+            $countArray = count($registrasiPulang);
+            if( $countArray > 0 ){
+                $key = $countArray--;
+                return $registrasiPulang[$key]['tanggal'];
+            }
+        }else{
+            return $registrasi->tglReg;
+        }
     }
 
 }
