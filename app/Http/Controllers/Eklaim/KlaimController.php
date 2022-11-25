@@ -309,7 +309,7 @@ class KlaimController extends BaseController
             $registrasiPulang = Registrasi_pulang_perawatan::with(['r_registrasi'])->where('noreg', $registrasi['noreg'])->get();
             $countArray = count($registrasiPulang);
             if( $countArray > 0 ){
-                $key = $countArray--;
+                $key = $countArray-1;
                 return $registrasiPulang[$key]['tanggal'];
             }
         }else{
