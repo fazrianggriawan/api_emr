@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class Icd10Controller extends BaseController
 {
-    public function Cari(Request $request)
+    public static function Cari(Request $request)
     {
         $data = array(
             'metadata' => array(
@@ -22,7 +22,21 @@ class Icd10Controller extends BaseController
         );
         $res = LibEklaim::exec(json_encode($data));
 
-        return LibApp::response(200, $this->ParsingData($res));
+        return LibApp::response(200, self::ParsingData($res));
+    }
+
+    public static function CariByKeyword($key)
+    {
+        $data = array(
+            'metadata' => array(
+                'method' => 'search_diagnosis'
+            ),
+            'data' => array(
+                'keyword' => $key
+            )
+        );
+        $res = LibEklaim::exec(json_encode($data));
+        return LibApp::response(200, self::ParsingData($res));
     }
 
     public static function ParsingData($data)

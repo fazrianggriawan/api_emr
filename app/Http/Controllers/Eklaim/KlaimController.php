@@ -8,6 +8,7 @@ use App\Http\Libraries\LibEklaim;
 use App\Models\Billing_detail;
 use App\Models\Farmasi_billing;
 use App\Models\Registrasi;
+use App\Models\Registrasi_pulang_perawatan;
 use App\Models\Registrasi_sep;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +33,29 @@ class KlaimController extends BaseController
             );
 
             return $this->HandleResponse(LibEklaim::exec(json_encode($data)));
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return LibApp::response(201, [], $th->getMessage());
+        }
+    }
+
+    public function DetailKlaim(Request $request)
+    {
+        try {
+
+            $data = array(
+                'metadata' => array(
+                    'method' => 'get_claim_data'
+                ),
+                'data' => array(
+                    'nomor_sep' => strtoupper($request->no_sep)
+                )
+            );
+
+            return $data = $this->HandleResponse(LibEklaim::exec(json_encode($data)));
+
+            return self::ParsingDataKlaim($data);
 
         } catch (\Throwable $th) {
             //throw $th;
@@ -83,10 +107,12 @@ class KlaimController extends BaseController
 
     public function SaveKlaim(Request $request)
     {
-
         try {
+
             $diagnosa = $this->ParsingICD($request->diagnosa);
             $prosedur = $this->ParsingICD($request->prosedur);
+
+            $tglPulang = self::GetTanggalPulang($request->registrasi);
 
             $data = array(
                 'metadata' => array(
@@ -97,7 +123,7 @@ class KlaimController extends BaseController
                     'nomor_sep' => $request->sep['noSep'],
                     'nomor_kartu' => $request->sep['peserta']['noKartu'],
                     'tgl_masuk' => $request->registrasi['dateCreated'],
-                    'tgl_pulang' => $request->registrasi['dateCreated'],
+                    'tgl_pulang' => $tglPulang,
                     'jenis_rawat' => ($request->registrasi['id_jns_perawatan'] == 'ri') ? '1' : '2',
                     'kelas_rawat' => $request->sep['klsRawat']['klsRawatHak'],
                     'adl_sub_acute' => '', //'15',
@@ -275,6 +301,35 @@ class KlaimController extends BaseController
             DB::rollBack();
             return LibApp::response(201, [], 'Gagal Disimpan. '.$th->getMessage());
         }
+    }
+
+    public static function GetTanggalPulang($registrasi)
+    {
+        if( strtolower($registrasi['id_jns_perawatan']) == 'ri' ){
+            $registrasiPulang = Registrasi_pulang_perawatan::with(['r_registrasi'])->where('noreg', $registrasi['noreg'])->get();
+            $countArray = count($registrasiPulang);
+            if( $countArray > 0 ){
+                $key = $countArray--;
+                return $registrasiPulang[$key]['tanggal'];
+            }
+        }else{
+            return $registrasi['tglReg'];
+        }
+    }
+
+    public static function ParsingDataKlaim($data)
+    {
+        $res = json_decode($data);
+
+        if( isset($res->data->response->data->diagnosa) ){
+            $arrayDiagnosa = explode('#', $res->data->response->data->diagnosa);
+            $resDiagnosa = array();
+            foreach ($arrayDiagnosa as $key => $value) {
+                $resDiagnosa[$key] = Icd10Controller::CariByKeyword($value);
+            }
+        }
+        return $resDiagnosa;
+        # code...
     }
 
 }
