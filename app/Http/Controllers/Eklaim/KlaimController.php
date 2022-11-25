@@ -278,7 +278,7 @@ class KlaimController extends BaseController
         if( $json->metadata->code == 200 ){
             return LibApp::response(200, $json, 'Proses Berhasil : '.$json->metadata->message);
         }else{
-            return LibApp::response(201, [], 'Gagal Menyimpan : '.$json->metadata->message);
+            return LibApp::response(201, [], $json->metadata->message);
         }
     }
 
