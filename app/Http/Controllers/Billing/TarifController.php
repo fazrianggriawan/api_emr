@@ -125,7 +125,9 @@ class TarifController extends BaseController
     public function CariTarif(Request $request)
     {
         Tarif_harga::$keyword = $request->keyword;
-        Tarif_harga::$category = $request->category;
+        if( $request->category != 'ri' ){
+            Tarif_harga::$category = $request->category;
+        }
         Tarif_harga::$paket = $request->paket;
 
         $data = Tarif_harga::CariTarif();
